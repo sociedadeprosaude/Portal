@@ -1,10 +1,4 @@
 <template>
-  <!-- <ApolloQuery 
-    :query="require('@/graphql/schedules/LoadSchedules.gql')"
-    :variables="{ type:'SPECIALTY' }"
-  >
-    <template slot-scope="{ result: { data, loading} }">
-      <v-progress-circular v-if="loading" indeterminate></v-progress-circular> -->
       <v-data-table
         :headers="headers"
         :items="schedulesFilter"
@@ -24,19 +18,14 @@
               <HeaderTable :clinics="data && data.Clinic" @filterClinic="clinic=$event" @examTypeCheck="examTypeCheck=$event"/>
             </template>
           </ApolloQuery>
+          
+          <v-progress-linear v-if="loading" indeterminate color="primary"></v-progress-linear>
         </template>
 
         <template v-slot:expanded-item="{ headers, item }">
-          <BodyTable :headers="headers" :item="item" @createNewDay="createNewDay($event)" @createNewPeriod="createNewPeriod($event)" />
-        </template>
-
-        <!-- <template v-slot:item.actions="{ item }">
-              <v-icon small @click="deleteSchedule(item)">mdi-delete</v-icon>
-        </template>-->
-        
+          <BodyTable :headers="headers" :item="item" @createNewDay="createNewDay()" @createNewPeriod="createNewPeriod()" />
+        </template>        
       </v-data-table>
-    <!-- </template>
-  </ApolloQuery> -->
 </template>
 
 <script>
@@ -72,7 +61,9 @@ export default {
       { text: "Ações", value: "actions", sortable: false }
     ],
   }),
-
+  mounted(){
+    this.loading = true;
+  },
   computed: {
     schedulesFilter(){
       if(this.clinic)
@@ -116,62 +107,12 @@ export default {
     formatDate(date) {
       return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
     },
-    async createNewDay(newDay) {
-      this.$apollo.mutate({
-          mutation: require('@/graphql/schedules/NewDay.gql'),
-          variables: {
-            day: newDay.day.toString(),
-            hour: newDay.hour,
-            vacancy: Number(newDay.vacancy)
-          },
-          
-        }).then((data) => {
-          //newDay.schedule.days.push(data.CreateDay)
-          this.saveRelationDaySchedule(data.data.CreateDay.id, newDay.schedule.id)
-        }).catch((error) => {
-          console.error(error)
-        })
-      
+    async createNewDay() {
+      this.$apollo.queries.loadSchedules.refresh();  
     },
 
-    saveRelationDaySchedule(idDay, idSchedule){
-        this.$apollo.mutate({
-          mutation: require('@/graphql/schedules/AddRelationForDay.gql'),
-          // Parameters
-          variables: {
-            idSchedule: idSchedule,
-            idDay: idDay
-          },
-          
-        }).then((data) => {
-          this.$apollo.queries.loadSchedules.refresh();
-        }).catch((error) => {
-          console.error(error)
-        })
-    },
-
-    async createNewPeriod(newPeriod) {
-      const response = await this.$apollo.mutate({
-        mutation: require('@/graphql/schedules/NewCanceledPeriod.gql'),
-        variables:{
-          start_date:{
-            formatted: newPeriod.start_date
-          },
-          final_date:{
-            formatted: newPeriod.final_date
-          }
-        }
-      });
-      
-      await this.$apollo.mutate({
-        mutation: require('@/graphql/schedules/AddRelationCanceledPeriod.gql'),
-        variables:{
-          idSchedule: newPeriod.schedule.id,
-          idCanceledPeriod: response.data.CreateCanceledPeriod.id
-        }
-      });
-
-      this.$apollo.queries.loadSchedules.refresh();
+    async createNewPeriod() {
+      this.$apollo.queries.loadSchedules.refresh();  
     },
     deleteSchedule(item) {
       const index = this.schedules.indexOf(item);
@@ -184,11 +125,11 @@ export default {
     loadSchedules: {
       query: require("@/graphql/schedules/LoadSchedules.gql"),
       update(data) {
-        console.log('-',data.Schedule)
         if(this.examTypeCheck)
           this.schedules = data.Schedule.filter(schedule => schedule.clinic && schedule.doctor && schedule.product && schedule.product.type === "EXAM")
         else
           this.schedules = data.Schedule.filter(schedule => schedule.clinic && schedule.doctor && schedule.product && schedule.product.type === "SPECIALTY")
+        this.loading = false;
       }
     },
   }

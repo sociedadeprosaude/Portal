@@ -4,7 +4,8 @@
     <v-chip class="mt-2 primary subtitle-2 font-weight-bold">Horário:{{dayObj.hour}}</v-chip>
     <br/>
     <v-chip class="mt-1 primary subtitle-2 font-weight-bold">Vagas:{{dayObj.vacancy}}</v-chip>
-    <v-chip v-if="dayObj.expiration_date.formatted" class="mt-1 primary subtitle-2 font-weight-bold">Validade:{{formatDate(dayObj.expiration_date.formatted)}}</v-chip>
+    <br/>
+    <v-chip v-if="dayObj.expiration_date && dayObj.expiration_date.formatted" class="mt-1 primary subtitle-2 font-weight-bold">Validade:{{formatDate(dayObj.expiration_date.formatted)}}</v-chip>
     <br />
     <br />
     <v-spacer></v-spacer>
@@ -38,28 +39,30 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field type="time" min="05:00" max="18:00" v-model="newDay.hour" label="Horário" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="newDay.vacancy"
-                  type="number"
-                  label="Vagas"
-                  hint="Digite o número de vagas para o dia"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <h1 class="title font-weight-bold">Data de validade</h1>
-                <v-text-field
-                  v-model="newDay.expiration_date"
-                  type="date"
-                  hint="Selecione a data de validade da agenda"
-                  required
-                ></v-text-field>
-              </v-col>
-            </v-row>
+            <v-form ref="form">
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field type="time" :rules="rules" min="05:00" max="18:00" v-model="newDay.hour" label="Horário" required></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="newDay.vacancy"
+                    :rules="rules"
+                    type="number"
+                    label="Vagas"
+                    hint="Digite o número de vagas para o dia"
+                  ></v-text-field>
+                </v-col>
+               <v-col cols="12">
+                  <h1 class="title font-weight-bold">Data de validade</h1>
+                  <v-text-field
+                    v-model="expiration_date"
+                    type="date"
+                    hint="Selecione a data de validade da agenda"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-form>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -77,7 +80,8 @@ var moment = require('moment')
 export default {
   props: ["schedule", "dayObj", "day"],
   name: "CardDaySchedule",
-  data: () => ({
+  data: () => {
+    return {
     days: [
       "Domingo",
       "Segunda-feira",
@@ -90,8 +94,12 @@ export default {
     dialogRemove: false,
     dialogUpdate: false,
     loading: false,
-    newDay:{}
-  }),
+    newDay:{},
+    expiration_date: undefined,
+    rules:[
+      v => !!v || 'Campo vazio!',
+    ]
+  }},
   methods: {
     formatDate(date) {
       return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
@@ -121,20 +129,29 @@ export default {
     openDialoaUpdateDay(){
         this.dialogUpdate = true;
         this.newDay={...this.dayObj}
+        this.expiration_date = this.newDay.expiration_date ? this.newDay.expiration_date.formatted : undefined;
     },
     async updateDay(){
-        this.loading = true;
-        /* this.$apollo.mutate({
+      if(this.$refs.form.validate()){
+        this.loading = true; 
+        await this.$apollo.mutate({
           mutation: require('@/graphql/schedules/UpdateDaySchedule.gql'),
           variables: {
-            idSchedule:this.schedule.id,
-            idDay: this.dayObj.id
+            idDay: this.newDay.id,
+            vacancy: Number(this.newDay.vacancy),
+            hour: this.newDay.hour,
+            expiration_date: this.expiration_date ? {formatted: this.expiration_date} : undefined
           },
-          
-        }) */
-        this.newDay = {}
+        });
+
+        if(this.expiration_date){
+          this.newDay.expiration_date = {formatted: this.expiration_date}
+        }
+        this.dayObj = Object.assign({}, this.newDay);
+
         this.loading = false
         this.dialogUpdate = false;
+      }
     },
     cancelConsultations(){
       let consultations = this.schedule.consultations

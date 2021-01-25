@@ -31,26 +31,30 @@
           </v-card-title>
           <v-card-text>
             <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    type="time"
-                    min="05:00"
-                    max="18:00"
-                    v-model="newDay.hour"
-                    label="Horário"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="newDay.vacancy"
-                    type="number"
-                    label="Vagas"
-                    hint="Digite o número de vagas para o dia"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+              <v-form ref="formDay">
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      type="time"
+                      min="05:00"
+                      max="18:00"
+                      v-model="newDay.hour"
+                      label="Horário"
+                      required
+                      :rules="rules"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="newDay.vacancy"
+                      type="number"
+                      label="Vagas"
+                      hint="Digite o número de vagas para o dia"
+                      :rules="rules"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>  
+               </v-form>
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -87,26 +91,30 @@
           </v-card-title>
           <v-card-text>
             <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="newPeriod.start_date"
-                    type="date"
-                    label="Data inicial"
-                    hint="Selecione a data inicial do cancelamento"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="newPeriod.final_date"
-                    type="date"
-                    label="Data final"
-                    hint="Selecione a data final do cancelamento"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+              <v-form ref="formPeriod">
+                <v-row> 
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="newPeriod.start_date"
+                        type="date"
+                        label="Data inicial"
+                        hint="Selecione a data inicial do cancelamento"
+                        required
+                        :rules="rules"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="newPeriod.final_date"
+                        type="date"
+                        label="Data final"
+                        hint="Selecione a data final do cancelamento"
+                        required
+                        :rules="rules"
+                      ></v-text-field>
+                    </v-col>
+                </v-row>
+              </v-form>
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -147,13 +155,18 @@ export default {
     editExpirationDate: false,
     loading: false,
     newDay: {},
-    newPeriod: {}
+    newPeriod: {},
+    rules:[
+      v => !!v || 'Campo vazio!',
+    ]
   }),
   methods: {
     findDay(target){
-      if(this.item.days)
-        return this.item.days.find(value => value.day === target.toString())
+      if(this.item.days){
+        let foundDay = this.item.days.find(value => value.day === target.toString());
 
+        return foundDay;
+      }
       return undefined
     },
     openDialogNewDay(schedule, day) {
@@ -169,19 +182,68 @@ export default {
         schedule: schedule
       };
     },
-    createNewDay(){
+
+    async createNewDay() {
+      if(this.$refs.formDay.validate()){
         this.loading = true;
-        this.$emit('createNewDay',this.newDay)
+        this.item.days.push(Object.assign({}, this.newDay));
+
+        const data = await this.$apollo.mutate({
+            mutation: require('@/graphql/schedules/NewDay.gql'),
+            variables: {
+              day: this.newDay.day.toString(),
+              hour: this.newDay.hour,
+              vacancy: Number(this.newDay.vacancy)
+            },
+            
+          });
+        await this.saveRelationDaySchedule(data.data.CreateDay.id, this.newDay.schedule.id);
+        this.$emit('createNewDay');
         this.loading = false;
         this.dialog = false;
         this.newDay = {};
+      }
     },
-    createNewPeriod(){
+
+    async saveRelationDaySchedule(idDay, idSchedule){
+      await  this.$apollo.mutate({
+          mutation: require('@/graphql/schedules/AddRelationForDay.gql'),
+          variables: {
+            idSchedule: idSchedule,
+            idDay: idDay
+          },
+          
+      });
+    },
+    async createNewPeriod(){
+      if(this.$refs.formPeriod.validate()){
         this.loading = true;
-        this.$emit('createNewPeriod',this.newPeriod)
+
+        const response = await this.$apollo.mutate({
+          mutation: require('@/graphql/schedules/NewCanceledPeriod.gql'),
+          variables:{
+            start_date:{
+              formatted: this.newPeriod.start_date
+            },
+            final_date:{
+              formatted: this.newPeriod.final_date
+            }
+          }
+        });
+        
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/schedules/AddRelationCanceledPeriod.gql'),
+          variables:{
+            idSchedule: this.newPeriod.schedule.id,
+            idCanceledPeriod: response.data.CreateCanceledPeriod.id
+          }
+        });
+
+        this.$emit('createNewPeriod')
         this.loading = false;
         this.dialogNewPeriod = false;
         this.newPeriod = {};
+      }
     },
     removePeriod(index){
       this.item.canceled_periods.splice(index,1);
