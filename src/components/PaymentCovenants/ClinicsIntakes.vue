@@ -2,7 +2,14 @@
   <v-container>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-card v-for="(outtake,i) in outtakes" :key="i">
+        <v-card>
+          <v-select
+              v-model="selectedDate"
+              label="Escolha uma data"
+              :items="dates"
+          ></v-select>
+        </v-card>
+        <v-card v-for="(outtake,i) in outtakesFilter" :key="i">
           <v-layout row wrap class="primary">
             <v-flex xs12>
               <v-divider class="primary"></v-divider>
@@ -55,6 +62,7 @@
 
 <script>
 import {mask} from "vue-the-mask";
+import moment from "moment"
 
 export default {
   props: ['clinic', 'outtakes'],
@@ -65,11 +73,12 @@ export default {
   data() {
     return {
       numberIntake: '',
+      selectedDate:'',
       loading: false,
       successUpdateExams: false,
       dialogContestValue: false,
       ContestExam: [],
-      NewValue: ''
+      NewValue: '',
     };
   },
   methods: {
@@ -83,6 +92,9 @@ export default {
 
     closeDialog: function () {
       this.$emit('close-dialog')
+    },
+    formattedDate(date){
+      return moment(date,'YYYY-MM-DD').format('DD/MM/YYYY')
     }
   },
   mounted() {
@@ -90,10 +102,26 @@ export default {
 
   },
   computed: {
-    intakes() {
-      console.log('ouutakes clinic: ', this.$store.getters.IntakesExamsClinics)
-      return this.$store.getters.IntakesExamsClinics
-    }
+    dates(){
+      var dates = []
+      this.outtakes.map((outtake) => {
+        if(!dates.includes(outtake.date.formatted.substring(0,10))){
+          dates.push(this.formattedDate(outtake.date.formatted.substring(0,10)))
+        }
+      })
+      console.log('dates: ', dates)
+      return dates
+    },
+    outtakesFilter() {
+      let date = moment(this.selectedDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
+      if(this.selectedDate !== ''){
+        return this.outtakes.filter(el => el.date.formatted.substring(0,10) === date)
+      }
+      else{
+        return this.outtakes
+      }
+    },
+
   }
 };
 </script>
