@@ -91,7 +91,7 @@
                             :variables="{id:clinic.id}"
                         >
                           <template slot-scope="{ result: { data } }">
-                        <v-flex xs6 class="text-left">
+                        <v-flex xs6 class="text-left" v-if="data">
                           <v-btn @click="checkReceipts(clinic,data)" text dark>+ detalhes</v-btn>
                         </v-flex>
                           </template>
