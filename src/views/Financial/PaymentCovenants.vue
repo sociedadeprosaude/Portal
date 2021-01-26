@@ -86,9 +86,16 @@
                     </v-flex>
                     <v-flex xs12 sm12 class="mt-3">
                       <v-layout row wrap class="justify-space-between">
+                        <ApolloQuery
+                            :query="require('@/graphql/clinics/LoadClinicOuttakes.gql')"
+                            :variables="{id:clinic.id}"
+                        >
+                          <template slot-scope="{ result: { data } }">
                         <v-flex xs6 class="text-left">
-                          <v-btn @click="checkReceipts(clinic)" text dark>+ detalhes</v-btn>
+                          <v-btn @click="checkReceipts(clinic,data)" text dark>+ detalhes</v-btn>
                         </v-flex>
+                          </template>
+                        </ApolloQuery>
 
                         <v-flex xs6 class="text-right">
                           <v-card class="mx-4 elevation-0 transparent">
@@ -235,14 +242,13 @@ export default {
       this.NumberExams = ReturnValuesClinic.NumberExams
     },
 
-    async checkReceipts(clinic) {
-      this.outtakesSelected = clinic.charges.sort((a, b) => a.date.formatted.localeCompare(b.date.formatted))
+    async checkReceipts(clinic, data) {
       this.clinicSelected = clinic
       this.intakesObserv = !this.intakesObserv
+      this.outtakesSelected= data.Clinic[0].charges.sort((a, b) => a.date.formatted.localeCompare(b.date.formatted))
 
     },
     async payClinic(clinic) {
-      console.log('Clinic: ',clinic)
        this.loadingPayment = true
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
@@ -254,7 +260,6 @@ export default {
           value:-parseFloat(this.CostExamsClinic(clinic)),
         }
       })
-      console.log('id: ', transactionId)
       mutationBuilder.addMutation({
         mutation: require('@/graphql/transaction/AddRelationsClinicHasTransaction.gql'),
         variables:{
@@ -274,7 +279,6 @@ export default {
           mutation: require ('../../graphql/clinics/LoadCostProductClinic.gql'),
           variables:{idClinic: clinic.id, idProduct: clinic.charges[charge].ProductTransaction[0].Product.id}
         })
-        console.log('cost: ', costProduct.data.CostProductClinic[0].cost)
         mutationBuilder.addMutation({
           mutation: require('@/graphql/productTransaction/UpdateProductTransaction.gql'),
           variables:{
@@ -292,7 +296,6 @@ export default {
       let response = await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
-      console.log('response :', response)
       console.log('ok')
       this.loadingPayment = false
     },
