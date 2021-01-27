@@ -108,6 +108,10 @@ export default {
           txt: "Consultas do Médico",
           link: "ConsultationsByDoctor"
         },
+        {
+          txt: "Pacientes Covid-19",
+          link: "PatientReportAgeConsultation"
+        },
       ],
     };
   },

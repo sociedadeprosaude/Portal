@@ -1,0 +1,12 @@
+query($date_first:String, $date_end:String,$sex:String ,$product:String){
+  Patient(filter:{birth_date_lte:{formatted:$date_first}
+             , birth_date_gte:{formatted:$date_end}, sex_contains:$sex,
+            with_consultation_in:{has_product:{name_contains:$product}}
+            }){
+    name,
+    email,
+    telephones,
+birth_date{formatted},
+    with_consultation{date{formatted}}
+  }
+}

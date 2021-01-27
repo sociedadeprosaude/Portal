@@ -567,16 +567,8 @@ export default {
       this.selectedBudget.valuesPayments.forEach(value => {
         value = parseFloat(value)
       })
-
       let transactionId = await this.makeTransaction()
-
-
-      // await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
-      if (this.selectedBudget.doctor) {
-        this.AddRelationsIntakeDoctor(transactionId)
-      } else {
-        this.AddRelationsIntake(transactionId)
-      }
+      this.receipt(this.selectedBudget)
     },
     async makeTransaction() {
       let transactionId = uuid.v4()
@@ -594,6 +586,24 @@ export default {
         formatted: moment().format("YYYY-MM-DDTHH:mm:ss")}
         }
       })
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+        variables:{
+          idBudget: transactionId,
+          idColaborator: this.selectedBudget.colaborator.id,
+          idPatient: this.selectedBudget.user.id,
+          idUnit: this.selectedBudget.unit.id
+        }
+      })
+      if(this.selectedBudget.doctor){
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/transaction/AddRelationsTransactionDoctor.gql'),
+          variables: {
+            idBudget: transactionId,
+            idDoctor: this.selectedBudget.doctor.id,
+          }
+        })
+      }
 
       let productsTransactionIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
@@ -683,42 +693,6 @@ export default {
       this.verifyUnpaidConsultations(productsTransactionIds);
 
       return transactionId;
-    },
-    async AddRelationsIntakeDoctor(transactionId) {
-      this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/AddRelationsNewIntakeDoctor.gql'),
-        variables: {
-          idBudget: transactionId,
-          idColaborator: this.selectedBudget.colaborator.id,
-          idPatient: this.selectedBudget.user.id,
-          idDoctor: this.selectedBudget.doctor.id,
-          idUnit: this.selectedBudget.unit.id
-        },
-
-      })
-          .then((dataa) => {
-            this.receipt(this.selectedBudget)
-          }).catch((error) => {
-        console.error('Relações da transaction: ', error)
-      })
-    },
-    async AddRelationsIntake(transactionId) {
-      await this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
-        // Parameters
-        variables: {
-          idBudget: transactionId,
-          idColaborator: this.selectedBudget.colaborator.id,
-          idPatient: this.selectedBudget.user.id,
-          idUnit: this.selectedBudget.unit.id
-        },
-
-      })
-          .then(() => {
-            this.receipt(this.selectedBudget)
-          }).catch((error) => {
-            console.error('ligações da transaction nao funcionando: ', error)
-          })
     },
     async receipt(intake) {
       this.selectedIntake = intake

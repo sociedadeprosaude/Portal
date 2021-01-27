@@ -90,6 +90,7 @@
     <patients-budgets v-else-if="selected == 19"></patients-budgets>
     <patients v-else-if="selected == 20"></patients>
     <consultations-by-doctor v-else-if="selected == 21"></consultations-by-doctor>
+    <patient-report-age-consultation v-else-if="selected == 22"></patient-report-age-consultation>
   </v-container>
 </template>
 
@@ -118,10 +119,12 @@ import StatisticPatientsGeoPoint from "@/views/Reports/StatisticPatientsGeoPoint
 import PatientsBudgets from "@/views/Reports/PatientsBudgets";
 import Patients from "@/views/Reports/Patients";
 import ConsultationsByDoctor from "@/views/Reports/ConsultationsByDoctor";
+import PatientReportAgeConsultation from "@/views/Reports/PatientReportAgeConsultation";
 
 export default {
   components: {
     DrawerRelatorio,
+    PatientReportAgeConsultation,
     DateSelector,
     ColaboratorsProductionReport,
     GeneralReport,
@@ -256,6 +259,9 @@ export default {
           break;
         case "ConsultationsByDoctor":
           this.selected = 21;
+          break;
+        case "PatientReportAgeConsultation":
+          this.selected = 22;
           break;
         default:
           this.selected = 0;

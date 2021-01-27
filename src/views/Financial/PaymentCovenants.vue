@@ -95,7 +95,7 @@
                           <v-btn @click="checkReceipts(clinic,data)" text dark>+ detalhes</v-btn>
                         </v-flex>
                             <v-flex xs6 class="text-left" v-else>
-                              <v-btn loading="true"></v-btn>
+                              <v-progress-linear color="primary" indeterminate/>
                             </v-flex>
                           </template>
                         </ApolloQuery>

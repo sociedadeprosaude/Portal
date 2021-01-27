@@ -1,0 +1,13 @@
+mutation($idBudget:ID!,$idDoctor: ID!){
+              AddTransactionWith_doctor(
+                     from:{
+                         id:$idBudget
+                     },
+                     to:{
+                         id:$idDoctor
+                     }
+                 ){
+                     from{id},
+                     to{id}
+                 }
+}
