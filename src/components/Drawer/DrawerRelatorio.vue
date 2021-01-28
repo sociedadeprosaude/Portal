@@ -109,7 +109,7 @@ export default {
           link: "ConsultationsByDoctor"
         },
         {
-          txt: "Pacientes Covid-19",
+          txt: "Pacientes por Produto",
           link: "PatientReportAgeConsultation"
         },
       ],
