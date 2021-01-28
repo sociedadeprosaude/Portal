@@ -19,7 +19,6 @@
       </v-col>
     </v-row>
     <v-row>
-      {{print(PatientsForDate)}}
       <v-col cols="12"  v-for="(patientsForDay, index) in Patients" v-bind:key="index">
         <v-card>
         <v-card color="primary elevation-0">
@@ -42,7 +41,11 @@
             <v-col cols="1" class="pa-0">
               <v-divider vertical></v-divider>
             </v-col>
-            <v-col cols="3">Paciente</v-col>
+            <v-col cols="2">Paciente</v-col>
+            <v-col cols="1" class="pa-0">
+              <v-divider vertical></v-divider>
+            </v-col>
+            <v-col cols="1">Idade</v-col>
             <v-col cols="1" class="pa-0">
               <v-divider vertical></v-divider>
             </v-col>
@@ -62,7 +65,11 @@
             <v-col cols="1" class="pa-0">
               <v-divider vertical></v-divider>
             </v-col>
-            <v-col cols="3">{{patient.name}}</v-col>
+            <v-col cols="2">{{patient.name}}</v-col>
+            <v-col cols="1" class="pa-0">
+              <v-divider vertical></v-divider>
+            </v-col>
+            <v-col cols="1">{{age(patient.birth_date)}}</v-col>
             <v-col cols="1" class="pa-0">
               <v-divider vertical></v-divider>
             </v-col>
@@ -110,21 +117,23 @@ export default {
     ],
   }),
   methods:{
+    age(birth_date){
+      let now = moment().format('YYYY')
+      let idade = parseInt(now) - parseInt(moment(birth_date.formatted).format("YYYY"))
+      return idade
+    },
     PatientsFormatArray(patients){
       let PatientsArray= []
-      console.log('patients: ', patients)
       patients.Budgets.map(e =>{
         PatientsArray.push({
           Nome: e.name,
           Telefone: e.telephones[0],
-          Idade: moment(e.with_consultation[0].date.formatted,'YYYY-MM-DDTHH:mm:ss').diff('years',true)
         })
       })
       this.ExportPatients(PatientsArray)
     },
     ExportPatients(patientsArray){
       const json2csvParser = new Parser({ fields});
-      console.log('aaa', patientsArray)
       let formattedPatients = patientsArray.map(p => {
         return {
           'First Name': p.Nome.trim().split(' ')[0],

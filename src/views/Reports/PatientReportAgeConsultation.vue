@@ -28,11 +28,11 @@
           </v-col>
           <v-col cols="3">
             <apollo-query
-                :query="require('@/graphql/products/LoadProducts.gql')"
-                :variables="{type:'SPECIALTY'}"
+                :query="require('@/graphql/products/LoadAllProducts.gql')"
             >
               <template slot-scope="{ result: { data } }">
                 <v-select
+                    v-if="data"
                     v-model="productName"
                     :items="data.Product"
                     label="selecione a especialidade"
@@ -104,35 +104,32 @@ export default {
       let PatientsArray= []
       this.Patients.map(e =>{
         let now = moment().format('YYYY')
-        console.log('date end: ', parseInt(moment(e.birth_date.formatted).format("YYYY")))
-        let idade = parseInt(now) - parseInt(moment(e.birth_date.formatted).format("YYYY"))
+        let idade = parseInt(now) - parseInt(moment(e.with_transactionPay.with_user[0].birth_date.formatted).format("YYYY"))
         PatientsArray.push({
-          Nome: e.name,
-          Telefone: e.telephones[0],
+          Nome: e.with_transactionPay.with_user[0].name,
+          Telefone: e.with_transactionPay.with_user[0].telephones[0],
           Idade: idade
         })
     })
-      console.log('patientsArray: ', PatientsArray)
       return PatientsArray
     },
      PatientsForDate(){
       let DateForPatient= {}
       this.Patients.map(e =>{
-        if(DateForPatient[e.with_consultation[0].date.formatted.substring(0, 10)]){
-          DateForPatient[e.with_consultation[0].date.formatted.substring(0, 10)].NumPatients +=1
-          DateForPatient[e.with_consultation[0].date.formatted.substring(0, 10)].Patients.push(e)
-        }
+        if(DateForPatient[e.with_transactionPay.date.formatted.substring(0, 10)]){
+          DateForPatient[e.with_transactionPay.date.formatted.substring(0, 10)].NumPatients +=1
+          DateForPatient[e.with_transactionPay.date.formatted.substring(0, 10)].Patients.push(e.with_transactionPay.with_user[0])
+        .with_user}
         else{
-                  DateForPatient[e.with_consultation[0].date.formatted.substring(0, 10)] = {
+                  DateForPatient[e.with_transactionPay.date.formatted.substring(0, 10)] = {
             Patients: [],
             NumPatients: 1,
-            date: e.with_consultation[0].date.formatted.substring(0,10)
+            date: e.with_transactionPay.date.formatted.substring(0,10)
           }
-          DateForPatient[e.with_consultation[0].date.formatted.substring(0, 10)].Patients.push(e)
+          DateForPatient[e.with_transactionPay.date.formatted.substring(0, 10)].Patients.push(e.with_transactionPay.with_user[0])
         }
       return 1
       })
-      console.log('DateForBudget', DateForPatient)
       const ordered = {};
 
       Object.keys(DateForPatient).sort(function (a,b){ if (a > b) {
@@ -157,42 +154,30 @@ export default {
     },
     formattedSelectedStartDate: {
       get() {
-        //this.skipPatients = false
         let now = moment().format('YYYY')
-        console.log('now: ', now)
-        console.log('date Start: ', parseInt(moment(this.selectedStartDate).format("YYYY")))
         let date = parseInt(now) - parseInt(moment(this.selectedStartDate).format("YYYY"))
         return date
       },
       set(val) {
-        console.log('val', val)
         val = moment().subtract(val,'years').format('YYYY-MM-DD')
-        console.log('val depois: ', val)
         this.selectedStartDate = val
-        //this.skipPatients = false
       }
     },
     formattedSelectedFinalDate: {
       get(val) {
-        console.log('val get: ', val)
-        //this.skipPatients = false
         let now = moment().format('YYYY')
-        console.log('date end: ', parseInt(moment(this.selectedFinalDate).format("YYYY")))
         let date = parseInt(now) - parseInt(moment(this.selectedFinalDate).format("YYYY"))
         return date
       },
       set(val) {
-        console.log('val', val)
         val = moment().subtract(val,'years').format('YYYY-MM-DD')
-        console.log('val depois: ', val)
         this.selectedFinalDate = val
-        //this.skipPatients = false
       }
     }
   },
   apollo: {
     loadPatients: {
-      query: require("@/graphql/patients/GetPatientsAgeExam.gql"),
+      query: require("@/graphql/patients/GetPatientsProduct.gql"),
       variables() {
         return {
           date_first: this.selectedStartDate,
@@ -202,11 +187,7 @@ export default {
         }
       },
       update(data) {
-        console.log('data: ', data)
-        console.log('data start: ', this.selectedStartDate)
-        console.log('data end: ', this.selectedFinalDate)
-        console.log('product: ', this.productId)
-        this.PatientsFixed= data.Patient
+        this.PatientsFixed= data.ProductTransaction
         this.skipPatients = true
       },
       skip() {

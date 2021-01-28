@@ -1,0 +1,8 @@
+query($date_first:String, $date_end:String,$sex:String ,$product:String){
+  ProductTransaction(filter:{with_product:{name_contains:$product},
+      with_transactionPay_in:{with_user:
+      {birth_date_lte:{formatted:$date_first},
+        birth_date_gte:{formatted:$date_end}, sex_contains:$sex}}}){
+      with_transactionPay{with_user{name,telephones,email,birth_date{formatted}},date{formatted}},
+    }
+}
