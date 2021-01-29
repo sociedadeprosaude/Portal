@@ -215,7 +215,6 @@
                     }
                 },
                 update(data){
-                    console.log('especialidades: ', data.Product)
                     this.Specialties = Object.assign(data.Product)
                     this.LocaleSpecialties= data.Product
                     this.SpecialtieSkip = true
@@ -232,7 +231,6 @@
                     }
                 },
                 update(data){
-                    console.log('exams: ', data.Product)
                     this.Exams = Object.assign(data.Product)
                     this.LocaleExams= data.Product
                     this.ExamsSkip = true

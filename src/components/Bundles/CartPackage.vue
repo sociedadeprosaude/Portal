@@ -345,7 +345,6 @@
         },
         methods: {
             GetPackage(product) {
-                console.log('searchData: ', product)
                 this.percentageDiscount = ( (product.discount * 100)/(product.total + product.discount))
                 this.moneyDiscount = product.discount
             },
@@ -419,7 +418,6 @@
                         id: this.searchData.id
                     }
                 }).then((data)=> {
-                    console.log('deletado com sucesso')
                     this.BundlesSkip = false
                     this.$apollo.queries.loadBundles.refresh()
                     this.clearCart();
@@ -439,7 +437,6 @@
                     total: (this.total),
                     name: this.newPackageName !== '' ? this.newPackageName : this.searchData.name,
                 };
-                console.log('valid Register:', packageData)
                 /* for (let exam in packageData.exams) {
                     if (!packageData.exams[exam].priceOriginal) {
                         packageData.exams[exam].priceOriginal = packageData.exams[exam].price
@@ -558,7 +555,6 @@
             loadBundles: {
                 query: require("@/graphql/bundles/loadBundles.gql"),
                 update(data){
-                    console.log('Bundle: ', data)
                     this.Bundles = Object.assign(data.Bundles)
                     this.LocaleBundles= data.Bundles
                     this.BundlesSkip = true

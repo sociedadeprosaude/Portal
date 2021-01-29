@@ -83,15 +83,12 @@
                 this.$emit('close-dialog')
             },
           date(dat){
-              console.log('dat: ', dat)
              return moment(dat).format('DD/MM/YYYY')
           },
           async payConsultationDoctor(charge){
               this.loadingPaymentConsultation= true
             //await this.$store.dispatch('PayDoctor', doctor)
             //this.getInitialInfo()
-            console.log('dortor: ', this.doctor)
-            console.log('outtake: ', charge)
             this.loadingPayment= true
             let transactionId = uuid.v4()
             let mutationBuilder = new MutationBuilder()
@@ -110,7 +107,6 @@
                 idTransaction:transactionId,
               }
             })
-            console.log('transactionId: ', transactionId)
             mutationBuilder.addMutation({
               mutation: require('@/graphql/productTransaction/addTransactionsHasProductTransaction.gql'),
               variables:{
@@ -122,7 +118,6 @@
                 mutation: require ('@/graphql/doctors/LoadCostProductDoctor.gql'),
                 variables:{idDoctor: this.doctor.id, idProduct: charge.ProductTransaction[0].Consultation.Product.id}
               })
-              console.log('cost: ', costProduct.data.CostProductDoctor[0].cost)
             mutationBuilder.addMutation({
               mutation: require('@/graphql/productTransaction/UpdateProductTransaction.gql'),
               variables:{
@@ -140,7 +135,6 @@
             let response = await this.$apollo.mutate({
                   mutation: mutationBuilder.generateMutationRequest(),
                 })
-            console.log('response :', response)
             this.loadingPaymentConsultation= false
           },
         },
@@ -148,11 +142,5 @@
             this.$store.dispatch('GetReceiptsDoctor', this.doctor)
 
         },
-        computed: {
-
-            mostrarOuttakes(){
-                console.log('outtakes: ', this.outtakes)
-            }
-        }
     };
 </script>

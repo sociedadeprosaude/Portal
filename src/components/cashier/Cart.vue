@@ -453,13 +453,6 @@
                 }
             },
           paymentDisabled() {
-              console.log({
-                'patient': this.patient,
-                cartItenslenght: this.cartItems.length,
-                paymentValue: this.paymentValues,
-                total: this.total,
-                paymentNull: this.paymentNull
-              })
               return !this.patient || this.cartItems.length === 0 || this.paymentValues !== this.total || this.paymentNull === false
           }
         },

@@ -714,13 +714,20 @@ export default {
     },
 
     verifyUnpaidConsultations(productTransactions) {
+      let foundConsultation = false;
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
         let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
 
         if (unpaidConsultation) {
           this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
+          foundConsultation = true;
         }
+      }
+
+      if(foundConsultation){
+        this.$apollo.queries.loadPatient.refresh();
+        console.log('Tem que recarregar')
       }
     },
 
@@ -736,6 +743,7 @@ export default {
   },
   apollo: {
     loadPatient: {
+      fetchPolicy: 'no-cache',
       query: require("@/graphql/patients/GetPatient.gql"),
       variables() {
         return {

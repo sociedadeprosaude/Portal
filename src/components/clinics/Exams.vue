@@ -203,7 +203,6 @@
                   idProduct: this.exams[product].id,
                 },
               });
-              console.log('relations:', dataRelations.data)
             }
             this.loading = false
             this.closeDialog();
