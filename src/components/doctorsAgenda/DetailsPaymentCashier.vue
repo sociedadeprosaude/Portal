@@ -257,6 +257,9 @@ export default {
     selectedBudget() {
       return this.$store.getters.selectedBudget
     },
+    selectedBudles(){
+      return this.$store.getters.selectedBundles
+    },
     patient() {
       return this.$store.getters.selectedPatient
     },
@@ -675,7 +678,26 @@ export default {
           })
         }
       }
-
+      if(this.selectedBudles !== undefined){
+        console.log('selectedBundle: ', this.selectedBudles)
+        let bundle = true;
+        for(let i=0; i< this.selectedBudles.product.length; i++){
+          if(products.find(product =>  product.id === this.selectedBudles.product[i].product[0].id)){
+            console.log('encontrei a parada')
+          }
+          else{
+            bundle = false
+            console.log('nao encontrei')
+          }
+        }
+        if(bundle === false){
+          console.log('nao vai')
+        }
+        else{
+          console.log(' vai')
+        }
+        this.budgetToPrint = this.selectedBudget;
+      }
 
       if(this.idBudget !== undefined){
         mutationBuilder.addMutation({
