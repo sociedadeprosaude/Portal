@@ -53,13 +53,13 @@
                                        fab x-small>
                                     <v-icon>edit</v-icon>
                                 </v-btn>
-                                <v-btn v-show="user === 'admin' || user === 'caixa'"
-                                       @click="deleteOuttake(bill)"
+                                <v-btn
+                                       @click="deleteOuttake(bill)" v-show="user === 'admin' || user === 'caixa'"
                                        class="error mx-1" fab x-small>
                                     <v-icon>delete</v-icon>
                                 </v-btn>
-                                <v-btn v-show="user === 'admin' || user === 'caixa'"
-                                       @click="payTransaction(bill, query)"
+                                <v-btn
+                                       @click="payTransaction(bill)" v-show="user === 'admin' || user === 'caixa'"
                                        class="success mx-1" fab x-small placeholder="Complemento">
                                     <v-icon>attach_money</v-icon>
                                 </v-btn>
@@ -246,7 +246,7 @@
                 this.loading = false;
             },
 
-            async payTransaction(charge, query) {
+            async payTransaction(charge) {
                 this.loading = true
                 let transactionId = uuid.v4()
                 let mutationBuilder = new MutationBuilder()
@@ -296,10 +296,10 @@
                         id: charge.id,
                     }
                 })
-                query.refetch()
                 await this.$apollo.mutate({
                     mutation: mutationBuilder.generateMutationRequest(),
                 })
+               this.$emit('reload', true)
                 this.loading = false
             },
 
