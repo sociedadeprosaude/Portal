@@ -662,6 +662,8 @@ export default {
         }
       })
       console.log('responde : ', responde)
+      this.paymentLoading = false;
+
 
     },
     async makeTransaction() {
