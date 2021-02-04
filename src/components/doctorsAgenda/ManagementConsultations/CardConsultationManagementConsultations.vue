@@ -4,6 +4,9 @@
             <v-flex xs12>
                 <p class="text-left">Médico :{{consultation.doctor.name}}</p>
             </v-flex>
+          <v-flex xs12>
+              <p class="text-left">{{attended}}</p>
+          </v-flex>
             <v-flex xs21>
                 <p class="text-left">CRM: {{consultation.doctor.crm}}</p>
             </v-flex>
@@ -43,6 +46,14 @@
             user(){
                 return this.$store.getters.user
             },
+          attended(){
+            if(this.consultation.consultation_hour.formatted){
+              return 'Atendido em : ' + moment(this.consultation.consultation_hour.formatted).format('DD/MM/YYYY - HH:mm:ss')
+            }
+            else{
+              return 'Não Atendido'
+            }
+          },
         },
         watch: {
             consultation(value){
@@ -53,7 +64,6 @@
             }
         },
         methods: {
-
             dateFormat(date){
                 return moment(date).format("DD/MM/YYYY")
             }
