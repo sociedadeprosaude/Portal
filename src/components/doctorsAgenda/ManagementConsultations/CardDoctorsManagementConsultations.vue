@@ -70,6 +70,7 @@
                           <v-flex xs8 class="mb-3">
                             <v-flex xs12>
                               <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
+                              <h5 class="text-left mt-1">{{attended(item)}}</h5>
                               <h5 class="text-left mt-1">{{item.date.formatted.split('T')[1].substring(0,5)}}</h5>
                               <h5 class="text-left">Agendado em: {{item.date.formatted.split('T')[0] | dateFilter}}</h5>
                             </v-flex>
@@ -117,6 +118,7 @@
                           <v-flex xs8 class="mb-3">
                             <v-flex xs12>
                               <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
+                              <h5 class="text-left mt-1">{{attended(item)}}</h5>
                               <h5 class="text-left mt-1">{{item.date.formatted.split('T')[1].substring(0,5)}}</h5>
                               <h5 class="text-left">Agendado em: {{item.date.formatted.split('T')[0] | dateFilter}}</h5>
                             </v-flex>
@@ -318,6 +320,14 @@ export default {
     },
   },
   methods: {
+    attended(consultation){
+      if(consultation.consultation_hour.formatted){
+        return 'Atendido em : ' + moment(consultation.consultation_hour.formatted).format('DD/MM/YYYY - HH:mm:ss')
+      }
+      else{
+        return 'Não Atendido'
+      }
+    },
     cleanSpecialtyToDeactivate() {
       this.specialtyToDeactivate = [];
       this.clinicsToDeactivate = []
