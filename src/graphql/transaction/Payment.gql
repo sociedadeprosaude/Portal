@@ -1,0 +1,32 @@
+mutation (
+            $unitId: ID!
+            $userId:ID!
+            $colaboratorId:ID!
+            $doctorId: ID
+            $budgetId: ID
+            $discount:Float!
+            $parcels:[String]!
+            $values: [Float]!
+            $paymentMethods:[String]!
+            $total:String!
+            $subTotal:[Float]!
+            $products:[Product_payment]!
+            $budle: Clinic_payment
+     )
+    {
+    payment(
+            unitId: $unitId
+            userId:$userId
+            colaboratorId:$colaboratorId
+            doctorId: $doctorId
+            budgetId: $budgetId
+            discount:$discount
+            parcels:$parcels
+            values: $values
+            paymentMethods:$paymentMethods
+            total:$total
+            subTotal:$subTotal
+            products:$products
+            budle:$budle
+            )
+}

@@ -1,0 +1,13 @@
+mutation($idBudget:ID!,$idBundle: ID!){
+              AddTransactionBundle(
+                     from:{
+                         id:$idBudget
+                     },
+                     to:{
+                         id:$idBundle
+                     }
+                 ){
+                     from{id},
+                     to{id}
+                 }
+}

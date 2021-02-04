@@ -153,7 +153,7 @@
             <submit-button
                 :disabled="paymentDisabled"
                 text="Pagar" :loading="paymentLoading"
-                :success="paymentSuccess" color="primary" @click="pay()">
+                :success="paymentSuccess" color="primary" @click="testPagament()">
               Pagar
             </submit-button>
           </v-flex>
@@ -573,6 +573,97 @@ export default {
       let transactionId = await this.makeTransaction()
       this.receipt(this.selectedBudget)
     },
+    async testPagament(){
+      this.paymentLoading = true;
+      let user = this.patient
+      this.idUser = user.id
+      if (!user) {
+        this.paymentLoading = false
+        this.alertMessage.model = true
+        this.alertMessage.text = 'Escolha um paciente'
+        return
+      }
+      if (!this.selectedDoctor) {
+        this.paymentLoading = false
+        this.alertMessage.model = true
+        this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'
+        return
+      }
+      this.alertMessage.model = false
+      await this.saveBudget(this.generateBudget());
+      this.selectedBudget.valuesPayments.forEach(value => {
+        value = parseFloat(value)
+      })
+
+      this.selectedBudget.bundle = this.selectedBudles
+      this.selectedBudget.unitId= this.selectedBudget.unit.id
+      let produtsArray = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
+      let produts = []
+      for(let i=0; i< produtsArray.length ; i++){
+        if(produtsArray[i]){
+          console.log('product: ', produtsArray[i])
+          if(produtsArray[i].clinic){
+            produts[i]= {
+              id: produtsArray[i].id,
+              price: produtsArray[i].price,
+              type: produtsArray[i].type,
+              clinicId: produtsArray[i].clinic.id,
+            }
+          }
+          else{
+            produts[i]= {
+              id: produtsArray[i].id,
+              price: produtsArray[i].price,
+              type: produtsArray[i].type
+            }
+          }
+        }
+      }
+      let bundle= { id: this.selectedBudles.id, products:[]}
+      for(let i=0; i< this.selectedBudles.product.length ; i++){
+          bundle.products[i]= {
+            id: this.selectedBudles.product[i].product[0].id,
+            type: this.selectedBudles.product[i].product[0].type
+          }
+        }
+      var payment = {
+        unitId: this.selectedBudget.unit.id, // ID!
+        userId: this.selectedBudget.user.id, //ID!
+        colaboratorId: this.selectedBudget.colaborator.id, // ID!
+        doctorId: this.selectedBudget.doctor.id ? this.selectedBudget.doctor.id : '', // ID
+        budgetId: this.selectedBudget.id ? this.selectedBudget.id : undefined, //ID
+        discount: this.selectedBudget.discount, // Float!
+        parcels: this.selectedBudget.parcel, //[Int]!
+        values: this.selectedBudget.valuesPayments, //[Float]!
+        paymentMethods: this.selectedBudget.payments, //[String]!
+        total: this.selectedBudget.total, //Float!
+        subTotal: this.selectedBudget.subTotal, //[Float]!
+        products:produts, //Product!
+        budle: bundle //Bundle
+      }
+      console.log('payment : ', payment)
+
+      let responde = await this.$apollo.mutate({
+        mutation: require('@/graphql/transaction/Payment.gql'),
+        variables:{
+          unitId: payment.unitId,
+          userId:payment.userId,
+          colaboratorId:payment.colaboratorId,
+          doctorId: payment.doctorId,
+          budgetId: payment.budgetId,
+          discount:payment.discount,
+          parcels:payment.parcels,
+          values: payment.values,
+          paymentMethods:payment.paymentMethods,
+          total:payment.total,
+          subTotal:payment.subTotal,
+          products:payment.products,
+          budle: payment.budle
+        }
+      })
+      console.log('responde : ', responde)
+
+    },
     async makeTransaction() {
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
@@ -690,13 +781,15 @@ export default {
             console.log('nao encontrei')
           }
         }
-        if(bundle === false){
-          console.log('nao vai')
+        if(bundle === true){
+          mutationBuilder.addMutation({
+            mutation: require('@/graphql/transaction/AddRelationsTransactionBundle.gql'),
+            variables:{
+              idBudget: transactionId,
+              idBundle: this.selectedBudles.id
+            }
+          })
         }
-        else{
-          console.log(' vai')
-        }
-        this.budgetToPrint = this.selectedBudget;
       }
 
       if(this.idBudget !== undefined){
