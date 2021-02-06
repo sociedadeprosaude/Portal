@@ -153,7 +153,7 @@
             <submit-button
                 :disabled="paymentDisabled"
                 text="Pagar" :loading="paymentLoading"
-                :success="paymentSuccess" color="primary" @click="testPagament()">
+                :success="paymentSuccess" color="primary" @click="Pagament()">
               Pagar
             </submit-button>
           </v-flex>
@@ -255,6 +255,7 @@ export default {
       return this.$store.getters.selectedUnit
     },
     selectedBudget() {
+      console.log('budget: ',this.$store.getters.selectedBudget)
       return this.$store.getters.selectedBudget
     },
     selectedBudles(){
@@ -294,6 +295,7 @@ export default {
     return this.percentageDiscount
     },
     idBudget(){
+      console.log('budgetId: ', this.$store.getters.getIdBudget)
       return this.$store.getters.getIdBudget
     },
     subTotal() {
@@ -573,7 +575,7 @@ export default {
       let transactionId = await this.makeTransaction()
       this.receipt(this.selectedBudget)
     },
-    async testPagament(){
+    async Pagament(){
       this.paymentLoading = true;
       let user = this.patient
       this.idUser = user.id
@@ -631,7 +633,7 @@ export default {
         userId: this.selectedBudget.user.id, //ID!
         colaboratorId: this.selectedBudget.colaborator.id, // ID!
         doctorId: this.selectedBudget.doctor.id ? this.selectedBudget.doctor.id : '', // ID
-        budgetId: this.selectedBudget.id ? this.selectedBudget.id : undefined, //ID
+        budgetId: this.idBudget, //ID
         discount: this.selectedBudget.discount, // Float!
         parcels: this.selectedBudget.parcel, //[Int]!
         values: this.selectedBudget.valuesPayments, //[Float]!
@@ -639,7 +641,7 @@ export default {
         total: this.selectedBudget.total, //Float!
         subTotal: this.selectedBudget.subTotal, //[Float]!
         products:produts, //Product!
-        budle: bundle //Bundle
+        bundle: bundle //Bundle
       }
       console.log('payment : ', payment)
 
@@ -658,11 +660,12 @@ export default {
           total:payment.total,
           subTotal:payment.subTotal,
           products:payment.products,
-          budle: payment.budle
+          bundle: payment.bundle
         }
       })
-      console.log('responde : ', responde)
-      this.paymentLoading = false;
+      console.log('responde :',responde)
+
+      this.verifyUnpaidConsultations(responde.data.payment);
 
 
     },
@@ -705,7 +708,6 @@ export default {
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
       for (let product in products) {
-
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(Object.assign({},products[product]))
@@ -834,7 +836,7 @@ export default {
       let foundConsultation = false;
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
-        let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
+        let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction && consultation.status === "Aguardando pagamento")
 
         if (unpaidConsultation) {
           this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
@@ -846,6 +848,7 @@ export default {
         this.$apollo.queries.loadPatient.refresh();
         console.log('Tem que recarregar')
       }
+      this.paymentLoading = false;
     },
 
     saveRelationProductTransaction(idConsultation, idProductTransaction) {

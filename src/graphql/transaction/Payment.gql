@@ -11,7 +11,7 @@ mutation (
             $total:String!
             $subTotal:[Float]!
             $products:[Product_payment]!
-            $budle: Clinic_payment
+            $bundle: Bundle_payment
      )
     {
     payment(
@@ -27,6 +27,6 @@ mutation (
             total:$total
             subTotal:$subTotal
             products:$products
-            budle:$budle
+            bundle:$bundle
             )
 }
