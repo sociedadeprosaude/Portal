@@ -1,0 +1,14 @@
+query($dateStart:String, $dateEnd:String){
+  	Transaction (filter:{
+      AND: [
+        {date_gte:{formatted:$dateStart}},
+        {date_lte:{formatted:$dateEnd}},
+      ]}){
+      bundles {
+  			id,
+        name,
+        price,
+        cost
+      }
+    }
+}
