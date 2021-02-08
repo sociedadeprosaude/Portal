@@ -153,7 +153,7 @@
             <submit-button
                 :disabled="paymentDisabled"
                 text="Pagar" :loading="paymentLoading"
-                :success="paymentSuccess" color="primary" @click="Pagament()">
+                :success="paymentSuccess" color="primary" @click="paymentFunction()">
               Pagar
             </submit-button>
           </v-flex>
@@ -575,7 +575,7 @@ export default {
       let transactionId = await this.makeTransaction()
       this.receipt(this.selectedBudget)
     },
-    async Pagament(){
+    async paymentFunction(){
       this.paymentLoading = true;
       let user = this.patient
       this.idUser = user.id
@@ -832,8 +832,16 @@ export default {
       this.$store.commit('setSelectedPatient', user)
     },
 
-    verifyUnpaidConsultations(productTransactions) {
-      let foundConsultation = false;
+    async verifyUnpaidConsultations() {
+      console.log(this.selectedBudget.user.id)
+      /*  let user = await this.$apollo.mutate({
+          mutation: require('@/graphql/patients/UpdateConsultations.gql'),
+          variables:{
+            id:this.selectedBudget.user.id
+          }
+        })
+      console.log('retorno :' , user) */
+      /*let foundConsultation = false;
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
         let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction && consultation.status === "Aguardando pagamento")
@@ -848,7 +856,7 @@ export default {
         this.$apollo.queries.loadPatient.refresh();
         console.log('Tem que recarregar')
       }
-      this.paymentLoading = false;
+      this.paymentLoading = false; */
     },
 
     saveRelationProductTransaction(idConsultation, idProductTransaction) {
