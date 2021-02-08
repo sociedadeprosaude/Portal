@@ -663,15 +663,17 @@ export default {
           bundle: payment.bundle
         }
       })
-      let user = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: require('@/graphql/patients/UpdateConsultations.gql'),
         variables:{
           id:this.selectedBudget.user.id
         }
       })
+      this.skipPatients = false
       this.$apollo.queries.loadPatient.refresh();
       console.log('responde :',responde)
       this.paymentLoading = false;
+      this.receipt(this.selectedBudget)
     },
     async makeTransaction() {
       let transactionId = uuid.v4()
@@ -884,6 +886,7 @@ export default {
       },
       update(data) {
         this.skipPatients = true
+        console.log('recarregando usuario')
         this.$store.commit('setSelectedPatient', data.Patient[0]);
       },
       skip() {
