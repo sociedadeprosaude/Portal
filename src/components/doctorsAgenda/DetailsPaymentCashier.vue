@@ -663,11 +663,15 @@ export default {
           bundle: payment.bundle
         }
       })
+      let user = await this.$apollo.mutate({
+        mutation: require('@/graphql/patients/UpdateConsultations.gql'),
+        variables:{
+          id:this.selectedBudget.user.id
+        }
+      })
+      this.$apollo.queries.loadPatient.refresh();
       console.log('responde :',responde)
-
-      this.verifyUnpaidConsultations(responde.data.payment);
-
-
+      this.paymentLoading = false;
     },
     async makeTransaction() {
       let transactionId = uuid.v4()
