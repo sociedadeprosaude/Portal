@@ -64,8 +64,8 @@
                                                 </v-list-item-subtitle>
                                                 <br>
                                                 <v-list-item-action-text>
-                                                    {{item.date.split(' ')[0] | dateFilter}} -
-                                                    {{item.date.split(' ')[1]}}
+                                                    {{item.date.formatted.split('T')[0] | dateFilter}} -
+                                                    {{item.date.formatted.split('T')[1]}}
                                                     <div v-if="item.calls">
                                                         <v-icon large color="red">phone_disabled</v-icon>
                                                         <v-icon color="red">arrow_forward</v-icon>
