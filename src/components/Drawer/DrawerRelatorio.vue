@@ -87,7 +87,7 @@ export default {
           link: "RelatorioSaidasClinicasEstatisticas"
         },
         {txt: "Clientes", link: "RelatorioClientesEstatisticas"},
-        {txt: "Relatorio de Atendimentos por Colaboradores", link: "RelatorioAtendimentosColaboradores"},
+        {txt: "Análise de Dados em Tabela", link: "TableDataAnalysis"},
         {
           txt: "Statisticas Orcamentos",
           link: "StatisticasOrcamento"

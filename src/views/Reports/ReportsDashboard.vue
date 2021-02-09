@@ -84,7 +84,9 @@
     <statsCaixaOuttakesCategory v-else-if="selected == 13"></statsCaixaOuttakesCategory>
     <statsCaixaOuttakesClinics v-else-if="selected == 14"></statsCaixaOuttakesClinics>
     <Clients v-else-if="selected == 15"></Clients>
-    <EmployeeServiceReport v-else-if="selected == 16"></EmployeeServiceReport>
+    <!-- TCC Jackson -->
+    <TableDataAnalysis v-else-if="selected == 16"></TableDataAnalysis>
+    <!-- TCC Jackson -->
     <statistics-budgets v-else-if="selected == 17"></statistics-budgets>
     <statistic-patients-geo-point v-else-if="selected == 18"></statistic-patients-geo-point>
     <patients-budgets v-else-if="selected == 19"></patients-budgets>
@@ -113,7 +115,7 @@ import statsCaixaOuttakesClinics from "@/views/Reports/statsCaixaOuttakesClinics
 import Clients from "@/views/Reports/Clients";
 import DrawerRelatorio from "@/components/Drawer/DrawerRelatorio";
 import DateSelector from "@/components/Common/DateSelector";
-import EmployeeServiceReport from "@/views/Reports/EmployeeServiceReport";
+import TableDataAnalysis from "@/views/Reports/TableDataAnalysis";
 import StatisticsBudgets from "@/views/Reports/StatisticsBudgets";
 import StatisticPatientsGeoPoint from "@/views/Reports/StatisticPatientsGeoPoint";
 import PatientsBudgets from "@/views/Reports/PatientsBudgets";
@@ -123,6 +125,7 @@ import PatientReportAgeConsultation from "@/views/Reports/PatientReportAgeConsul
 
 export default {
   components: {
+    TableDataAnalysis,
     DrawerRelatorio,
     PatientReportAgeConsultation,
     DateSelector,
@@ -142,7 +145,6 @@ export default {
     statsCaixaOuttakesCategory,
     statsCaixaOuttakesClinics,
     Clients,
-    EmployeeServiceReport,
     StatisticsBudgets,
     StatisticPatientsGeoPoint,
     PatientsBudgets,
@@ -242,7 +244,7 @@ export default {
         case "RelatorioClientesEstatisticas":
           this.selected = 15;
           break;
-        case "RelatorioAtendimentosColaboradores":
+        case "TableDataAnalysis":
           this.selected = 16;
           break;
         case "StatisticasOrcamento":
