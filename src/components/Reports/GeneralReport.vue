@@ -349,7 +349,7 @@ export default {
     },
     profitPercentage(price, cost) {
       if (price >= 0) {
-        return (((price - cost) / cost) * 100).toFixed(2) + '%'
+        return (((price - cost) * 100 ) / price).toFixed(2) + '%'
       } else {
         return ''
       }
