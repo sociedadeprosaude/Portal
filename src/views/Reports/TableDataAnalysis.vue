@@ -20,6 +20,7 @@
                   outlined
                   clearable
                   dense
+                  color="purple"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -56,6 +57,7 @@
                   outlined
                   clearable
                   dense
+                  color="purple"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -93,6 +95,7 @@
                   outlined
                   clearable
                   dense
+                  color="purple"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -117,6 +120,7 @@
           <v-text-field
               outlined
               dense
+              color="purple"
               clearable
               v-model="selectedStartDate"
               v-mask="mask.date"
@@ -132,6 +136,7 @@
           <v-text-field
               outlined
               dense
+              color="purple"
               clearable
               v-model="selectedFinalDate"
               v-mask="mask.date"
@@ -189,49 +194,42 @@ export default {
       this.loading = true
       //this.selectedStartDate = moment(this.selectedStartDate,'DD/MM/YYYY').format('YYYY-MM-DD')
       setTimeout(() => (this.loading = false), 5000);
+      console.log('BEFORE:')
 
+      console.log('AFTER:')
       this.desserts = [
         {
-          doctor: 'Jackson kelvin de souza',
+          doctor: 'JACKSON KELVIN DE SOUZA',
           unity:'MEDIKON',
           specialty: 'DERMATOLOGIA',
-          qtds: '90 / 15',
-          durations: '14 / 11',
-          overallDuration: 13,
-          waitingTimes: '55 / 37',
-          overallWaitingTime: 50,
+          qtd: 210,
+          duration: 13,
+          waitingTime: 50,
         },
         {
-          doctor: 'Jackson kelvin de souza',
+          doctor: 'JACKSON KELVIN DE SOUZA',
           unity:'MEDIKON',
           specialty: 'UROLOGIA',
-          qtds: '90 / 15',
-          durations: '14 / 11',
-          overallDuration: 13,
-          waitingTimes: '55 / 37',
-          overallWaitingTime: 50,
+          qtd: 90,
+          duration: 15,
+          waitingTime: 49,
         },
         {
-          doctor: 'Jackson kelvin de souza',
+          doctor: 'JACKSON KELVIN DE SOUZA',
           unity:'MEDIKON',
           specialty: 'PEDIATRIA',
-          qtds: '90 / 15',
-          durations: '14 / 11',
-          overallDuration: 13,
-          waitingTimes: '55 / 37',
-          overallWaitingTime: 50,
+          qtd: 110,
+          duration: 12,
+          waitingTime: 55,
         },
         {
-          doctor: 'Jackson kelvin de souza',
+          doctor: 'JACKSON KELVIN DE SOUZA',
           unity:'MEDIKON',
           specialty: 'CLINICO GERAL',
-          qtds: '90 / 15',
-          durations: '14 / 11',
-          overallDuration: 13,
-          waitingTimes: '55 / 37',
-          overallWaitingTime: 50,
+          qtd: 155,
+          duration: 14,
+          waitingTime: 59,
         },
-
       ]
     },
   },

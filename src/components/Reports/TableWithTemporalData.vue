@@ -5,10 +5,11 @@
         <v-card-title>
           <v-text-field
               v-model="search"
-              append-icon="mdi-magnify"
+              append-icon="search"
               label="Search"
               single-line
               hide-details
+              color="purple"
           ></v-text-field>
         </v-card-title>
         <v-data-table
@@ -24,40 +25,32 @@
           <template v-slot:header="{}">
             <thead>
             <tr>
+              <th class="text-start purple white--text">Unidade</th>
               <th class="text-center purple white--text">Médico</th>
-              <th class="text-center purple white--text">Unidade</th>
               <th class="text-center purple white--text">Especialidade</th>
-              <th class="text-center purple white--text">Quantidade: Consultas e Retornos</th>
-              <th class="text-center purple white--text">Duração Média : Consultas e Retornos</th>
-              <th class="text-center purple white--text">Duração Média : GERAL</th>
-              <th class="text-center purple white--text">Tempo de Espera Médio : Consultas e Retornos</th>
-              <th class="text-center purple white--text">Tempo de Espera Médio : GERAL</th>
+              <th class="text-center purple white--text">Quantidade de Consultas</th>
+              <th class="text-center purple white--text">Duração Média das Consultas</th>
+              <th class="text-center purple white--text">Tempo de Espera Médio para Atendimento</th>
             </tr>
             </thead>
           </template>
 
-          <template v-slot:item.overallDuration="{ item }">
-            <v-chip dark color="purple">
-              <strong>{{ item.overallDuration }} mim</strong>
-            </v-chip>
+          <template v-slot:item.qtd="{ item }">
+<!--            <v-chip dark color="purple">-->
+              <strong>{{ item.qtd }}</strong>
+<!--            </v-chip>-->
           </template>
 
-          <template v-slot:item.durations="{ item }">
-            <v-chip dark color="purple">
-              <strong>{{ item.durations }} mim</strong>
-            </v-chip>
+          <template v-slot:item.duration="{ item }">
+<!--            <v-chip dark color="purple">-->
+              <strong>{{ item.duration }} mim</strong>
+<!--            </v-chip>-->
           </template>
 
-          <template v-slot:item.waitingTimes="{ item }">
-            <v-chip dark color="purple">
-              <strong>{{ item.waitingTimes }} mim</strong>
-            </v-chip>
-          </template>
-
-          <template v-slot:item.overallWaitingTime="{ item }">
-            <v-chip dark color="purple">
-              <strong>{{ item.overallWaitingTime }} mim</strong>
-            </v-chip>
+          <template v-slot:item.waitingTime="{ item }">
+<!--            <v-chip dark color="purple">-->
+              <strong>{{ item.waitingTime }} mim</strong>
+<!--            </v-chip>-->
           </template>
 
         </v-data-table>
@@ -74,14 +67,12 @@ export default {
       search: '',
       //loading: true,
       headers: [
-        { text: 'Médico', filterable: false, value: 'doctor', align: 'start' },
-        { text: 'Unidade', value: 'unity', filterable: false, align: 'center' },
-        { text: 'Especialidade', value: 'specialty', filterable: false, align: 'center' },
-        { text: 'qtd: Consultas e Retornos', value: 'qtds', filterable: false, align: 'center' },
-        { text: 'Duração Média : Consultas e Retornos', value: 'durations', filterable: false, align: 'center' },
-        { text: 'Duração Média GERAL', value: 'overallDuration', filterable: false, align: 'center'},
-        { text: 'Tempo de Espera Médio : Consultas e Retornos', value: 'waitingTimes', filterable: false, align: 'center' },
-        { text: 'Tempo de Espera Médio : GERAL', value: 'overallWaitingTime', filterable: false, align: 'center' },
+        { value: 'unity', align: 'start' },
+        { value: 'doctor', align: 'center' },
+        { value: 'specialty', align: 'center' },
+        { value: 'qtd', align: 'center' },
+        { value: 'duration', align: 'center' },
+        { value: 'waitingTime', align: 'center' },
       ],
     }
   },
