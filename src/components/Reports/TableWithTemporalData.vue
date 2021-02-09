@@ -15,7 +15,6 @@
         <v-data-table
             :headers="headers"
             :items="desserts"
-            :loading="loading"
             loading-text="Loading... Please wait"
             :items-per-page="-1"
             class="elevation-1"
@@ -36,21 +35,15 @@
           </template>
 
           <template v-slot:item.qtd="{ item }">
-<!--            <v-chip dark color="purple">-->
-              <strong>{{ item.qtd }}</strong>
-<!--            </v-chip>-->
+            <strong>{{ item.qtd }}</strong>
           </template>
 
           <template v-slot:item.duration="{ item }">
-<!--            <v-chip dark color="purple">-->
-              <strong>{{ item.duration }} mim</strong>
-<!--            </v-chip>-->
+            <strong>{{ item.duration }} mim</strong>
           </template>
 
           <template v-slot:item.waitingTime="{ item }">
-<!--            <v-chip dark color="purple">-->
-              <strong>{{ item.waitingTime }} mim</strong>
-<!--            </v-chip>-->
+            <strong>{{ item.waitingTime }} mim</strong>
           </template>
 
         </v-data-table>
@@ -61,11 +54,10 @@
 
 <script>
 export default {
-  props: ["loading","desserts"],
+  props: ["desserts"],
   data () {
     return {
       search: '',
-      //loading: true,
       headers: [
         { value: 'unity', align: 'start' },
         { value: 'doctor', align: 'center' },

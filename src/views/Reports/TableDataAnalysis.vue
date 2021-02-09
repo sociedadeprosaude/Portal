@@ -147,16 +147,13 @@
               placeholder="__/__/____">
           </v-text-field>
         </v-col>
-<!--        {{ selectedUnit }}<br/>
-        {{ selectedDoctor }}<br/>
-        {{ selectedSpecialty }}<br/>-->
-        {{ selectedStartDate }}<br/>
-        {{ selectedFinalDate }}<br/>
+        {{ formattedStartDate }}<br/>
+        {{ formattedFinalDate }}<br/>
         <v-btn @click="filterData" dark color="purple">gerar relatório <v-icon right>analytics</v-icon></v-btn>
       </v-card-title>
     </v-card>
     <v-row>
-      <table-with-temporal-data :loading="loading" :desserts="desserts" />
+      <table-with-temporal-data :desserts="desserts" />
     </v-row>
   </v-container>
 </template>
@@ -173,13 +170,14 @@ export default {
   components: {TableWithTemporalData},
   data() {
     return {
-      loading: false,
       mask: { date: '##/##/####' },
-      selectedStartDate: undefined,
-      selectedFinalDate: undefined,
-      selectedUnit: undefined,
-      selectedDoctor: undefined,
-      selectedSpecialty: undefined,
+      selectedStartDate: '',
+      formattedStartDate: '2020-11-01'+'T00:00',
+      selectedFinalDate: '',
+      formattedFinalDate: '2021-12-31'+'T23:59',
+      selectedUnit: '',
+      selectedDoctor: '',
+      selectedSpecialty: '',
       desserts: undefined,
     };
   },
@@ -189,13 +187,56 @@ export default {
   computed: {
     //
   },
+  apollo:{
+    GetData: {
+      query: require('@/graphql/dataAnalysis/GetData.graphql'),
+      variables() {
+        return {
+          unity: this.selectedUnit ? this.selectedUnit.id : '',
+          doctor: this.selectedDoctor ? this.selectedDoctor.id : '',
+          specialty: this.selectedSpecialty ? this.selectedSpecialty.id : '',
+          dateStart: {formatted: this.formattedStartDate },
+          dateEnd: {formatted: this.formattedFinalDate },
+        }
+      },
+      update(data) {
+        console.log('veio?:', data.Consultation)
+        let consultations = Object.assign(data.Consultation)
+        let array2 = consultations.reduce((objetoFinal, consultaAtual ) => {
+          if(!objetoFinal[consultaAtual.of_clinic.name]) objetoFinal[consultaAtual.of_clinic.name] = []
+          objetoFinal[consultaAtual.of_clinic.name].push(consultaAtual);
+          return objetoFinal
+        }, {})
+
+        let keys = Object.keys(array2);
+        keys.forEach((key) =>{
+          array2[key] = array2[key].reduce((objetoFinal, consultaAtual ) => {
+            if(!objetoFinal[consultaAtual.attended_by.name]) objetoFinal[consultaAtual.attended_by.name] = []
+            objetoFinal[consultaAtual.attended_by.name].push(consultaAtual);
+            return objetoFinal
+          }, {})
+        })
+
+        console.log('separado:', array2)
+
+/*        let filters = Object.keys(array2)
+        filters.forEach((key) =>{
+          array2[key] = array2[key].reduce((objetoFinal, consultaAtual ) => {
+            if(!objetoFinal[consultaAtual.has_product.name]) objetoFinal[consultaAtual.has_product.name] = []
+            objetoFinal[consultaAtual.has_product.name].push(consultaAtual);
+            return objetoFinal
+          }, {})
+        })*/
+
+      }
+    },
+  },
   methods:{
     filterData(){
-      this.loading = true
-      //this.selectedStartDate = moment(this.selectedStartDate,'DD/MM/YYYY').format('YYYY-MM-DD')
-      setTimeout(() => (this.loading = false), 5000);
       console.log('BEFORE:')
-
+      this.formattedStartDate = this.selectedStartDate ? moment(this.selectedStartDate,'DD/MM/YYYY').format('YYYY-MM-DD') + 'T00:00' : '2020-11-01'+'T00:00'
+      this.formattedFinalDate = this.selectedFinalDate ? moment(this.selectedFinalDate,'DD/MM/YYYY').format('YYYY-MM-DD') + 'T23:59' : '2021-12-31'+'T23:59'
+      this.$apollo.queries.GetData.refresh();
       console.log('AFTER:')
       this.desserts = [
         {
