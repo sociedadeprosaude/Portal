@@ -645,7 +645,7 @@ export default {
       }
       console.log('payment : ', payment)
 
-      let responde = await this.$apollo.mutate({
+    let responde = await this.$apollo.mutate({
         mutation: require('@/graphql/transaction/Payment.gql'),
         variables:{
           unitId: payment.unitId,
@@ -663,15 +663,14 @@ export default {
           bundle: payment.bundle
         }
       })
-      await this.$apollo.mutate({
-        mutation: require('@/graphql/patients/UpdateConsultations.gql'),
-        variables:{
-          id:this.selectedBudget.user.id
-        }
-      })
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/patients/UpdateConsultations.gql'),
+          variables:{
+            id:this.selectedBudget.user.id
+          }
+        })
       this.skipPatients = false
       this.$apollo.queries.loadPatient.refresh();
-      console.log('responde :',responde)
       this.paymentLoading = false;
       this.receipt(this.selectedBudget)
     },
