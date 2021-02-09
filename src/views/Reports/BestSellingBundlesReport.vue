@@ -41,7 +41,7 @@
           </v-menu>
         </v-col>
       </v-row>
-      <ApolloQuery :query="require('@/graphql/transaction/loadBundlesTransactions.gql')"
+      <ApolloQuery :query="require('@/graphql/transaction/LoadBundlesTransactions.gql')"
                    :variables="{dateStart: formattedDateStart(formattedSelectedStartDate), dateEnd:formattedDateEnd(formattedSelectedFinalDate)}">
         <template v-slot="{result: {data, loading, error}}">
           <v-row class="justify-center" v-if="loading || !data">
@@ -87,7 +87,7 @@ import BestSellingExamsReport from "@/components/Reports/BestSellingExamsReport"
 import moment from "moment";
 
 export default {
-  // name: "BestSellingExamsReport",
+  name: "BestSellinBundlesReport",
   components: {BestSellingExamsReport},
   data() {
     return {
@@ -126,17 +126,18 @@ export default {
       return moment(date, 'DD/MM/YYYYTHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss')
     },
     BundlesFormatArray(data) {
+      console.log('data: ', data)
       if (data.Transaction[0]) {
         let bundles = []
         data.Transaction.map(e => {
-          if (bundles[e.bundle.name]) {
-            bundles[e.bundle.name].numSales += 1;
-            bundles[e.bundle.name].price += e.price;
+          if (bundles[e.bundle[0].name]) {
+            bundles[e.bundle[0].name].numSales += 1;
+            bundles[e.bundle[0].name].price += e.bundle[0].total;
           } else {
             bundles[e.bundle.name] = {
               numSales: 1,
-              name: e.product.name,
-              price: e.price,
+              name: e.bundle[0].name,
+              price: e.bundle[0].total,
             }
           }
         });
@@ -156,7 +157,6 @@ export default {
             0
         );
       } else return 0
-
     },
     totalPrice(data) {
       if (this.ExamsFormatArray(data)) {

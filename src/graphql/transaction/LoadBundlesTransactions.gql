@@ -1,5 +1,5 @@
 query($dateStart:String, $dateEnd:String){
-      Transaction(filter:{AND: [{date_gte:{formatted:$dateStart}},{{date_lte:{formatted:$dateEnd}}]}){
+      Transaction(filter:{date_gte:{formatted:$dateStart}, date_lte:{formatted:$dateEnd},bundle:{id_contains:""}}){
         date{formatted}
         bundle{
         name, total

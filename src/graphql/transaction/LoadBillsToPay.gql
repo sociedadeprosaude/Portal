@@ -5,7 +5,8 @@ query ($date_start: String, $date_end: String, $type: String!){
         date_lte: {formatted: $date_end},
         value_not: null,
         description_not: null
-    }) {
+    })
+     {
         description,
         colaborator {
             name
