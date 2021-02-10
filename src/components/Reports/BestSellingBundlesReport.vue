@@ -43,9 +43,9 @@
                 >
                 </v-data-table>
             </div>
-<!--            <div v-else>-->
-<!--                <TableExamsAndClinics :intakesDividedByExam="intakesDividedByExam" :search="search"/>-->
-<!--            </div>-->
+          <!-- <div v-else>
+            <TableBundlesAndClinics :intakesDividedByExam="intakesDividedByExam" :search="search"/>
+          </div> -->
         </v-card>
 
         <v-card class="mt-5">
@@ -87,10 +87,10 @@
 
 <script>
    
-    // import TableExamsAndClinics from "@/components/Reports/TableExamsAndClinics";
+    //import TableBundlesAndClinics from "@/components/Reports/TableBundlesAndClinics";
 
     export default {
-        // components: {TableExamsAndClinics},
+      //  components: {TableBundlesAndClinics},
         props: [
             "date",
             "date2",

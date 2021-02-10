@@ -64,7 +64,7 @@
                 :options="options"
                 :optionSelected="optionSelected"
                 :headers="headers"
-                :ExamsFormatArray="BundlesFormatArray(data)"
+                :BundlesFormatArray="BundlesFormatArray(data)"
                 :numSales="numSales(data)"
                 :totalPrice="totalPrice(data)"
                 :totalCost="totalCost(data)"
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import BestSellingExamsReport from "@/components/Reports/BestSellingExamsReport";
+import BestSellingExamsReport from "@/components/Reports/BestSellingBundlesReport";
 import moment from "moment";
 
 export default {
@@ -99,11 +99,12 @@ export default {
       search: "",
       now: moment().format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
-      options: ["Exames", "Exames separados por clinica"],
+      options: ["Pacotes"],
+      //options: ["Pacotes", "Pacotes separados por clinica"],
       optionSelected: 0,
       headers: [
         {
-          text: "Exame",
+          text: "Pacote",
           align: "start",
           sortable: false,
           value: "name"
@@ -141,42 +142,43 @@ export default {
             }
           }
         });
-        let FormattedExams = [];
+        let FormattedBundles = [];
         for (let i in bundles) {
-          FormattedExams.push(bundles[i])
+          FormattedBundles.push(bundles[i])
         }
 
         this.loadBundles = true;
-        return FormattedExams
+        console.log('array: ', FormattedBundles)
+        return FormattedBundles
       }
     },
     numSales(data) {
-      if (this.ExamsFormatArray(data)){
-        return this.ExamsFormatArray(data).reduce(
+      if (this.BundlesFormatArray(data)){
+        return this.BundlesFormatArray(data).reduce(
             (total, e) => total + e.numSales,
             0
         );
       } else return 0
     },
     totalPrice(data) {
-      if (this.ExamsFormatArray(data)) {
-        return this.ExamsFormatArray(data).reduce(
+      if (this.BundlesFormatArray(data)) {
+        return this.BundlesFormatArray(data).reduce(
             (total, e) => total + e.price,
             0
         );
       } else return 0;
     },
     totalCost(data) {
-      if (this.ExamsFormatArray(data)) {
-        return this.ExamsFormatArray(data).reduce(
+      if (this.BundlesFormatArray(data)) {
+        return this.BundlesFormatArray(data).reduce(
             (total, e) => total + e.cost,
             0
         );
       } else return 0
     },
     totalProfit(data) {
-      if (this.ExamsFormatArray(data)) {
-        return this.ExamsFormatArray(data).reduce(
+      if (this.BundlesFormatArray(data)) {
+        return this.BundlesFormatArray(data).reduce(
             (total, e) => total + e.profit,
             0
         );
