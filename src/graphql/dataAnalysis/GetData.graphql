@@ -1,5 +1,5 @@
 query($dateStart: _Neo4jDateTimeInput, $dateEnd: _Neo4jDateTimeInput, $doctor: ID, $specialty: ID, $unity: ID){
-    Consultation(filter:{date_gt:$dateStart,date_lt:$dateEnd, attended_by:{id_contains:$doctor},has_product:{id_contains:$specialty},of_clinic:{id_contains:$unity}}){
+    Consultation(filter:{end_at_not:null,start_at_not:null,date_gt:$dateStart,date_lt:$dateEnd, attended_by:{id_contains:$doctor},has_product:{id_contains:$specialty},of_clinic:{id_contains:$unity}}){
         id,type,date{formatted}, end_at{formatted}, start_at{formatted},status,canceled_schedule,of_clinic{name,logo,id},
         has_product{name,type,id,price}
         regress{date{formatted},type},
@@ -7,8 +7,6 @@ query($dateStart: _Neo4jDateTimeInput, $dateEnd: _Neo4jDateTimeInput, $doctor: I
         came_from{id},
         patient{name,id, cpf, sex, birth_date{formatted}},
         attended_by{name,id,},
-        ticket{
-            id,name,type
-        },
+        ticket{id,name,type,created_at{formatted},called_at{formatted}},
     }
 }

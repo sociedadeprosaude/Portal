@@ -147,8 +147,6 @@
               placeholder="__/__/____">
           </v-text-field>
         </v-col>
-        {{ formattedStartDate }}<br/>
-        {{ formattedFinalDate }}<br/>
         <v-btn @click="filterData" dark color="purple">gerar relatório <v-icon right>analytics</v-icon></v-btn>
       </v-card-title>
     </v-card>
@@ -200,8 +198,8 @@ export default {
         }
       },
       update(data) {
-        console.log('veio?:', data.Consultation)
         let consultations = Object.assign(data.Consultation)
+
         let array2 = consultations.reduce((objetoFinal, consultaAtual ) => {
           if(!objetoFinal[consultaAtual.of_clinic.name]) objetoFinal[consultaAtual.of_clinic.name] = []
           objetoFinal[consultaAtual.of_clinic.name].push(consultaAtual);
@@ -217,29 +215,68 @@ export default {
           }, {})
         })
 
-        console.log('separado:', array2)
-
-/*        let filters = Object.keys(array2)
+        let filters = Object.keys(array2)
         filters.forEach((key) =>{
-          array2[key] = array2[key].reduce((objetoFinal, consultaAtual ) => {
-            if(!objetoFinal[consultaAtual.has_product.name]) objetoFinal[consultaAtual.has_product.name] = []
-            objetoFinal[consultaAtual.has_product.name].push(consultaAtual);
-            return objetoFinal
-          }, {})
-        })*/
+          let keysDoctors = Object.keys(array2[key]);
+          keysDoctors.forEach(keyDoctor => {
+            array2[key][keyDoctor] = array2[key][keyDoctor].reduce((objetoFinal, consultaAtual ) => {
+              if(!objetoFinal[consultaAtual.has_product.name]) objetoFinal[consultaAtual.has_product.name] = []
+              objetoFinal[consultaAtual.has_product.name].push(consultaAtual);
+              return objetoFinal
+            }, {})
+          })
+        })
 
+        //console.log('separado:', array2)
+
+        for(let unity in array2){
+/*          console.log('unity:', unity)
+          console.log(array2[unity])*/
+          for(let doctor in array2[unity]){
+/*            console.log('doctor:', doctor)
+            console.log(array2[unity][doctor])*/
+            for(let specialty in array2[unity][doctor]){
+/*              console.log('specialty:', specialty)
+              console.log(array2[unity][doctor][specialty])*/
+              let calc = 0
+              let waiting = 0
+              for (let consultation in array2[unity][doctor][specialty]){
+                //console.log('condultation:', array2[unity][doctor][specialty][consultation])
+                //calculo da duração média
+                let start = array2[unity][doctor][specialty][consultation].start_at.formatted
+                let end = array2[unity][doctor][specialty][consultation].end_at.formatted
+                let duration = moment(end, 'HH:mm:ss').diff(moment(start, 'HH:mm:ss'), 'minutes')
+                calc = calc + duration
+                //calculo do tempo de espera médio
+                let begin = array2[unity][doctor][specialty][consultation].ticket.created_at.formatted
+                let finish = array2[unity][doctor][specialty][consultation].ticket.called_at.formatted
+                let time = moment(finish, 'HH:mm:ss').diff(moment(begin, 'HH:mm:ss'), 'minutes')
+                waiting = waiting + time
+              }
+              calc = calc / array2[unity][doctor][specialty].length
+              waiting = waiting / array2[unity][doctor][specialty].length
+              let aux = {
+                unity: unity,
+                doctor: doctor,
+                specialty: specialty,
+                qtd: array2[unity][doctor][specialty].length,
+                duration: calc,
+                waitingTime: waiting,
+              }
+              this.desserts.push(aux)
+            }
+          }
+        }
       }
     },
   },
   methods:{
-    filterData(){
-      console.log('BEFORE:')
+    async filterData(){
       this.formattedStartDate = this.selectedStartDate ? moment(this.selectedStartDate,'DD/MM/YYYY').format('YYYY-MM-DD') + 'T00:00' : '2020-11-01'+'T00:00'
       this.formattedFinalDate = this.selectedFinalDate ? moment(this.selectedFinalDate,'DD/MM/YYYY').format('YYYY-MM-DD') + 'T23:59' : '2021-12-31'+'T23:59'
-      this.$apollo.queries.GetData.refresh();
-      console.log('AFTER:')
+      await this.$apollo.queries.GetData.refresh();
       this.desserts = [
-        {
+/*        {
           doctor: 'JACKSON KELVIN DE SOUZA',
           unity:'MEDIKON',
           specialty: 'DERMATOLOGIA',
@@ -270,7 +307,7 @@ export default {
           qtd: 155,
           duration: 14,
           waitingTime: 59,
-        },
+        },*/
       ]
     },
   },
