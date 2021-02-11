@@ -70,6 +70,7 @@
                           <v-flex xs8 class="mb-3">
                             <v-flex xs12>
                               <h4 class="text-left font-weight-bold">{{item.patient.name}}</h4>
+                              <h5 class="text-left font-weight-bold">N°:{{item.patient.telephones ? item.patient.telephones[0] : 'Sem número' }}</h5>
                               <h5 class="text-left mt-1">{{attended(item)}}</h5>
                               <h5 class="text-left mt-1">{{item.date.formatted.split('T')[1].substring(0,5)}}</h5>
                               <h5 class="text-left">Agendado em: {{item.date.formatted.split('T')[0] | dateFilter}}</h5>

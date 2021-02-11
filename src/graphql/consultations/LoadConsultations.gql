@@ -37,7 +37,8 @@ query($idClinic:ID, $idProduct:ID, $date:_Neo4jDateTimeInput){
         cpf,
         birth_date{
           formatted
-        },
+        },        telephones
+
       },
       dependent{
         id,
