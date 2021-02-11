@@ -228,7 +228,7 @@ export default {
       skipPatients: true,
       percentageDiscount: 0,
       moneyDiscount: 0,
-      FormasDePagamento: ["Dinheiro", "Crédito", "Débito"],
+      FormasDePagamento: ["Dinheiro", "Crédito", "Débito", "Pix"],
       budgetToPrint: undefined,
       budgetToPrintDialog: false,
       selectedIntake: undefined,
@@ -285,7 +285,10 @@ export default {
       else{
         this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
       }
-      return this.percentageDiscount
+      if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito') {
+        this.payment.value[0] = this.subTotal - this.moneyDiscount
+      }
+    return this.percentageDiscount
     },
     idBudget(){
       return this.$store.getters.getIdBudget
@@ -564,16 +567,8 @@ export default {
       this.selectedBudget.valuesPayments.forEach(value => {
         value = parseFloat(value)
       })
-
       let transactionId = await this.makeTransaction()
-
-
-      // await this.createProductTransaction(this.selectedBudget.exams, transaction.data.CreateTransaction)
-      if (this.selectedBudget.doctor) {
-        this.AddRelationsIntakeDoctor(transactionId)
-      } else {
-        this.AddRelationsIntake(transactionId)
-      }
+      this.receipt(this.selectedBudget)
     },
     async makeTransaction() {
       let transactionId = uuid.v4()
@@ -591,6 +586,24 @@ export default {
         formatted: moment().format("YYYY-MM-DDTHH:mm:ss")}
         }
       })
+      mutationBuilder.addMutation({
+        mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
+        variables:{
+          idBudget: transactionId,
+          idColaborator: this.selectedBudget.colaborator.id,
+          idPatient: this.selectedBudget.user.id,
+          idUnit: this.selectedBudget.unit.id
+        }
+      })
+      if(this.selectedBudget.doctor){
+        mutationBuilder.addMutation({
+          mutation: require('@/graphql/transaction/AddRelationsTransactionDoctor.gql'),
+          variables: {
+            idBudget: transactionId,
+            idDoctor: this.selectedBudget.doctor.id,
+          }
+        })
+      }
 
       let productsTransactionIds = []
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
@@ -681,42 +694,6 @@ export default {
 
       return transactionId;
     },
-    async AddRelationsIntakeDoctor(transactionId) {
-      this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/AddRelationsNewIntakeDoctor.gql'),
-        variables: {
-          idBudget: transactionId,
-          idColaborator: this.selectedBudget.colaborator.id,
-          idPatient: this.selectedBudget.user.id,
-          idDoctor: this.selectedBudget.doctor.id,
-          idUnit: this.selectedBudget.unit.id
-        },
-
-      })
-          .then((dataa) => {
-            this.receipt(this.selectedBudget)
-          }).catch((error) => {
-        console.error('Relações da transaction: ', error)
-      })
-    },
-    async AddRelationsIntake(transactionId) {
-      await this.$apollo.mutate({
-        mutation: require('@/graphql/transaction/AddRelationsNewIntake.gql'),
-        // Parameters
-        variables: {
-          idBudget: transactionId,
-          idColaborator: this.selectedBudget.colaborator.id,
-          idPatient: this.selectedBudget.user.id,
-          idUnit: this.selectedBudget.unit.id
-        },
-
-      })
-          .then(() => {
-            this.receipt(this.selectedBudget)
-          }).catch((error) => {
-            console.error('ligações da transaction nao funcionando: ', error)
-          })
-    },
     async receipt(intake) {
       this.selectedIntake = intake
       this.receiptDialog = true
@@ -737,13 +714,20 @@ export default {
     },
 
     verifyUnpaidConsultations(productTransactions) {
+      let foundConsultation = false;
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
         let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
 
         if (unpaidConsultation) {
           this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
+          foundConsultation = true;
         }
+      }
+
+      if(foundConsultation){
+        this.$apollo.queries.loadPatient.refresh();
+        console.log('Tem que recarregar')
       }
     },
 
@@ -759,6 +743,7 @@ export default {
   },
   apollo: {
     loadPatient: {
+      fetchPolicy: 'no-cache',
       query: require("@/graphql/patients/GetPatient.gql"),
       variables() {
         return {

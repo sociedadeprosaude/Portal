@@ -58,7 +58,7 @@ export default {
       query: require("@/graphql/sectors/LoadSectorsOfUnity.gql"),
       variables () {
         return {
-          id: this.$store.getters.user.clinic.id,
+          id: this.selectedUnit.id,
         }
       },
       update(data){
@@ -69,7 +69,8 @@ export default {
   },
   methods: {
     async initialInfo() {
-      this.idUnity = this.$store.getters.user.clinic.id
+      console.log('clinic selected: ', this.selectedUnit)
+      this.idUnity = this.selectedUnit.id
     },
 
     async updateLastTicket(number) {
@@ -164,6 +165,9 @@ export default {
     },*/
     loading() {
       return !this.sectors;
+    },
+    selectedUnit() {
+      return this.$store.getters.selectedUnit;
     },
   },
 };

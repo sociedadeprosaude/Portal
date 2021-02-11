@@ -3,9 +3,9 @@
         <v-layout row wrap>
             <v-flex class="hidden-print-only" xs12>
                 <v-layout row wrap class="align-center mt-3 mr-2 ml-2">
-                    <v-flex xs10>
+                    <v-flex xs9>
                         <v-select
-                                v-if="!registerPackage"
+                                v-if="!registerPackage && !editName"
                                 v-model="searchData"
                                 :items="LocaleBundles ? LocaleBundles : []"
                                 item-text="name"
@@ -18,6 +18,12 @@
                                 solo
                                 dense
                         />
+                      <v-text-field v-else-if="editName && !registerPackage" v-model="searchData.name"
+                                    label="Nome do Pacote"
+                                    outlined
+                                    dense
+                                    solo
+                      />
                         <v-text-field v-else v-model="newPackageName"
                                       label="Nome para o Pacote"
                                       outlined
@@ -25,7 +31,13 @@
                                       solo
                         />
                     </v-flex>
-                    <v-flex xs2>
+                  <v-flex xs1>
+                    <v-btn x-small fab color="background" dark class="mb-7"
+                           @click="editName= !editName" v-if="!registerPackage && searchData">
+                      <v-icon class="primary--text">edit</v-icon>
+                    </v-btn>
+                  </v-flex>
+                    <v-flex xs1>
                         <v-btn x-small fab color="background" dark class="mb-7"
                                @click="(registerPackage = !registerPackage, searchPackage = !searchPackage),clearCart()">
                             <v-icon v-if="!registerPackage" class="primary--text">add</v-icon>
@@ -240,7 +252,8 @@
                 Bundles: [],
                 loading:false,
                 LocaleBundles: [],
-                BundlesSkip: false
+                BundlesSkip: false,
+                editName: false,
             }
         },
         computed: {
@@ -332,7 +345,6 @@
         },
         methods: {
             GetPackage(product) {
-                console.log('searchData: ', product)
                 this.percentageDiscount = ( (product.discount * 100)/(product.total + product.discount))
                 this.moneyDiscount = product.discount
             },
@@ -406,7 +418,6 @@
                         id: this.searchData.id
                     }
                 }).then((data)=> {
-                    console.log('deletado com sucesso')
                     this.BundlesSkip = false
                     this.$apollo.queries.loadBundles.refresh()
                     this.clearCart();
@@ -415,6 +426,7 @@
             },
             async validateRegister() {
                 this.loading= true
+              this.editName = false
                 const packageData = {
                     exams: this.exams,
                     consultations: this.consultations,
@@ -425,7 +437,6 @@
                     total: (this.total),
                     name: this.newPackageName !== '' ? this.newPackageName : this.searchData.name,
                 };
-                console.log('valid Register:', packageData)
                 /* for (let exam in packageData.exams) {
                     if (!packageData.exams[exam].priceOriginal) {
                         packageData.exams[exam].priceOriginal = packageData.exams[exam].price
@@ -544,7 +555,6 @@
             loadBundles: {
                 query: require("@/graphql/bundles/loadBundles.gql"),
                 update(data){
-                    console.log('Bundle: ', data)
                     this.Bundles = Object.assign(data.Bundles)
                     this.LocaleBundles= data.Bundles
                     this.BundlesSkip = true

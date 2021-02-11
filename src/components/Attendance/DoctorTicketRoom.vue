@@ -164,7 +164,6 @@
                 await this.$store.dispatch("updateSectorRoom", {sector, room});
             },
             async generateSectorTicket() {
-                console.log(this.ticketInfo)
                 let sector = this.sector
                 if (!sector.tickets) {
                     sector.tickets = []

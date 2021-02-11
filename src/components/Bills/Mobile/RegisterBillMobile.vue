@@ -258,7 +258,7 @@
                     unit: this.unit.name !== this.other ? this.unit : null,
                     recurrent: this.recurrent ? true : false
                 };
-                console.log('bill: ', bill)
+                console.log('pagamento : ', bill.payment_method)
                 if (parseFloat(bill.value) > 0) {
                     bill.value = (parseFloat(bill.value) - (2 * parseFloat(bill.value)))
                 }

@@ -217,14 +217,14 @@ export default {
       this.loadingCharge = true
       this.idDoctor = consultation.doctor.id
       this.idProduct = consultation.product.id
-      if(consultation.consultation_hour.formatted){
+      if(consultation.consultation_hour && consultation.consultation_hour.formatted){
         this.loadingCharge = false
         this.documentDialog = true;
       }
       else{
         let mutationBuilder = new MutationBuilder()
         let consultation_hour = moment().format('YYYY-MM-DDTHH:mm:ss')
-        if(!consultation.consultation_hour.formatted){
+        if(!consultation.consultation_hour || !consultation.consultation_hour.formatted){
           mutationBuilder.addMutation({
             mutation: require('@/graphql/consultations/UpdateConsultationHour.gql'),
             variables:{
@@ -305,10 +305,10 @@ export default {
 
     loadPatient: {
       fetchPolicy: 'no-cache',
-      query: require("@/graphql/reactivity/ReloadConsultationsPatient.gql"),
+      query: require("@/graphql/patients/GetPatient.gql"),
       variables() {
         return {
-          idPatient: this.selectedPatient.id
+          id: this.selectedPatient.id
         }
       },
       update(data) {

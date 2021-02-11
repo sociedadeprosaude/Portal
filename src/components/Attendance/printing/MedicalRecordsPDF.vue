@@ -182,8 +182,6 @@
             //this.saveConsultationHour()
             this.dependent = this.consultation.dependent
             this.formatDates()
-            //await this.$store.dispatch('loadSpecialties')
-            console.log('consultation document')
         },
         methods: {
 

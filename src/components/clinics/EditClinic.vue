@@ -251,10 +251,6 @@
             //ceps: '',
             alertCEP: false,
         }),
-        mounted () {
-            console.log("clinic apollo:", this.clinic);
-            //this.ceps = this.clinic.address.cep;
-        },
         watch: {
   /*          ceps(val) {
                 if (val.length === 8) {
@@ -328,8 +324,6 @@
                   agenda.push(this.clinic.opening_hours[5].split('-')[0] + '-' + this.clinic.opening_hours[5].split('-')[1])
                 }
               }
-              //this.clinic.opening_hours = agenda
-            console.log('agenda:', agenda)
               await this.$apollo.mutate({
                 mutation: require('@/graphql/clinics/UpdateClinics.gql'),
                 variables: {
@@ -342,7 +336,6 @@
                   opening_hours: agenda,
                 },
               }).then(dataClinic => {
-                //console.log("id clinic:", dataClinic.data.UpdateClinic)
                 this.$apollo.mutate({
                   mutation: require('@/graphql/address/UpdateAddress.gql'),
                   variables: {

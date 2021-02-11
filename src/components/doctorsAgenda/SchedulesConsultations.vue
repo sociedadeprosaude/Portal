@@ -46,7 +46,7 @@
                         <v-layout row wrap class="text-left font-weight-bold">
                           <v-flex xs12>
                             <v-chip small class="mx-2" color="primary_dark"
-                                    @click="scheduleAppointment(schedule, moment(schedule.date))"
+                                    @click="scheduleAppointment(schedule,schedule.vacancy,moment(schedule.date))"
                                     text-color="white">
                               {{ moment(schedule.date).format('HH:mm') }}
                             </v-chip>
@@ -262,11 +262,13 @@ export default {
       return this.semanaOptions[dateMoment.day()];
     },
 
-    scheduleAppointment(consultation, date) {
+    scheduleAppointment(consultation, vacancy ,date) {
       if (!this.selectedPatient && !this.query.patient) {
         window.alert('Selecione um paciente')
         return;
       }
+      if(vacancy <= 0) return;
+      
       this.exam = undefined;
       // this.fillConsultationForm(consultation);
       this.fillConsultationForm({

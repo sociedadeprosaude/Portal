@@ -1,16 +1,15 @@
-query{
-    Clinic(orderBy:[name_asc]){
-        id,name,cnpj,telephone,logo,property,
-         has_address{
-            id,cep,state,street,city,complement,neighboor,number,geopoint{latitude,longitude}
-         },
+query($id:ID!){
+    Clinic(id:$id){
          charges{
-           _id,
+         _id,
             date {formatted},id,
             value,
             ProductTransaction: with_ProductTransaction{
                Product: with_product{
                    name, id
+               },
+               with_transactionPay{
+               id, with_user{name}
                },
                 with_transaction{
                 id, with_user{name}

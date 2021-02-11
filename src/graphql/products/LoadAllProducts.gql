@@ -1,0 +1,24 @@
+query LoadAllProducts {
+    Product{
+        id,
+        name,
+        doctors{
+            id,
+            name,
+            crm,
+            cpf
+        },
+        price,
+        final_price,
+        clinics{
+            id,
+            name,
+            cnpj,
+            telephone,
+             opening_hours,
+             has_address{
+                           cep, state, street, city, complement, neighboor, number
+                         }
+        }
+    }
+}

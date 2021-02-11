@@ -312,14 +312,12 @@
             handleFileUpload() {
                 this.uploading = true;
                 let uploadedFiles = this.$refs.files.files;
-                console.log(" files: ", this.$refs.files.files);
                 for (let i = 0; i < uploadedFiles.length; i++) {
                     if (this.files.indexOf(uploadedFiles[i]) < 0) {
                         let index = this.files.push(uploadedFiles[i]);
                         this.readFileUrl(uploadedFiles[i], index - 1);
                     }
                 }
-                console.log("files final: ", this.files);
                 setTimeout(() => (this.uploading = false), 2000);
             },
             readFileUrl(file, index) {

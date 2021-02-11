@@ -107,9 +107,7 @@
             loading: false,
             success: false,
 
-            editedExam: {
-                id: '', name: '', rules: '', type: 'EXAM', price: 0, schedulable: false,
-            },
+
 
             rules: {
                 campoObrigatorio: [
@@ -120,7 +118,7 @@
 
         mounted() {
             if(this.selectedExam){
-              console.log(this.selectedExam)
+              console.log('exame selected: ',this.selectedExam)
                 this.editedExam.id = this.selectedExam.id;
                 this.editedExam.name = this.selectedExam.name;
                 this.editedExam.price = this.selectedExam.price;
@@ -128,6 +126,16 @@
                 this.editedExam.type = this.selectedExam.type;
             }
         },
+      computed:{
+          editedExam(){
+            if(this.selectedExam){
+              return {id: this.selectedExam.id, name: this.selectedExam.name, price:this.selectedExam.price, rules: this.selectedExam.rules, type: this.selectedExam.type}
+            }
+            else{
+              return {id: '', name: '', price:'', rules: '', type: 'EXAM'}
+            }
+          }
+      },
 
 /*      apollo: {
         LoadProcuctSpecific: {
@@ -163,6 +171,9 @@
            async createProduct() {
              this.loading = true
              this.editedExam.name = this.editedExam.name.toUpperCase().replace(/\//g, "-")
+             if(!this.editedExam.schedulable){
+               this.editedExam.schedulable = false
+             }
              if ( this.editedExam.type === "EXAM") {
                await this.$apollo.mutate({
                  mutation: require('@/graphql/products/CreateProducts.gql'),
@@ -175,7 +186,7 @@
                  },
                });
              } else {
-               let other = this.editedExam.type
+               let other = this.editedExam
                this.editedExam.type = "EXAM"
                console.log('true', other)
                const dataProduct = await this.$apollo.mutate({

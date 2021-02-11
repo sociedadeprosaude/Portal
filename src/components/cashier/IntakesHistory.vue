@@ -178,7 +178,6 @@ export default {
       return now.valueOf() - date.valueOf();
     },
     async receipt(intake) {
-      console.log('intake: ', intake)
       this.loading = true;
       this.selectedIntake = await this.$store.dispatch(
           "getIntakeDetails",
@@ -188,7 +187,6 @@ export default {
       this.loading = false;
     },
     async cancelBuy(intake) {
-      console.log('inteke: ', intake)
       if (!this.cancelBuyDialog) {
         this.selectedIntake = intake;
         this.cancelBuyDialog = true;

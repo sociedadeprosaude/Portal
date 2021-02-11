@@ -67,7 +67,7 @@
                     <v-progress-circular indeterminate/>
                 </v-container>
                 <v-container fluid class="ma-0 " v-if="data">
-                    <BillsOuttakeOrder :data="data"/>
+                    <BillsOuttakeOrder :data="data" @reload="reload(query)" />
                 </v-container>
             </template>
         </ApolloQuery>
@@ -207,6 +207,10 @@
             //   let dateMoment = moment(date);
             //   return this.semanaOptions[dateMoment.day()];
             // },
+            reload(query){
+              console.log('chamando novamente')
+              query.refresh()
+            },
             formattedDateStart(date) {
                 date = date + '00:00:00';
                 return moment(date, 'DD/MM/YYYYHH:mm:ss').format('YYYY-MM-DDTHH:mm:ssZ')

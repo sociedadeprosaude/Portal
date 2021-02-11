@@ -221,9 +221,6 @@ export default{
   components: {
     AttendanceGuide
   },
-  mounted() {
-    console.log('bud', this.budget)
-  },
   computed: {
     patient() {
       return this.$store.getters.selectedPatient;

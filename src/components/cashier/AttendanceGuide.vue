@@ -170,17 +170,14 @@ export default {
   props: ["guide","id"],
   computed: {
     items() {
-      console.log('items: ', this.guide)
       return this.guide;
     },
     selectedUnit() {
-      console.log('unit: ', this.$store.getters.selectedUnit)
       return this.$store.getters.selectedUnit;
     },
     QrCode(){
       let initApi = "https://api.qrserver.com/v1/create-qr-code/?data="
       let finApi = "&size=100x100"
-      console.log('api: ', initApi + this.id + finApi)
       return initApi + this.id + finApi
     },
     patient() {

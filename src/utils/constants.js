@@ -23,7 +23,7 @@ export default {
         }
     },
 
-    MANAGER_PASSWORD: 'gerenciaprosaude',
+    MANAGER_PASSWORD: 'gerentemedikon',
     INTAKE_STATUS: {
         CANCELLED: 'cancelled'
     },

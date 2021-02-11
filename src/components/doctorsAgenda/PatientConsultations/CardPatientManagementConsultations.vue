@@ -45,6 +45,7 @@
                                               <v-flex xs12>
                                                   <h4 class="text-left font-weight-bold">{{item.product.name}}</h4>
                                                   <h5 class="text-left">{{item.doctor.name}}</h5>
+                                                <h5 class="text-left">{{attended(item)}}</h5>
                                               </v-flex>
                                           </v-flex>
                                       </v-layout>
@@ -119,7 +120,14 @@
         watch: {
         },
         methods:{
-
+          attended(consultation){
+            if(consultation.consultation_hour.formatted){
+              return 'Atendido em : ' + moment(consultation.consultation_hour.formatted).format('DD/MM/YYYY - HH:mm:ss')
+            }
+            else{
+              return 'Não Atendido'
+            }
+          },
             daydate(date) {
                 let dateMoment = moment(date);
                 return this.semanaOptions[dateMoment.day()];

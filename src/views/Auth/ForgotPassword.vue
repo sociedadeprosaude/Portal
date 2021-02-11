@@ -42,7 +42,7 @@
                 <v-row v-if="successSendEmail" class="align-center justify-center">
                     <v-col cols="12">
                             <v-alert class="text-left" type="success">
-                            <strong>Senha redefinida com sucesso ! Agora você poderá entrar na sua conta.</strong>
+                             <strong>E-mail enviado com sucesso! Agora você pode redefir a sua senha através do e-mail enviado.</strong>
                             </v-alert>
                     </v-col>
                     <v-col cols="12" class="pt-0">
