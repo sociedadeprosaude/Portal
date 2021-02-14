@@ -45,7 +45,7 @@
                             <v-spacer/>
                             <v-flex xs6 class="text-right pr-1">
                                 <v-btn color="primary" @click.native="signIn">
-                                    EntrarJenkisTeste
+                                    EntrarJenkisBuild
                                 </v-btn>
                             </v-flex>
                         </v-layout>
