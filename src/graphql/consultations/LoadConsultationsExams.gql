@@ -38,6 +38,7 @@ query($idClinic:ID, $date:_Neo4jDateTimeInput){
         birth_date{
           formatted
         },
+        telephones
       },
       dependent{
         id,

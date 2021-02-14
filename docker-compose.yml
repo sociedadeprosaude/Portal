@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+
+  portal:
+    container_name: portal-prod
+    build: .
+    ports:
+      - '80:80'
