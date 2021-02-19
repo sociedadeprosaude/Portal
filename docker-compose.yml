@@ -5,5 +5,6 @@ services:
   portal:
     container_name: portal-prod
     build: .
+    restart: always
     ports:
       - '80:80'
