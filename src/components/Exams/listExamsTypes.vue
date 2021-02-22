@@ -66,9 +66,9 @@
           <v-card-text class="ml-n2">Este tipo de exame será excluído permanentemente.</v-card-text>
           <v-card-actions>
             <v-spacer/>
-            <v-btn color="error" text
+            <!-- <v-btn color="error" text
                    @click="alertDelete = false, deleteExamType(examType)">EXCLUIR
-            </v-btn>
+            </v-btn> -->
             <v-btn color="primary" text @click="alertDelete = false">CANCELAR
             </v-btn>
           </v-card-actions>
@@ -107,7 +107,6 @@
               mutate();
             }, 0);
             this.$emit('reloadDelete')
-            //this.$router.push('/')
           },
             async selectExamType (examType) {
                 this.examType = examType;
@@ -116,11 +115,6 @@
             openAlertDelete (examType) {
                 this.examType = examType;
                 this.alertDelete = true;
-            },
-
-            async deleteExamType(examType) {
-                await this.$store.dispatch('deleteExamType', examType.name);
-                this.$emit('clear-search')
             },
         }
     }

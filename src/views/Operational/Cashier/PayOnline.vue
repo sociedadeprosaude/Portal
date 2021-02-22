@@ -321,7 +321,6 @@ export default {
       return cardToken.card.token;
     },
     async tst() {
-      await this.$store.dispatch("addIntake", this.budget);
       let porcentagem = this.budget.discount / this.budget.subTotal;
 
       if (
@@ -346,10 +345,6 @@ export default {
       // });
     },
     async receipt(intake) {
-      this.selectedIntake = await this.$store.dispatch(
-        "getIntakeDetails",
-        intake
-      );
       this.receiptDialog = true;
     },
     async pay() {

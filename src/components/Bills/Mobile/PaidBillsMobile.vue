@@ -304,11 +304,6 @@
             bill: {},
             year: moment().format("YYYY"),
         }),
-        watch: {
-            selectedMonth(val) {
-                this.getOuttakesPaidMonth();
-            }
-        },
         computed: {
             formattedSelectedStartDate: {
                 get() {
@@ -367,28 +362,7 @@
             mapMonths(month) {
                 this.selectedMonth = month.format("YYYY-MM");
             },
-            async getOuttakesPaidMonth() {
-                this.loadingFilter = true;
-                let start = this.selectedMonth;
-                start = start + "-01";
-                let end = this.selectedMonth;
-                end =
-                    end +
-                    "-" +
-                    moment(start, "YYYY-MM-DD")
-                        .endOf("month")
-                        .format("DD");
-                await this.$store.dispatch("getOuttakesPaidMonth", {
-                    initialDate: this.switchDate
-                        ? moment(start).format("YYYY-MM-DD 00:00:00")
-                        : null,
-                    finalDate: this.switchDate
-                        ? moment(end).format("YYYY-MM-DD 23:59:59")
-                        : null,
-                    category: this.switchCategory ? this.selectedCategory : null
-                });
-                this.loadingFilter = false;
-            },
+
             mapping(bill) {
                 this.bill = {
                     id: bill.id,

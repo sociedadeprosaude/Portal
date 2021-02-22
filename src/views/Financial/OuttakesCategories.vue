@@ -118,9 +118,7 @@ export default {
                 return this.$store.getters.outtakesCategories;
             }
         },
-        mounted() {
-            this.$store.dispatch("getOuttakesCategories");
-        },
+
 
         methods: {
             createCategory() {

@@ -12,7 +12,6 @@
               :successUpdateExams="successUpdateExams"
               @CheckExams="SendCheckExams($event)"
               @AddResultExam="AddResultExam($event)"
-              @removeFiles="removeFile($event)"
               @dialogContestValue="dialogContestValue = $event"
               :dialogContestValue="dialogContestValue"
               @ContestValue=" FunctionContestValue($event)"
@@ -75,32 +74,14 @@
                 if(!values.intake.result){
                     values.intake.result = []
                 }
-
-                await this.$store.dispatch("deleteFile", {
-                    imagePaths: values.intake.result,
-                    path: "outtakes/resultExams"
-                });
                 if(values.files.indexOf(values.file[0]) < 0 && values.file.length > 0){
                     values.files.push(values.file[0])
                     values.file= []
                 }
-                let urls = await this.submitFiles(values.files)
                 let exams = values.outtak.exams
                 exams[values.index].result = urls
-                await this.$store.dispatch("updateOuttakeExams", {
-                    outtake: values.outtak,
-                    field: "results",
-                    value: urls,
-                    exams: exams
-                });
-                await this.$store.dispatch('getSpecificOuttake',{number:this.numberIntake, cnpj: this.user.cnpj})
             },
-            async submitFiles(files) {
-                return await this.$store.dispatch("uploadFileToStorage", {
-                    files: files,
-                    path: "/outtakes/resultExams"
-                });
-            },
+
             async SendCheckExams(outtakes){
                 this.loading= true;
                 let exams = []
@@ -168,15 +149,7 @@
                 let clinic= await this.$store.dispatch('getIdClinic', this.user.cnpj)
                 await this.$store.dispatch('addNewContestValue',{exams:values.ContestExam, value:values.NewValue, cnpj:this.user.cnpj, numberIntake:toString(this.outtake[0].intake_id), clinic:clinic})
                 this.dialogContestValue = !this.dialogContestValue
-            },
-            async removeFile(values) {
-                await this.$store.dispatch("updateOuttakeExams", {
-                    outtake: values.outtake,
-                    field: values.field,
-                    exams: values.exams
-                });
-            },
-
+            }
         },
         computed: {
             user() {

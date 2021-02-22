@@ -198,9 +198,6 @@
 
         methods: {
             async initiate() {
-                this.loading = true;
-                await this.$store.dispatch("getOuttakesCategories");
-                this.loading = false;
                 this.selectedCategory =
                     this.categories[0] != null ? this.categories[0] : "";
             },
@@ -217,15 +214,6 @@
                 this.$emit("close-dialog");
             },
 
-            async newCategory(categories) {
-                categories.forEach(async category => {
-                    if (this.categories.indexOf(category) < 0) {
-                        await this.$store.dispatch("addOuttakesCategory", {
-                            category: category
-                        });
-                    }
-                });
-            },
             async bifurcation() {
                 if (this.parcel) {
                     this.value = this.value / this.parcels;
@@ -324,12 +312,6 @@
             removeFile(index) {
                 this.files.splice(index, 1);
                 this.filesPreviews.splice(index, 1);
-            },
-            async submitFiles(files) {
-                return await this.$store.dispatch("uploadFileToStorage", {
-                    files: files,
-                    path: "/outtakes/orders"
-                });
             },
             async resetData() {
                 this.category = null;

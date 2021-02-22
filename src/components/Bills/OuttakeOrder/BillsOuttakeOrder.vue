@@ -49,15 +49,15 @@
                                 <v-btn @click="$refs[bill.id][0].click()" class="primary mx-1" fab x-small>
                                     <v-icon>receipt</v-icon>
                                 </v-btn>
-                                <v-btn @click="isEditing = true, editBillValue(bill)" class="primary mx-1"
+                               <!-- <v-btn @click="isEditing = true, editBillValue(bill)" class="primary mx-1"
                                        fab x-small>
                                     <v-icon>edit</v-icon>
-                                </v-btn>
-                                <v-btn
+                                </v-btn> -->
+                             <!--   <v-btn
                                        @click="deleteOuttake(bill)" v-show="user === 'admin' || user === 'caixa'"
                                        class="error mx-1" fab x-small>
                                     <v-icon>delete</v-icon>
-                                </v-btn>
+                                </v-btn> -->
                                 <v-btn
                                        @click="payTransaction(bill)" v-show="user === 'admin' || user === 'caixa'"
                                        class="success mx-1" fab x-small placeholder="Complemento">
@@ -81,7 +81,7 @@
                                     >
                                         <v-icon :key="`icon-${isEditing}`"
                                                 :color="isEditing ? 'success' : 'primary'"
-                                                @click="isEditing = !isEditing, editBillValue(bill)"
+                                                @click="isEditing = !isEditing"
                                                 v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'">
                                         </v-icon>
                                     </v-slide-x-reverse-transition>
@@ -224,28 +224,6 @@
                 return moment(date, "YYYY-MM-DD").diff(now, "days");
             },
 
-            async editBillValue(bill) {
-                if (!this.isEditing) {
-                    await this.$store.dispatch("editOuttakes", bill);
-                    await this.$store.dispatch("getOuttakes");
-                    this.loading = false;
-                }
-
-            },
-
-            async deleteOuttake(outtake) {
-                this.loading = true;
-                await this.$store.dispatch("deleteOuttake", outtake);
-                await this.$store.dispatch("getOuttakes");
-                await this.$store.dispatch("getOuttakesPending", {
-                    finalDate: moment()
-                        .add(5, "days")
-                        .format("YYYY-MM-DD 23:59:59")
-                });
-                await this.$store.dispatch("getOuttakesPaidToday");
-                this.loading = false;
-            },
-
             async payTransaction(charge) {
                 this.loading = true
                 let transactionId = uuid.v4()
@@ -307,48 +285,14 @@
 
                 this.loadingAnexo = true;
                 this.outtakeSelect = outtake;
-                // await this.$store.dispatch("deleteFile", {
-                //     imagePaths: outtake.receipts,
-                //     path: "outtakes/receipts"
-                // });
-                // let uploadedFiles = this.$refs[outtake.id][0].files;
-                //
-                //
-                // for (let i = 0; i < uploadedFiles.length; i++) {
-                //
-                //     if (this.files.indexOf(uploadedFiles[i]) < 0) {
-                //         this.files.push(uploadedFiles[i]);
-                //     }
-                // }
-                //
-                // let urls = await this.submitFiles(this.files);
-                // await this.$store.dispatch("updateOuttake", {
-                //     outtake: outtake,
-                //     field: "receipts",
-                //     value: urls
-                // });
-                //
-                // await this.$store.dispatch("getOuttakes");
-                // await this.$store.dispatch("getOuttakesPending", {
-                //     finalDate: moment()
-                //         .add(5, "days")
-                //         .format("YYYY-MM-DD 23:59:59")
-                // });
-                // this.files = [];
-                // this.loadingAnexo = false;
-                // this.outtakeSelect = [];
+
 
             },
             removeFile(index) {
                 this.files.splice(index, 1);
                 this.filesPreviews.splice(index, 1);
             },
-            async submitFiles(files) {
-                return await this.$store.dispatch("uploadFileToStorage", {
-                    files: files,
-                    path: "/outtakes/receipts"
-                });
-            },
+
 
             openAppend(append) {
                 window.open(append);

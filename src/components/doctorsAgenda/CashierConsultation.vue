@@ -251,10 +251,7 @@
                     for (let spec in budget.specialties) {
                         this.$store.commit('addShoppingCartItem', budget.specialties[spec])
                     }
-                    let intakes = await this.$store.dispatch('getUserIntakes', budget.user);
-                    if (intakes) {
-                        budget.user.intakes = intakes
-                    }
+
                     let budgets = await this.$store.dispatch('getUserBudgets', budget.user);
                     if (budgets) {
                         budget.user.budgets = budgets

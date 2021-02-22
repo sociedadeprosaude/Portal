@@ -176,34 +176,26 @@ export default {
       switch (id) {
         case "RelatorioGeral":
           this.selected = 0;
-          await this.getIntakes();
           await this.searchReports();
-          await this.searchReportsAllClinics();
           break;
         case "RelatorioLuizFernando":
           this.selected = 1;
-          await this.getIntakes();
           await this.searchReports();
-          await this.searchReportsAllClinics();
           break;
         case "RelatorioColaboradoresProducao":
           this.selected = 2;
-          // await this.getIntakes(true);
           break;
         case "RelatorioEntradas":
           this.selected = 3;
-          await this.getIntakes();
           await this.searchReports();
           break;
         case "RelatorioAnaliseProcedimentosAnalise":
           this.selected = 4;
           break;
         case "RelatorioExamesMaisVendidos":
-          await this.getIntakes();
           this.selected = 5;
           break;
         case "RelatorioConsultasMaisVendidas":
-          await this.getIntakes();
           this.selected = 6;
           break;
         case "RelatorioSaidas":
@@ -218,12 +210,10 @@ export default {
           break;
         case "RelatorioSpecialidadesFeitas":
           this.selected = 9;
-          await this.getIntakes();
           await this.searchReports();
           break;
         case "RelatorioConsultasAgendadas":
           this.selected = 10;
-          await this.getIntakes();
           await this.searchReports();
           break;
         case "RelatorioClientesPorProcedimento":
@@ -276,24 +266,7 @@ export default {
       this.$apollo.queries.loadTransactions.refresh()
       console.log('formatReport: ', this.formattedReport)
     },
-    async searchReportsAllClinics() {
-      this.formattedReportAllUnits = await this.$store.dispatch(
-        "searchReportsAllClinics",
-        {
-          dataInicio: this.date,
-          dataFinal: this.date2,
-          colaborator: this.colaborator
-        }
-      );
-    },
-    async getIntakes(allUnits) {
-      this.intakes = await this.$store.dispatch("getIntakes", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59"),
-        colaborator: this.colaborator,
-        allUnits: allUnits
-      });
-    },
+
     async getOuttakes() {
       this.$store.dispatch("getOuttakes", {
         initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
@@ -315,40 +288,10 @@ export default {
         type: "PATIENT"
       });
     },
-
-    async loadClientsServed() {
-      this.$store.dispatch("loadClientsServed", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-    },
-    async loadNewClients() {
-      this.$store.dispatch("loadNewClients", {
-        initialDate: moment(this.date).format("YYYY-MM-DD 00:00:00"),
-        finalDate: moment(this.date2).format("YYYY-MM-DD 23:59:59")
-      });
-    },
-
-    loadDatasetClients() {
-      this.loadClientsServed();
-      this.loadNewClients();
-    },
     async initialInfo() {
       this.loading = true;
       this.$store.dispatch("showOverviewToggle", true);
       await this.searchView();
-      await this.$store.dispatch("getOuttakesCategories");
-      // await this.searchReports();
-      // await this.searchReportsAllClinics();
-      // await this.getOuttakes();
-      // await this.getUsers();
-      // await this.getTodayUsers();
-      // await this.loadClientsServed();
-      // await this.getIntakes();
-      // await this.getUsers();
-      // await this.loadDatasetClients();
-      // await this.loadClientsServed();
-      // await this.loadNewClients();
       this.dateBegin = this.dateFormatted;
       this.dateEnd = this.dateFormatted2;
       this.loading = false;

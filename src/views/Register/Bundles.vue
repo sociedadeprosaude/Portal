@@ -29,7 +29,6 @@
 
 <script>
 
-    import ProceduresSearch from "../../components/Bundles/ProceduresSearchPackege";
     import Cart from "../../components/Bundles/CartPackage";
     import Receipt from "../../components/cashier/Receipt";
 
@@ -41,7 +40,6 @@
         }),
         components: {
             Receipt,
-            ProceduresSearch,
             Cart,
         },
         methods: {

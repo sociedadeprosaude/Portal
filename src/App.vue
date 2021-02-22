@@ -1,9 +1,7 @@
 <template>
     <v-app id="app">
         <v-content v-if="ready" :class="['background', 'fade-in-anim']">
-
             <Toolbar class="mb-12 pb-6" v-if="user" :user="user"  />
-
             <transition name="slide-fade" mode="out-in" appear>
             <router-view/>
             </transition>
@@ -13,9 +11,7 @@
                     <v-card-text>{{systemDialog.body}}</v-card-text>
                     <v-card-actions>
                         <v-btn rounded text @click="systemDialog.show = false">Cancelar</v-btn>
-
                         <v-spacer/>
-
                         <v-btn class="primary" text rounded @click="systemDialog.functionToRun(); systemDialog.show = false;">Ok</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -36,8 +32,6 @@
 </template>
 <script>
     import Toolbar from "./components/doctorsAgenda/Toolbar";
-    import firebase from 'firebase'
-
     export default {
         components: {
             Toolbar
@@ -63,20 +57,16 @@
                     return true
                 }
                 if (this.$store.getters.user) {
-                    if (/* this.$store.getters.examsLoaded
-                        && this.$store.getters.doctorsLoaded
-                        && this.$store.getters.clinicsLoaded
-                        &&*/this.$store.getters.unitsLoaded) {
+                    if (this.$store.getters.unitsLoaded){
                         return true
                     }
                 }
                 return false
             }
         },
-        watch: {
+        watch:{
             loaded(val) {
                 if (val) {
-
                     this.$refs['logo'].classList.add('fade-out-anim');
                     this.$refs['loader'].classList.add('fe-contract');
                     setTimeout(() => {

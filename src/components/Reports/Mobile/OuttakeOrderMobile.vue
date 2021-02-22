@@ -3,7 +3,6 @@
         <ApolloQuery :query="require('@/graphql/transaction/LoadBillsToPay.gql')"
                      :variables="{ date_start: formattedDateStart(formattedSelectedStartDate), date_end: formattedDateEnd(formattedSelectedFinalDate), type: 'bill'}"
         >
-
             <template v-slot="{result: {data, loading}, query}">
                 <v-row class="align-center justify-center">
                     <v-col cols="12" xs="12" class="primary mt-n5">
@@ -157,21 +156,6 @@
                     this.selectedDate = val
                 }
             },
-            // years() {
-            //   let years = [];
-            //   let year = moment().format('YYYY');
-            //   for (let i = parseInt(this.lastYear); i <= parseInt(year); i++) {
-            //
-            //       months.push(i.toString())
-            //     }
-            //   } else {
-            //     for (let i = parseInt(this.lastMonth); i <= 12; i++) {
-            //
-            //       months.push(i.toString())
-            //     }
-            //   }
-            //   return months
-            // },
             pendingOuttakes() {
                 return this.$store.getters.outtakesPending.sort((a, b) => {
                     return b.date_to_pay < a.date_to_pay ? 1 : -1;
@@ -188,13 +172,6 @@
                 }
                 return dates
             },
-
-            totalPayable() {
-
-                let total = 0.00;
-                total = total.toFixed(2)
-                return total
-            }
         },
         watch: {
             date(val) {
@@ -203,10 +180,7 @@
 
         },
         methods: {
-            //
-            //   let dateMoment = moment(date);
-            //   return this.semanaOptions[dateMoment.day()];
-            // },
+
             reload(query){
               console.log('chamando novamente')
               query.refresh()
@@ -230,14 +204,7 @@
                 }
                 return res;
             },
-            async editBillValue(bill) {
-                if (!this.isEditing) {
-                    await this.$store.dispatch("editOuttakes", bill);
-                    await this.$store.dispatch("getOuttakes");
-                    this.loading = false;
-                }
 
-            },
             distanceToToday(date) {
                 let now = moment();
                 return moment(date, "YYYY-MM-DD").diff(now, "days");

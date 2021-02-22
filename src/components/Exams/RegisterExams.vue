@@ -68,7 +68,6 @@ export default {
       },
       update(data){
         this.products = Object.assign(data.Product)
-        //console.log('reativo:', this.products)
       },
     }
   },
@@ -76,28 +75,6 @@ export default {
     reload(){
       this.$apollo.queries.ReadProcucts.refresh();
     },
-  },
-  mounted() {
-    let self = this;
-    window.addEventListener("keyup", function(e) {
-      if (e.target.id === "search") {
-        clearTimeout(self.typingTimer);
-        self.typingTimer = setTimeout(() => {
-          self.loading = true;
-          self.$store
-            .dispatch("loadSelectedExams", self.search.toUpperCase())
-            .then(() => {
-              self.loading = false;
-            });
-        }, 300);
-      }
-    });
-
-    window.addEventListener("keydown", function(e) {
-      if (e.target.id === "search") {
-        clearTimeout(self.typingTimer);
-      }
-    });
-  },
+  }
 };
 </script>

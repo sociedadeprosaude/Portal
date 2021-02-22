@@ -80,10 +80,6 @@
     export default {
         name: "ReceiptOuttakesConvenants",
         props: ['doctorSelected', 'outtakes'],
-        mounted() {
-            this.$store.dispatch('GetReceiptsDoctor', this.doctorSelected)
-
-        },
         data() {
             return {
                 numberIntake: '',

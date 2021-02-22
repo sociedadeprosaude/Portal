@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from "./store/store"
 import Home from '@/views/Home'
-import Account from '@/views/Auth/Account'
 import Login from '@/views/Auth/Login'
 import Register from '@/views/Auth/Register'
 import ResetPassword from '@/views/Auth/ResetPassword'
@@ -24,13 +23,10 @@ import VerificationForwardingBilling from "./views/Register/Clinic/VerificationF
 import PaymentHistory from "./views/Register/Clinic/PaymentHistoryClinic"
 import Units from "./views/Units";
 import Bills from "./views/Financial/Bills";
-import BillsMobile from "./views/Financial/BillsMobile";
 import OuttakesCategories from "./views/Financial/OuttakesCategories";
 
 import DoctorScheduling from './views/Operational/DoctorsAgenda/DoctorScheduling'
 
-import MedicalCare from "./views/DoctorAttendance/MedicalCare";
-import Attendance from "./views/DoctorAttendance/Attendance";
 import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
@@ -99,15 +95,6 @@ let mainRoutes = [
     name: 'Register',
     component: Register,
   },
-  {
-    path: '/conta',
-    name: 'Conta',
-    component: Account,
-    meta: {
-      requiresAuth: true
-    }
-  },
-
 
   {
     path: '/discount',
@@ -234,25 +221,8 @@ let mainRoutes = [
     }
   },
   {
-    path: '/MedicalCare',
-    name: 'MedicalCare',
-    component: MedicalCare,
-    meta: {
-      requiresAuth: false,
-    }
-  },
-  {
-    path: '/Attendance',
-    name: 'Attendance',
-    component: Attendance,
-    meta: {
-      requiresAuth: false,
-    }
-  },
-  {
     path: '/senhas',
     name: 'Tickets',
-    //component : TicketsDashboard,
     component: TicketsDashboard,
     meta: {
       requiresAuth: false,

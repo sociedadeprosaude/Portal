@@ -219,27 +219,11 @@
                 this.doctorSelected = doctor;
                 this.change = !this.change;
             },
-            async ChangeDate() {
-                console.log('doctor: ', this.doctorSelected)
-                this.change = !this.change;
-                await this.$store.dispatch('AddPaymentDayDoctor', {
-                    doctor: this.doctorSelected,
-                });
-                this.getInitialInfo()
-            },
             formatDate(date) {
                 if (!date) return null;
                 const [year, month, day] = date.split("-");
                 return `${day}/${month}/${year}`;
             },
-            async CalculateValue(doctor) {
-                this.cost = '';
-                this.doctorSelected = doctor;
-               let ReturnValuesClinic= await this.$store.dispatch('CalculedValuePaymentDoctor', doctor)
-               this.cost = ReturnValuesClinic.cost
-                this.NumberExams = ReturnValuesClinic.NumberExams
-            },
-
             async checkReceipts(doctor){
                 this.outtakesSelected= doctor.charges
                 this.doctorSelected = doctor

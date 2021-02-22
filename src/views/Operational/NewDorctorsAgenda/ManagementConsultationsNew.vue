@@ -249,7 +249,6 @@
             },
         },
         mounted() {
-            this.initialConfig();
             this.date = moment().format('YYYY-MM-DD');
             this.dateFormatted = moment().format('DD/MM/YYYY');
             this.clinic = this.$store.getters.selectedUnit
@@ -269,12 +268,6 @@
             }
         },
         methods: {
-            async initialConfig() {
-                //await this.$store.dispatch("getSpecialties");
-                //this.especialidade = this.specialties[0];
-                //this.getConsultationsDorctors()
-
-            },
             restoreSelectedPatient(){
               this.patientSelected = {}
               this.consultatioSelect = {}
@@ -297,15 +290,6 @@
                 let today = moment();
                 let diff = today.diff(dateConsultation, 'days');
                 return diff > 21
-            },
-            async getConsultationsDorctors() {
-                this.loadingConsultations = true;
-                await this.$store.dispatch('listenConsultations',
-                    {
-                        start_date: this.date,
-                        final_date: moment().add(10, 'days').format('YYYY-MM-DD 23:59:59')
-                    });
-                this.loadingConsultations = false
             }
         },
         apollo: {

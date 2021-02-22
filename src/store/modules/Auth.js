@@ -1,7 +1,3 @@
-import firebase, { firestore } from "firebase";
-import router from "../../router";
-import { relativeTimeRounding } from "moment";
-
 const state = {
     user: undefined,
     listOfPermissions: [],
@@ -23,10 +19,6 @@ const mutations = {
 const actions = {
 
     async logOut(context) {
-        //firebase.auth().signOut();
-        /* setTimeout(() => {
-            context.commit('setUser', undefined)
-        }, 500); */
         context.commit('setUser', undefined)
         return
     },
@@ -35,27 +27,10 @@ const actions = {
         console.log('user: ', user)
         if(user && user.clinic)
             commit('setSelectedUnit', user.clinic)
-
-    },
-
-    async updateAccount({ commit }, payload) {
-        try {
-            let id = payload.uid;
-            await firebase.firestore().collection('users').doc(id).update({
-                name: payload.name,
-                telephones: payload.telephones,
-                address: payload.address,
-                bankData: payload.bank,
-            });
-            commit('setUser', payload)
-        } catch (e) {
-            console.log(e)
-        }
     }
 };
 
 const getters = {
-
     user(state) {
         return state.user
     },

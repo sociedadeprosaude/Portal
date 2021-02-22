@@ -192,14 +192,6 @@
             },
             async initiate() {
                 this.goRoute('/pagamento/financeiro/pendentes');
-                this.loading = true;
-                await this.$store.dispatch("getOuttakesCategories");
-                await this.$store.dispatch("getOuttakesPending", {
-                    finalDate: moment()
-                        .add(5, "days")
-                        .format("YYYY-MM-DD 23:59:59")
-                });
-                this.loading = false;
                 this.selectedCategory =
                     this.categories[0] != null ? this.categories[0] : "";
             },
@@ -228,11 +220,6 @@
             async unpayOuttake(outtake) {
                 this.loadingDelete = true;
                 this.outtakeSelect = outtake;
-                await this.$store.dispatch("updateOuttake", {
-                    outtake: outtake,
-                    field: "paid",
-                    value: "delete"
-                });
                 await this.$store.dispatch("getOuttakes", {
                     finalDate: moment()
                         .add(5, "days")

@@ -85,9 +85,6 @@ export default {
       }, 1500);
     },
   },
-  mounted() {
-    let self = this;
-    self.$store.dispatch("getExamsTypes");
-  }
+
 };
 </script>

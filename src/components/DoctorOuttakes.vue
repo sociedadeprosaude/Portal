@@ -138,9 +138,5 @@
             this.loadingPaymentConsultation= false
           },
         },
-        mounted(){
-            this.$store.dispatch('GetReceiptsDoctor', this.doctor)
-
-        },
     };
 </script>

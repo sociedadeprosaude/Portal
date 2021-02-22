@@ -113,12 +113,6 @@ export default {
 
     async createNewPeriod() {
       this.$apollo.queries.loadSchedules.refresh();  
-    },
-    deleteSchedule(item) {
-      const index = this.schedules.indexOf(item);
-      if (confirm("Você tem certeza que dejesa remover a agenda?")) {
-        this.$store.dispatch("deleteSchedule", item.id);
-      }
     }
   },
   apollo: {

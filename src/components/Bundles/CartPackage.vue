@@ -376,19 +376,10 @@
             },
             async updateBudgetsIntakes() {
                 let user = this.patient;
-                let intakes = await this.$store.dispatch('getUserIntakes', user);
                 let budgets = await this.$store.dispatch('getUserBudgets', user);
-                user.intakes = intakes;
                 user.budgets = budgets;
                 this.$store.commit('setSelectedPatient', user)
             },
-            async saveBudget(budget) {
-                this.$store.commit('setSelectedBudget', budget);
-                await this.$store.dispatch('getUserBudgets', this.patient);
-                await this.$store.dispatch('addBudget', budget);
-                this.updateBudgetsIntakes()
-            },
-
             clearCart() {
                 this.$store.commit('clearShoppingCartItens');
                 this.$store.commit('setSelectedBudget', undefined);

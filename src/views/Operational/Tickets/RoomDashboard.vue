@@ -258,9 +258,7 @@ export default {
         preferential: preferential,
       });
       await this.upgradeTicketNumber();
-      const sector = this.sector;
-      await this.$store.dispatch("updateSectorRoom", { sector, room });
-    },
+      },
 
     async removeDoctorRoom(room){
       this.loading = true;
@@ -511,7 +509,6 @@ export default {
       let ticketInfo = this.ticketInfo;
       ticketInfo.ticket_number++;
       ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
-      await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
     },
     async callRoomTicket(room, preferential) {
       await this.$apollo.queries.LoadRoomsOfSector.refresh();

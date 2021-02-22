@@ -65,12 +65,6 @@
         <v-dialog v-model="addExamToClinic" width="500px" text hide-overlay>
             <Exams @close-dialog="closeDialogs"/>
         </v-dialog>
-        <v-dialog v-model="addSpecialtyToClinic" width="500px" text hide-overlay>
-            <Consultations @close-dialog="closeDialogs"/>
-        </v-dialog>
-        <v-dialog v-model="deletingExamsSpecialtiesFromClinic" width="850px" text hide-overlay>
-            <Products @close-dialog="closeDialogs"/>
-        </v-dialog>
         <v-dialog v-model="editingExamsSpecialtiesFromClinic" width="800px" text hide-overlay>
             <Configurations @close-dialog="closeDialogs"/>
         </v-dialog>
@@ -80,20 +74,17 @@
 <script>
     import EditClinic from "../../components/clinics/EditClinic";
     import Exams from "../../components/clinics/Exams";
-    import Consultations from "../../components/clinics/Consultations";
-    import Products from "../../components/clinics/Products";
     import ListExamsSpecialties from "../../components/clinics/ListExamsSpecialties";
     import Configurations from "../../components/clinics/Configurations";
     export default {
         props: ['clinics', 'name'],
-        components: {EditClinic, Exams, Consultations, Configurations, Products,ListExamsSpecialties},
+        components: {EditClinic, Exams, Configurations,ListExamsSpecialties},
         data: () => ({
             clinic: undefined,
             editingClinic: false,
             deletingClinic: false,
             addExamToClinic: false,
             addSpecialtyToClinic: false,
-            deletingExamsSpecialtiesFromClinic: false,
             editingExamsSpecialtiesFromClinic: false,
         }),
         methods: {
@@ -115,7 +106,6 @@
                 this.deletingClinic = false;
                 this.addExamToClinic = false;
                 this.addSpecialtyToClinic = false;
-                this.deletingExamsSpecialtiesFromClinic = false;
                 this.editingExamsSpecialtiesFromClinic = false;
                 this.$emit('reload')
             },

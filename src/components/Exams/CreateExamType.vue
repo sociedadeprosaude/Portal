@@ -115,20 +115,6 @@
             },
 
             async registerProduct() {
-                const examTypeData = {
-                    id:this.editedExamType.id,
-                    name: this.editedExamType.name.toUpperCase().replace(/\//g, "-"),
-                    scheduleable:this.editedExamType.scheduleable
-                };
-                if(this.registed){
-                    await this.$store.dispatch('editExamType', examTypeData);
-                }
-                    
-                else{
-                    await this.$store.dispatch('addExamType', examTypeData);
-                    this.clear()
-                }
-                   
                 this.success = true;
                 this.loading = false;
                 this.close();

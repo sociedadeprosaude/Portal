@@ -66,9 +66,7 @@
             this.initialInfo();
         },
         methods: {
-            async initialInfo() {
-                await this.$store.dispatch("getStatisticsByMonth");
-            },
+
             monthName(month) {
                 return this.monsthsName[Number(month) - 1];
             },
@@ -122,9 +120,7 @@
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
-            statistics() {
-                return this.$store.getters.getStatistics;
-            },
+
             info() {
                 let itens = {}
                 let arrTotalRaw = []

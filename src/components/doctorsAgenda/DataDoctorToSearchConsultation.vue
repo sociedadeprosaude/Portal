@@ -182,7 +182,6 @@
 
         computed: {},
         mounted() {
-            //this.$store.dispatch("getExamsTypes");
             this.query = this.$route.params.q;
             if (this.query) {
                 this.specialty = this.query.product;
@@ -197,28 +196,18 @@
 
         watch: {
             clinic(clinic) {
-                //this.$store.dispatch('selectClinic', clinic)
                 this.$emit('selectClinic', clinic)
             },
-            doctor(doctor) {
-                //this.$store.dispatch('selectDoctor', doctor)
-                this.$emit('selectDoctor', doctor)
-            },
             examType(value) {
-                //this.$store.dispatch('selectExamType', value)
                 this.$emit('selectExamType', value)
             },
 
             specialty(value) {
-                /* this.clinic = undefined
-                this.doctor = undefined
-                this.examType = undefined */
                 if (value) {
                     this.clinics = value.clinics;
                     this.doctors = value.doctors
                 }
                 this.$emit('selectSpecialty', value)
-                //this.$store.dispatch('selectSpecialty', value)
             },
             examTypeCheck(value) {
                 this.clinic = undefined;
@@ -229,7 +218,6 @@
                     this.$apollo.queries.loadDoctors.refresh()
                 }
                 this.$emit('selectExamTypeCheck', value)
-                //this.$store.dispatch('selectExamTypeCheck', value)
             }
         },
 

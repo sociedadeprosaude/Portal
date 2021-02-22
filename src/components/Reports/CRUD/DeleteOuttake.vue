@@ -14,7 +14,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text @click="dialog = false">Não</v-btn>
-          <v-btn :loading="loading" color="red darken-1" text @click="removeOuttake()">Sim</v-btn>
+         <!-- <v-btn :loading="loading" color="red darken-1" text @click="removeOuttake()">Sim</v-btn> -->
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -31,10 +31,7 @@ export default {
   },
   methods: {
     async removeOuttake() {
-      this.loading = true;
-      await this.$store.dispatch("deleteOuttake", { id: this.item.idOuttake });
       this.dialog = false;
-      this.loading = false;
       this.cb();
     }
   }

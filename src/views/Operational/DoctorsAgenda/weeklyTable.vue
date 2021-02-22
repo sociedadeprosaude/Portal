@@ -60,16 +60,6 @@ export default {
 
     doctors() {
       let doctors = Object.values(this.$store.getters.doctors);
-      /* if (this.specialty) {
-                    doctors = doctors.filter(a => {
-                    for (let spe in a.specialties) {
-                        if (a.specialties[spe].name === this.specialty.name) {
-                        return true;
-                        }
-                    }
-                    return false;
-                    });
-                } */
       return doctors;
     },
     doctorsMapping() {
@@ -107,20 +97,10 @@ export default {
               this.today >
               schedules[schedule].cancelations_schedules[canceled].final_date
             ) {
-              let deleted = schedules[schedule].cancelations_schedules.shift();
-              this.$store.dispatch("copyCanceledSchedules", {
-                schedule: schedules[schedule],
-                cancelations_schedules: deleted
-              });
+              schedules[schedule].cancelations_schedules.shift();
               if (schedules[schedule].cancelations_schedules.length === 0) {
                 delete schedules[schedule].cancelations_schedules;
               }
-              this.$store.dispatch("updateCanceledSchedules", {
-                cancelations_schedules:
-                  schedules[schedule].cancelations_schedules,
-                id: schedules[schedule].id,
-                schedule: schedules[schedule]
-              });
             }
           }
         }
@@ -174,24 +154,16 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("getAllSchedules");
   },
   methods: {
     async removeDay(payload) {
       let copySchedule = Object.assign({}, payload.scheduleSelected);
-      delete copySchedule.days[payload.dayScheduleSelected];
-      await this.$store.dispatch("updateScheduleDays", {
-        idSchedule: payload.scheduleSelected.id,
-        days: copySchedule.days
-      });
+      delete copySchedule.days[payload.dayScheduleSelected]
     },
     async updateDay(payload) {
       let copySchedule = Object.assign({}, payload.scheduleSelected);
       copySchedule.days[this.dayScheduleSelected] = payload.editDay;
-      await this.$store.dispatch("updateScheduleDays", {
-        idSchedule: payload.scheduleSelected.id,
-        days: copySchedule.days
-      });
+
     }
   }
 };

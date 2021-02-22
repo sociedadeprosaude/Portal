@@ -346,13 +346,11 @@ export default {
     },
     paymentDisabled() {
       return !this.patient
-          // || this.paymentValues !== this.total
           || this.cartItems.length === 0
           || this.paymentNull === false
     },
     printBudgetAvailable() {
       return this.cartItems.length === 0
-          // || this.paymentValues !== this.total
           || this.paymentNull === false
     }
   },
@@ -383,8 +381,6 @@ export default {
         for (let spec in budget.specialties) {
           this.$store.commit('addShoppingCartItem', budget.specialties[spec])
         }
-        let intakes = await this.$store.dispatch('getUserIntakes', budget.user);
-        if (intakes) {
           budget.user.intakes = intakes
         }
         let budgets = await this.$store.dispatch('getUserBudgets', budget.user);
@@ -393,9 +389,6 @@ export default {
         }
         this.$store.commit('setSelectedPatient', budget.user);
         this.searchBudgetBtn = false
-      } else {
-        this.searchBudgetError = 'Orçamento não encontrado'
-      }
       this.searchBudgetLoading = false
     },
     adicionarFormaDePagamento() {

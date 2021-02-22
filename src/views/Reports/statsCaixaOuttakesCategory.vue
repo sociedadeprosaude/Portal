@@ -67,13 +67,7 @@ export default {
     ]
   }),
 
-  mounted() {
-    this.initialInfo();
-  },
   methods: {
-    async initialInfo() {
-      await this.$store.dispatch("getStatisticsOuttakesByMonth");
-    },
     monthName(month) {
       return this.monsthsName[Number(month) - 1];
     },

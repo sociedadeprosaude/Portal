@@ -138,61 +138,14 @@ const actions = {
     },
 
     async searchUser({ }, searchFields) {
-        // let usersRef = firestore().collection('users');
-        // for (let field in searchFields) {
-        //     if (!searchFields[field] || searchFields[field].length === 0) continue;
-        //
-        //     if (field === 'name'){
-        //         usersRef = usersRef.where('name', '>=', searchFields[field].toUpperCase())
-        //             // .where('name', '<=', searchFields['name'].toUpperCase()+ '\uf8ff')
-        //         break
-        //     }
-        //     else if (field === 'cpf'){
-        //         searchFields[field] = searchFields[field].replaceAll('.','');
-        //         searchFields[field] = searchFields[field].replace('-','');
-        //         usersRef = usersRef.where(field, '==', searchFields[field]);
-        //         break
-        //     }
-        //     else if (field === 'association_number' ){
-        //         usersRef = usersRef.where('association_number' ,'==', searchFields[field]);
-        //         break
-        //         }
-        //     else{
-        //         if(field === 'type'){
-        //             usersRef = usersRef.where('type' ,'==', searchFields[field]);
-        //             break
-        //         }
-        //     }
-        // }
-        // let querySnapshot = await usersRef.limit(5).get();
         try {
             let users = (await axios.get('https://us-central1-prosaude-36f66.cloudfunctions.net/requests-searchUser', {
-            //let users = (await axios.get('https://us-central1-prosaudedev.cloudfunctions.net/requests-searchUser', {
                 params: searchFields
             })).data
             return users
         } catch (e) {
             throw e
         }
-    },
-
-    thereIsUserCPF({ commit }, payload) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let userDoc = await firestore().collection('users')
-                    .where('cpf', '==', payload)
-                    .get();
-                if(!userDoc.empty){
-                    userDoc.forEach(doc => {
-                        resolve(doc.data())
-                    });
-                }else{
-                    resolve(undefined)
-                }
-            } catch (e) {
-                reject(e)
-            }
-        })
     },
     thereIsUserUID({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
@@ -286,12 +239,6 @@ const actions = {
                 }
             }
             await firebase.firestore().collection('users').doc(user.user.uid).delete();
-            // admin.auth().deleteUser(user.user.uid).then(function () {
-            // })
-            //     .catch(function (error) {
-            //         console.log('Error deleting user:', error);
-            //     });
-
             return
         } catch (e) {
             throw e

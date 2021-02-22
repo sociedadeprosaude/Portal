@@ -180,9 +180,9 @@
           </v-card-text>
           <v-card-actions class="mx-3">
             <v-spacer/>
-            <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
+            <!-- <submit-button text="Confirmar" :loading="loading" :success="success" @reset="success = false"
                            @click="deleteAllSchedule(doctor)">
-            </submit-button>
+            </submit-button> -->
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -198,11 +198,10 @@
 <script>
 import moment from 'moment/moment'
 import SubmitButton from '../../../components/SubmitButton'
-import ConsultationDocument from "@/components/doctorsAgenda/commons/ConsultationDocument";
 
 export default {
   name: "CardDoctorsManagementConsultations",
-  components: {SubmitButton,ConsultationDocument,},
+  components: {SubmitButton},
 
   props: ['clinic', 'specialty', 'date', 'examType', 'filterByExam'],
   data: () => ({
@@ -257,21 +256,6 @@ export default {
     },
   },
   computed: {
-    /* consultations() {
-        if (moment().format('YYYY-MM-DD') !== this.date) {
-            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-            this.loadingConsultations = !this.loadingConsultations
-        }
-        this.loadingConsultations = true
-        let response =  this.$store.getters.consultations.filter((a) => {
-            let filtedBySpecialty = !this.filterByExam && this.specialty && a.specialty && this.specialty.name === a.specialty.name
-            let filtedByExamType = this.filterByExam && this.examType && a.exam && this.examType.name === a.exam.type
-            return this.date && this.date === a.date.split(' ')[0] && a.user && (filtedBySpecialty || filtedByExamType)
-        });
-        this.loadingConsultations = false
-        return response
-    }, */
-
     ConsultationsByDoctors() {
       let res = {};
       for (let cons in this.consultations) {
@@ -334,7 +318,6 @@ export default {
       this.clinicsToDeactivate = []
     },
     async deactivateDoctor(item) {
-      await this.$store.dispatch('getDoctor', item.cpf);
       if (this.doctor.cpf === item.cpf) {
         this.selectedDoctor = this.doctor;
         this.clinics = this.doctor.clinics;
@@ -366,31 +349,9 @@ export default {
          this.$emit('ticketSelect', this.ticket);
          this.loading = false;
        }, 2000);
-/*      this.selectUser(item.user)
-      this.$emit('patientSelect', item.patient);
-      this.$emit('consultationSelect', item);
-      this.$emit('roomSelect', this.room);
-      this.$emit('sectorSelect', this.sector);
-      this.$emit('ticketSelect', this.ticket);*/
-    },
-    async deleteAllSchedule(doctor) {
-      this.loading = true;
-      let payload = {
-        doctor: doctor,
-        specialty: this.specialtyToDeactivate,
-        clinic: this.clinicsToDeactivate,
-      };
-      await this.$store.dispatch('deleteAllSchedule', payload);
-      this.success = true;
-      this.loading = false;
-      this.confirmDeactivate = false
     },
     async selectUser(user) {
       if (user) {
-        let intakes = await this.$store.dispatch('getUserIntakes', user);
-        if (intakes) {
-          user.intakes = intakes
-        }
         let budgets = await this.$store.dispatch('getUserBudgets', user);
         if (budgets) {
           user.budgets = budgets

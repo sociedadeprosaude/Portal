@@ -423,7 +423,6 @@
                     obs: this.obs,
                     payment: this.payment,
                 };
-                this.$store.dispatch('addAppointment', data);
                 this.clear()
             },
             editExam(){
@@ -435,7 +434,6 @@
                     rules: this.exam.rules,
                     obs: this.exam.obs,
                 };
-                this.$store.dispatch('addExamToClinic', examData);
                 this.clear()
             },
 

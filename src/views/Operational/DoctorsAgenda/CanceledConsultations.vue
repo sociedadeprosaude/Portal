@@ -37,12 +37,9 @@
             animation: false,
             consultations:[]
         }),
-        /* computed: {
-            consultations () { return this.$store.getters.consultationsCanceled; }
-        }, */
+
         created() { this.animation = true },
         async mounted() {
-            //await this.$store.dispatch('getConsultationsCanceled');
             setTimeout(() => (this.animation = false), 3000)
         },
         methods: {
@@ -52,29 +49,12 @@
                     variables:{
                         idConsultation: consultation.id,
                     },
-
                 })
                 const index = this.consultations.findIndex(value => value.id === consultation.id)
                 this.consultations.splice(index,1)
                 this.dialog = false
             },
-            async registerCall(values){
-                await this.$store.dispatch('addArrayCallsToConsultation', {
-                    calls: values.calls,
-                    idConsultation: values.idConsultation,
-                })
-            },
             async selectUser(user) {
-                if (user) {
-                    let intakes = await this.$store.dispatch('getUserIntakes', user);
-                    if (intakes) {
-                        user.intakes = intakes
-                    }
-                    let budgets = await this.$store.dispatch('getUserBudgets', user);
-                    if (budgets) {
-                        user.budgets = budgets
-                    }
-                }
                 this.$store.commit('setSelectedPatient', user);
                 this.$store.commit('clearSelectedDependent');
             },

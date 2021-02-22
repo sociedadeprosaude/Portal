@@ -59,14 +59,7 @@ export default {
       "Dezembro"
     ]
   }),
-
-  mounted() {
-    this.initialInfo();
-  },
   methods: {
-    async initialInfo() {
-      await this.$store.dispatch("getStatisticsOuttakesClinicsByMonth");
-    },
     monthName(month) {
       return this.monsthsName[Number(month) - 1];
     },

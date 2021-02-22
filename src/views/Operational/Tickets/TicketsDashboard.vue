@@ -74,13 +74,6 @@ export default {
     },
 
     async updateLastTicket(number) {
-      this.loadingChange = true;
-      await this.$store.dispatch("updateGeneralInfo", {
-        ticket_number: number,
-        last_updated: moment().format("YYYY-MM-DD HH:mm:ss"),
-      });
-      await this.$store.dispatch("getTicketsGeneralInfo");
-      this.loadingChange = false;
       this.dialogChangeTicket = false;
     },
 

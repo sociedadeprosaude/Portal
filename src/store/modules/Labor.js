@@ -36,18 +36,6 @@ const actions = {
             return
         } catch (e) { console.log(e); return e }
     },
-    async setColaboratorGroup(context) {
-        try {
-            let colabList = await context.dispatch('searchUser', {
-                type: 'colaborator'
-            });
-            context.commit('setColaborators', colabList.sort((a, b) => {
-                if (a.name > b.name) return 1;
-                return -1
-            }));
-            return
-        } catch (e) { console.log(e); return e }
-    },
 };
 const getters = {
     colaborators(state) { return state.colabortors },

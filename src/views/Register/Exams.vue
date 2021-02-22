@@ -28,29 +28,6 @@ export default {
     newExamType: false,
     registed: false
   }),
-  mounted() {
-    let self = this;
-    window.addEventListener("keyup", function(e) {
-      if (e.target.id === "search") {
-        clearTimeout(self.typingTimer);
-        self.typingTimer = setTimeout(() => {
-          self.loading = true;
-          self.$store
-            .dispatch("loadSelectedExams", self.search.toUpperCase())
-            .then(() => {
-              self.loading = false;
-            });
-        }, 300);
-      }
-    });
-    window.addEventListener("keydown", function(e) {
-      if (e.target.id === "search") {
-        clearTimeout(self.typingTimer);
-      }
-    });
-
-    self.$store.dispatch("getExamsTypes");
-  },
 
   computed: {
     exams() {

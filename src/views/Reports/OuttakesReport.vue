@@ -95,9 +95,7 @@ export default {
       ]
     };
   },
-  mounted() {
-    this.$store.dispatch('getOuttakesCategories')
-  },
+
   methods: {
     formatDate(date) {
       const [year, month, day] = date.split("-");

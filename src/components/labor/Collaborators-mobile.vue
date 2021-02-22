@@ -237,7 +237,6 @@
                 return this.$store.getters.user
             },
             permissions() {
-                console.log('permissions', this.$store.getters.permissions);
                 return this.$store.getters.permissions
             },
             units() {

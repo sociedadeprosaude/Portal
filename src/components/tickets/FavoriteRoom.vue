@@ -207,8 +207,6 @@
                 room.tickets[ticketIndex].called_at = moment().format(
                     "YYYY-MM-DD HH:mm:ss"
                 );
-                const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", {sector, room});
                 this.loading = false
             },
             async callSectorTicket(room) {
@@ -222,11 +220,7 @@
                     "YYYY-MM-DD HH:mm:ss"
                 );
                 room.tickets.push(this.sector.tickets[ticketIndex]);
-                const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", {sector, room});
                 this.sector.tickets.splice(ticketIndex, 1);
-                await this.$store.dispatch("updateSector", this.sector);
-
             },
             getActualTicket(tickets) {
                 let calledTickets = tickets.filter(ticket => {
@@ -239,10 +233,6 @@
             },
             async setDoctorToRoom(room, doctor) {
                 room.doctor = doctor;
-                this.loading = true;
-                const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", {sector, room});
-                this.loading = false;
             },
             async generateNextTicket(room) {
                 if (!room.tickets) {
@@ -254,14 +244,11 @@
                     doctor: room.doctor
                 });
                 await this.upgradeTicketNumber();
-                const sector = this.sector;
-                await this.$store.dispatch("updateSectorRoom", {sector, room});
             },
             async upgradeTicketNumber() {
                 let ticketInfo = this.ticketInfo;
                 ticketInfo.ticket_number++;
                 ticketInfo.last_updated = moment().format("YYYY-MM-DD HH:mm:ss");
-                await this.$store.dispatch("updateGeneralInfo", this.ticketInfo);
             },
             openSingleView(room) {
                 this.singleViewDialog.room = room;

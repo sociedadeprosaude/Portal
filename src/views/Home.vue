@@ -33,7 +33,6 @@
                                         v-if="(page.title === 'Desconto A Cima' && Warning)">notification_important</v-icon>
                         </span>
               </v-layout>
-
             </v-card>
             <v-card
                 width="124"
@@ -80,7 +79,6 @@
                         Perfil
                     </span>
               <v-icon size="24">account_circle</v-icon>
-
             </v-layout>
           </v-card>
           <v-card class="card mx-2 my-2  py-1 px-2" @click="logout()">
@@ -89,7 +87,6 @@
                         Sair
                     </span>
               <v-icon size="24">exit_to_app</v-icon>
-
             </v-layout>
           </v-card>
         </v-layout>
@@ -111,12 +108,8 @@
 </template>
 
 <script>
-
 import alert from "../components/alert.vue";
-import {version} from '../../package.json';
-
 export default {
-
   components: {
     alert,
   },
@@ -317,7 +310,6 @@ export default {
             },
           ]
         },
-
       ]
     }
   },
@@ -381,7 +373,6 @@ export default {
           } else if (this.user.group === 'clinic') {
             return a === this.pages[4]
           }
-
           return false
         })
       }
