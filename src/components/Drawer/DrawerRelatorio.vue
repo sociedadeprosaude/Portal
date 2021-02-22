@@ -60,6 +60,10 @@ export default {
           txt: "Consultas mais vendidas",
           link: "RelatorioConsultasMaisVendidas"
         },
+          {
+              txt: "Pacotes mais vendidos",
+              link: "RelatorioPacotesMaisVendidos"
+          },
         {
           txt: "Relatório de Saídas",
           link: "RelatorioSaidas"

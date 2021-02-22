@@ -99,7 +99,7 @@
                 search: "",
                 now: moment().format("YYYY-MM-DD HH:mm:ss"),
                 total: 0,
-                options: ["Exames", "Exames separados por clinica"],
+              options: ["Exames", "Exames separados por clinica"],
                 optionSelected: 0,
                 headers: [
                     {

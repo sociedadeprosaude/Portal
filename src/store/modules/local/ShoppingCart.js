@@ -4,6 +4,7 @@ const state = {
     items: [],
     test: {},
     budget: undefined,
+    bundles: undefined,
     doctor: undefined,
     discount: 0,
     idBudget: undefined
@@ -15,6 +16,9 @@ const mutations = {
     },
     setSelectedBudget(state, payload) {
         state.budget = payload
+    },
+    setSelectedBundles(state, payload) {
+        state.bundles = payload
     },
     setShoppingCartItems(state, payload) {
         state.items = payload
@@ -50,6 +54,9 @@ const actions = {
 const getters = {
     selectedBudget(state) {
         return state.budget
+    },
+    selectedBundles(state) {
+        return state.bundles
     },
     shoppingCartSelectedDoctor(state) {
       return state.doctor

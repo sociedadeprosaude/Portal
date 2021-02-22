@@ -4,14 +4,14 @@
             <v-card v-for="(item, i) in Items" :key="i" class="my-2" width="100%">
                 <v-layout row wrap v-if="categorySelect === 'package'"
                           class="align-center justify-center text-center my-1">
-                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)"
+                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBundles(item)"
                            v-if="item.percentageDiscount">
                         {{item.name}}
                         <v-spacer/>
                         {{parseFloat(item.total).toFixed(2)}}
                     </v-btn>
 
-                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBudget(item)"
+                    <v-btn rounded dense x-small block class="background font-weight-bold" @click="selectBundles(item)"
                            v-else>
                         {{item.name}}
                         <v-spacer/>
@@ -88,7 +88,8 @@
         },
 
         methods: {
-            async selectBudget(budget) {
+            async selectBundles(budget) {
+              console.log('Bundles: ', budget)
                 if (budget.product) {
                     budget.product.filter( e => {
                         if( e.product[0].type === "EXAM") {
@@ -107,7 +108,8 @@
                         this.$store.commit('addShoppingCartItem', product)
                     })
                 }
-                this.$store.commit('setSelectedBudget', budget);
+              this.$store.commit('setSelectedBundles', budget);
+              this.$store.commit('setSelectedBudget', budget);
                 for (let exam in budget.exams) {
                     this.$store.commit('addShoppingCartItem', budget.exams[exam])
                 }

@@ -2,16 +2,6 @@
   <v-container fluid>
     <DrawerRelatorio @change-selected="(value)=>{selected=value;searchView()}" />
 
-<!--    <DateSelector-->
-<!--      v-if="!hide"-->
-<!--      :cb="()=>searchView()"-->
-<!--      :loadingFather="loading"-->
-<!--      @change-date="(value)=>date=value"-->
-<!--      @change-date2="(value)=>date2=value"-->
-<!--      @change-dateFormatted="(value)=>dateFormatted=value"-->
-<!--      @change-dateFormatted2="(value)=>dateFormatted2=value"-->
-<!--    />-->
-
     <general-report
       v-if="selected == 0"
     />
@@ -47,50 +37,53 @@
       :date2="dateEnd"
       :loading="loading"
     />
-
+    <BestSellingBundlesReport v-else-if="selected == 7"
+                              :date="dateBegin"
+                              :date2="dateEnd"
+                              :loading="loading"></BestSellingBundlesReport>
     <OuttakesReport
-      v-else-if="selected == 7"
+      v-else-if="selected == 8"
       :date="dateBegin"
       :date2="dateEnd"
       :cb="()=>searchView()"
       :loading="loading"
     />
     <NewUsersReport
-      v-else-if="selected == 8"
+      v-else-if="selected == 9"
       :date="dateBegin"
       :date2="dateEnd"
       :todayNewUsers="todayNewUsers"
       :loading="loading"
     />
     <SpecialtiesMadeReport
-      v-else-if="selected == 9"
-      :report="formattedReport"
-      :loading="loading"
-      :intakes="intakes"
-    />
-    <ConsultationScheduledExecuted
       v-else-if="selected == 10"
       :report="formattedReport"
       :loading="loading"
       :intakes="intakes"
     />
-    <CustomersPerProcedureReport
+    <ConsultationScheduledExecuted
       v-else-if="selected == 11"
+      :report="formattedReport"
+      :loading="loading"
+      :intakes="intakes"
+    />
+    <CustomersPerProcedureReport
+      v-else-if="selected == 12"
       :report="formattedReport"
       :loading="loading"
     />
 
-    <statsCaixaIntakes v-else-if="selected == 12"></statsCaixaIntakes>
-    <statsCaixaOuttakesCategory v-else-if="selected == 13"></statsCaixaOuttakesCategory>
-    <statsCaixaOuttakesClinics v-else-if="selected == 14"></statsCaixaOuttakesClinics>
-    <Clients v-else-if="selected == 15"></Clients>
-    <EmployeeServiceReport v-else-if="selected == 16"></EmployeeServiceReport>
-    <statistics-budgets v-else-if="selected == 17"></statistics-budgets>
-    <statistic-patients-geo-point v-else-if="selected == 18"></statistic-patients-geo-point>
-    <patients-budgets v-else-if="selected == 19"></patients-budgets>
-    <patients v-else-if="selected == 20"></patients>
-    <consultations-by-doctor v-else-if="selected == 21"></consultations-by-doctor>
-    <patient-report-age-consultation v-else-if="selected == 22"></patient-report-age-consultation>
+    <statsCaixaIntakes v-else-if="selected == 13"></statsCaixaIntakes>
+    <statsCaixaOuttakesCategory v-else-if="selected == 14"></statsCaixaOuttakesCategory>
+    <statsCaixaOuttakesClinics v-else-if="selected == 15"></statsCaixaOuttakesClinics>
+    <Clients v-else-if="selected == 16"></Clients>
+    <EmployeeServiceReport v-else-if="selected == 17"></EmployeeServiceReport>
+    <statistics-budgets v-else-if="selected == 18"></statistics-budgets>
+    <statistic-patients-geo-point v-else-if="selected == 19"></statistic-patients-geo-point>
+    <patients-budgets v-else-if="selected == 20"></patients-budgets>
+    <patients v-else-if="selected == 21"></patients>
+    <consultations-by-doctor v-else-if="selected == 22"></consultations-by-doctor>
+    <patient-report-age-consultation v-else-if="selected == 23"></patient-report-age-consultation>
   </v-container>
 </template>
 
@@ -102,6 +95,7 @@ import IntakesReport from "@/views/Reports/IntakesReport";
 import ProceduresPricesAnalises from "@/views/Reports/ProceduresPricesAnalises";
 import BestSellingExamsReport from "@/views/Reports/BestSellingExamsReport";
 import BestSellingConsultationsReport from "@/views/Reports/BestSellingConsultationsReport";
+import BestSellingBundlesReport from "@/views/Reports/BestSellingBundlesReport";
 import OuttakesReport from "@/views/Reports/OuttakesReport";
 import NewUsersReport from "@/views/Reports/NewUsersReport";
 import SpecialtiesMadeReport from "@/views/Reports/SpecialtiesMadeReport";
@@ -133,6 +127,7 @@ export default {
     ProceduresPricesAnalises,
     BestSellingExamsReport,
     BestSellingConsultationsReport,
+    BestSellingBundlesReport,
     OuttakesReport,
     SpecialtiesMadeReport,
     NewUsersReport,
@@ -198,60 +193,65 @@ export default {
         case "RelatorioConsultasMaisVendidas":
           this.selected = 6;
           break;
+        case "RelatorioPacotesMaisVendidos":
+          this.selected = 7
+          break;
         case "RelatorioSaidas":
           await this.getOuttakes();
-          this.selected = 7;
+          this.selected = 8;
 
           break;
         case "RelatorioNovosUsuarios":
-          this.selected = 8;
+          this.selected = 9;
           await this.getTodayUsers();
           await this.getUsers();
           break;
         case "RelatorioSpecialidadesFeitas":
-          this.selected = 9;
+          this.selected = 10;
+          await this.getIntakes();
           await this.searchReports();
           break;
         case "RelatorioConsultasAgendadas":
-          this.selected = 10;
+          this.selected = 11;
+          await this.getIntakes();
           await this.searchReports();
           break;
         case "RelatorioClientesPorProcedimento":
-          this.selected = 11;
+          this.selected = 12;
           await this.searchReports();
           break;
         case "RelatorioEntradasEstatistica":
-          this.selected = 12;
-          break;
-        case "RelatorioSaidasCategoriaEstatistica":
           this.selected = 13;
           break;
-        case "RelatorioSaidasClinicasEstatisticas":
+        case "RelatorioSaidasCategoriaEstatistica":
           this.selected = 14;
           break;
-        case "RelatorioClientesEstatisticas":
+        case "RelatorioSaidasClinicasEstatisticas":
           this.selected = 15;
           break;
-        case "RelatorioAtendimentosColaboradores":
+        case "RelatorioClientesEstatisticas":
           this.selected = 16;
           break;
-        case "StatisticasOrcamento":
+        case "RelatorioAtendimentosColaboradores":
           this.selected = 17;
           break;
-        case "StatisticPatientsGeoPoint":
+        case "StatisticasOrcamento":
           this.selected = 18;
           break;
-        case "PatientsBudgets":
+        case "StatisticPatientsGeoPoint":
           this.selected = 19;
           break;
-        case "Patients":
+        case "PatientsBudgets":
           this.selected = 20;
           break;
-        case "ConsultationsByDoctor":
+        case "Patients":
           this.selected = 21;
           break;
-        case "PatientReportAgeConsultation":
+        case "ConsultationsByDoctor":
           this.selected = 22;
+          break;
+        case "PatientReportAgeConsultation":
+          this.selected = 23;
           break;
         default:
           this.selected = 0;

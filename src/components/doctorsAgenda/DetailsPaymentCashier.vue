@@ -153,7 +153,7 @@
             <submit-button
                 :disabled="paymentDisabled"
                 text="Pagar" :loading="paymentLoading"
-                :success="paymentSuccess" color="primary" @click="pay()">
+                :success="paymentSuccess" color="primary" @click="paymentFunction()">
               Pagar
             </submit-button>
           </v-flex>
@@ -255,7 +255,11 @@ export default {
       return this.$store.getters.selectedUnit
     },
     selectedBudget() {
+      console.log('budget: ',this.$store.getters.selectedBudget)
       return this.$store.getters.selectedBudget
+    },
+    selectedBudles(){
+      return this.$store.getters.selectedBundles
     },
     patient() {
       return this.$store.getters.selectedPatient
@@ -291,6 +295,7 @@ export default {
     return this.percentageDiscount
     },
     idBudget(){
+      console.log('budgetId: ', this.$store.getters.getIdBudget)
       return this.$store.getters.getIdBudget
     },
     subTotal() {
@@ -563,6 +568,105 @@ export default {
       let transactionId = await this.makeTransaction()
       this.receipt(this.selectedBudget)
     },
+    async paymentFunction(){
+      this.paymentLoading = true;
+      let user = this.patient
+      this.idUser = user.id
+      if (!user) {
+        this.paymentLoading = false
+        this.alertMessage.model = true
+        this.alertMessage.text = 'Escolha um paciente'
+        return
+      }
+      if (!this.selectedDoctor) {
+        this.paymentLoading = false
+        this.alertMessage.model = true
+        this.alertMessage.text = 'Escolha um médico que requisitou este orçamento'
+        return
+      }
+      this.alertMessage.model = false
+      await this.saveBudget(this.generateBudget());
+      this.selectedBudget.valuesPayments.forEach(value => {
+        value = parseFloat(value)
+      })
+
+      this.selectedBudget.bundle = this.selectedBudles
+      this.selectedBudget.unitId= this.selectedBudget.unit.id
+      let produtsArray = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
+      let produts = []
+      for(let i=0; i< produtsArray.length ; i++){
+        if(produtsArray[i]){
+          console.log('product: ', produtsArray[i])
+          if(produtsArray[i].clinic){
+            produts[i]= {
+              id: produtsArray[i].id,
+              price: produtsArray[i].price,
+              type: produtsArray[i].type,
+              clinicId: produtsArray[i].clinic.id,
+            }
+          }
+          else{
+            produts[i]= {
+              id: produtsArray[i].id,
+              price: produtsArray[i].price,
+              type: produtsArray[i].type
+            }
+          }
+        }
+      }
+      let bundle= { id: this.selectedBudles.id, products:[]}
+      for(let i=0; i< this.selectedBudles.product.length ; i++){
+          bundle.products[i]= {
+            id: this.selectedBudles.product[i].product[0].id,
+            type: this.selectedBudles.product[i].product[0].type
+          }
+        }
+      var payment = {
+        unitId: this.selectedBudget.unit.id, // ID!
+        userId: this.selectedBudget.user.id, //ID!
+        colaboratorId: this.selectedBudget.colaborator.id, // ID!
+        doctorId: this.selectedBudget.doctor.id ? this.selectedBudget.doctor.id : '', // ID
+        budgetId: this.idBudget, //ID
+        discount: this.selectedBudget.discount, // Float!
+        parcels: this.selectedBudget.parcel, //[Int]!
+        values: this.selectedBudget.valuesPayments, //[Float]!
+        paymentMethods: this.selectedBudget.payments, //[String]!
+        total: this.selectedBudget.total, //Float!
+        subTotal: this.selectedBudget.subTotal, //[Float]!
+        products:produts, //Product!
+        bundle: bundle //Bundle
+      }
+      console.log('payment : ', payment)
+
+    let responde = await this.$apollo.mutate({
+        mutation: require('@/graphql/transaction/Payment.gql'),
+        variables:{
+          unitId: payment.unitId,
+          userId:payment.userId,
+          colaboratorId:payment.colaboratorId,
+          doctorId: payment.doctorId,
+          budgetId: payment.budgetId,
+          discount:payment.discount,
+          parcels:payment.parcels,
+          values: payment.values,
+          paymentMethods:payment.paymentMethods,
+          total:payment.total,
+          subTotal:payment.subTotal,
+          products:payment.products,
+          bundle: payment.bundle
+        }
+      })
+        await this.$apollo.mutate({
+          mutation: require('@/graphql/patients/UpdateConsultations.gql'),
+          variables:{
+            id:this.selectedBudget.user.id
+          }
+        })
+      this.skipPatients = false
+      this.$apollo.queries.loadPatient.refresh();
+      this.paymentLoading = false;
+      this.receipt(this.selectedBudget)
+    },
     async makeTransaction() {
       let transactionId = uuid.v4()
       let mutationBuilder = new MutationBuilder()
@@ -602,7 +706,6 @@ export default {
       let products = this.selectedBudget.exams.concat(this.selectedBudget.specialties)
       products = products.filter(p => p)
       for (let product in products) {
-
         let prodId = uuid.v4()
         products[product].prodId = prodId
         productsTransactionIds.push(Object.assign({},products[product]))
@@ -668,7 +771,28 @@ export default {
           })
         }
       }
-
+      if(this.selectedBudles !== undefined){
+        console.log('selectedBundle: ', this.selectedBudles)
+        let bundle = true;
+        for(let i=0; i< this.selectedBudles.product.length; i++){
+          if(products.find(product =>  product.id === this.selectedBudles.product[i].product[0].id)){
+            console.log('encontrei a parada')
+          }
+          else{
+            bundle = false
+            console.log('nao encontrei')
+          }
+        }
+        if(bundle === true){
+          mutationBuilder.addMutation({
+            mutation: require('@/graphql/transaction/AddRelationsTransactionBundle.gql'),
+            variables:{
+              idBudget: transactionId,
+              idBundle: this.selectedBudles.id
+            }
+          })
+        }
+      }
 
       if(this.idBudget !== undefined){
         mutationBuilder.addMutation({
@@ -706,11 +830,19 @@ export default {
       this.$store.commit('setSelectedPatient', user)
     },
 
-    verifyUnpaidConsultations(productTransactions) {
-      let foundConsultation = false;
+    async verifyUnpaidConsultations() {
+      console.log(this.selectedBudget.user.id)
+      /*  let user = await this.$apollo.mutate({
+          mutation: require('@/graphql/patients/UpdateConsultations.gql'),
+          variables:{
+            id:this.selectedBudget.user.id
+          }
+        })
+      console.log('retorno :' , user) */
+      /*let foundConsultation = false;
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
-        let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
+        let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction && consultation.status === "Aguardando pagamento")
 
         if (unpaidConsultation) {
           this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
@@ -722,6 +854,7 @@ export default {
         this.$apollo.queries.loadPatient.refresh();
         console.log('Tem que recarregar')
       }
+      this.paymentLoading = false; */
     },
 
     saveRelationProductTransaction(idConsultation, idProductTransaction) {
@@ -745,6 +878,7 @@ export default {
       },
       update(data) {
         this.skipPatients = true
+        console.log('recarregando usuario')
         this.$store.commit('setSelectedPatient', data.Patient[0]);
       },
       skip() {
