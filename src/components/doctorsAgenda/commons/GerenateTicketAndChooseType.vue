@@ -7,10 +7,6 @@
             <v-icon>close</v-icon>
           </v-btn>
         </v-card-title>
-<!--        C:{{this.consultation}}<br/>
-        S:{{this.sector}}<br/>
-        R:{{this.room}}<br/>
-        T:{{this.ticket}}<br/>-->
         <v-card-text>
           <v-checkbox
               v-model="type"
@@ -62,6 +58,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   props: ['consultation', 'room', 'sector', 'ticket'],
   name: "GerenateTicketAndChooseType",

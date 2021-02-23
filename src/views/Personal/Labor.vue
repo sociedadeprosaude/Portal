@@ -23,18 +23,14 @@
 </template>
 
 <script>
-    import PaymenyReport from "../../components/labor/PaymenyReport";
     import Collaborators from "../../components/labor/Collaborators";
-    import Doctors from "../../components/labor/Doctors";
     import CollaboratorsMobile from "../../components/labor/Collaborators-mobile"
 
 
     export default {
         name: "Home",
         components: {
-            PaymenyReport,
             Collaborators,
-            Doctors,
             CollaboratorsMobile
         },
         data: () => ({

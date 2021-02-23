@@ -17,109 +17,110 @@
                       <h4 class="text-left mb-2 ">Total a pagar: {{ TotalCostExamsClinic(data) }}</h4>
                     </v-flex>
                   </v-layout>
-                  <v-card v-for="(clinic,i) in data ? data.Clinic : []" :key="i" outlined class="mb-4 primary"
-                          v-if="clinic.charges.length !== 0">
-                    <v-layout row wrap>
-                      <v-flex xs10 md5 class="text-left">
-                        <span class="font-weight-bold white--text ml-2">{{ clinic.name }}</span>
-                      </v-flex>
-                      <v-spacer></v-spacer>
-                      <v-flex xs2 md1>
-                        <v-menu open-on-hover top offset-y>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                v-bind="attrs"
-                                v-on="on"
-                                class="elevation-0 transparent"
-                                small
-                                dark
-                            >
-                              <v-icon>more_vert</v-icon>
-                            </v-btn>
-                          </template>
+                  <v-layout v-if="clinic.charges.length !== 0">
+                    <v-card v-for="(clinic,i) in data ? data.Clinic : []" :key="i" outlined class="mb-4 primary">
+                      <v-layout row wrap>
+                        <v-flex xs10 md5 class="text-left">
+                          <span class="font-weight-bold white--text ml-2">{{ clinic.name }}</span>
+                        </v-flex>
+                        <v-spacer></v-spacer>
+                        <v-flex xs2 md1>
+                          <v-menu open-on-hover top offset-y>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  class="elevation-0 transparent"
+                                  small
+                                  dark
+                              >
+                                <v-icon>more_vert</v-icon>
+                              </v-btn>
+                            </template>
 
-                          <v-list>
-                            <v-list-item
-                                v-for="(item, index) in Menu"
-                                :key="index"
-                                @click="OpenReceipt(item,clinic)"
-                            >
-                              <v-list-item-title>{{ item.title }}</v-list-item-title>
-                            </v-list-item>
-                          </v-list>
-                        </v-menu>
-                      </v-flex>
-                    </v-layout>
-                    <v-flex xs12 sm12>
-                      <v-layout row wrap class="justify-center">
-                        <v-flex xs5 md2>
-                          <v-card sm3 class="mx-4 elevation-0 transparent">
+                            <v-list>
+                              <v-list-item
+                                  v-for="(item, index) in Menu"
+                                  :key="index"
+                                  @click="OpenReceipt(item,clinic)"
+                              >
+                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                              </v-list-item>
+                            </v-list>
+                          </v-menu>
+                        </v-flex>
+                      </v-layout>
+                      <v-flex xs12 sm12>
+                        <v-layout row wrap class="justify-center">
+                          <v-flex xs5 md2>
+                            <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
                                                     Custo : {{ CostExamsClinic(clinic) }}
                                                 </span>
-                          </v-card>
-                        </v-flex>
-                        <v-flex xs7 md2>
-                          <v-card sm3 class="mx-4 elevation-0 transparent">
+                            </v-card>
+                          </v-flex>
+                          <v-flex xs7 md2>
+                            <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
                                                             Nº de exames : {{ clinic.charges.length }}
                                                 </span>
-                          </v-card>
-                        </v-flex>
-                        <v-flex xs12 class="mb-4 hidden-md-and-up">
-                          <v-spacer></v-spacer>
-                        </v-flex>
-                        <v-flex md3>
-                          <v-card sm3 class="mx-4 elevation-0 transparent">
+                            </v-card>
+                          </v-flex>
+                          <v-flex xs12 class="mb-4 hidden-md-and-up">
+                            <v-spacer></v-spacer>
+                          </v-flex>
+                          <v-flex md3>
+                            <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
                                                              Próximo Pagamento: {{ date(clinic.last_payment, clinic.period) }}
                                                 </span>
-                          </v-card>
-                        </v-flex>
-                        <v-flex xs12 class="mb-2 hidden-md-and-up">
-                          <v-spacer></v-spacer>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex xs12 class="mb-4 hidden-md-and-up">
-                      <v-spacer></v-spacer>
-                    </v-flex>
-                    <v-flex xs12 sm12 class="mt-3">
-                      <v-layout row wrap class="justify-space-between">
-                        <ApolloQuery
-                            :query="require('@/graphql/clinics/LoadClinicOuttakes.gql')"
-                            :variables="{id:clinic.id}"
-                        >
-                          <template slot-scope="{ result: { data } }">
-                        <v-flex xs6 class="text-left" v-if="data">
-                          <v-btn @click="checkReceipts(clinic,data)" text dark>+ detalhes</v-btn>
-                        </v-flex>
-                            <v-flex xs6 class="text-left" v-else>
-                              <v-progress-linear color="primary" indeterminate/>
-                            </v-flex>
-                          </template>
-                        </ApolloQuery>
+                            </v-card>
+                          </v-flex>
+                          <v-flex xs12 class="mb-2 hidden-md-and-up">
+                            <v-spacer></v-spacer>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 class="mb-4 hidden-md-and-up">
+                        <v-spacer></v-spacer>
+                      </v-flex>
+                      <v-flex xs12 sm12 class="mt-3">
+                        <v-layout row wrap class="justify-space-between">
+                          <ApolloQuery
+                              :query="require('@/graphql/clinics/LoadClinicOuttakes.gql')"
+                              :variables="{id:clinic.id}"
+                          >
+                            <template slot-scope="{ result: { data } }">
+                              <v-flex xs6 class="text-left" v-if="data">
+                                <v-btn @click="checkReceipts(clinic,data)" text dark>+ detalhes</v-btn>
+                              </v-flex>
+                              <v-flex xs6 class="text-left" v-else>
+                                <v-progress-linear color="primary" indeterminate/>
+                              </v-flex>
+                            </template>
+                          </ApolloQuery>
 
-                        <v-flex xs6 class="text-right">
-                          <v-card class="mx-4 elevation-0 transparent">
-                            <v-btn :loading="loadingPayment" @click="payClinic(clinic)" outlined dark
-                                   class="elevation-0">
+                          <v-flex xs6 class="text-right">
+                            <v-card class="mx-4 elevation-0 transparent">
+                              <v-btn :loading="loadingPayment" @click="payClinic(clinic)" outlined dark
+                                     class="elevation-0">
                                                     <span class="font-weight-bold white--text">
                                                         Pagar
                                                     </span>
-                            </v-btn>
-                          </v-card>
-                        </v-flex>
-                        <v-flex xs12 class="mb-2">
-                          <v-spacer></v-spacer>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-card v-if="intakesObserv && clinic === clinicSelected">
-                      <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected"
-                                      :outtakes="outtakesSelected"></clinicsIntakes>
+                              </v-btn>
+                            </v-card>
+                          </v-flex>
+                          <v-flex xs12 class="mb-2">
+                            <v-spacer></v-spacer>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-card v-if="intakesObserv && clinic === clinicSelected">
+                        <clinicsIntakes @close-dialog="intakesObserv = false" :clinic="clinicSelected"
+                                        :outtakes="outtakesSelected"></clinicsIntakes>
+                      </v-card>
                     </v-card>
-                  </v-card>
+                  </v-layout>
                   <v-btn elevation="0" color="white" v-if="!data" :loading="true"></v-btn>
                 </template>
               </ApolloQuery>
@@ -160,8 +161,6 @@ import clinicsIntakes from "../../components/PaymentCovenants/ClinicsIntakes"
 import ReceiptOuttakesConvenant from "../../components/PaymentCovenants/ReceiptOuttakesConvenants"
 import {uuid} from "vue-uuid";
 import MutationBuilder from "@/classes/MutationBuilder";
-import gql from "graphql-tag";
-
 export default {
   name: "PaymentCovenants",
   components: {
@@ -296,10 +295,9 @@ export default {
           }
         })
       }
-      let response = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
-      console.log('ok')
       this.loadingPayment = false
     },
     date(day, period) {

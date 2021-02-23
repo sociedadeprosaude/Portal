@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import RoomDashboard from "@/components/tickets/RoomDashboard";
 
 export default {

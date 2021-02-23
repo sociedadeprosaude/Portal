@@ -36,7 +36,7 @@
 
     export default {
         components: {statsCaixaIntakes},
-        data: vm => ({
+        data: () => ({
             year: null,
             months: null,
             month: null,
@@ -282,8 +282,8 @@
                     tooltips: {
                         enabled: true,
                         callbacks: {
-                            title: (items, data) => "R$ " + items[0].value,
-                            label: (items, data) => null
+                            title: (items) => "R$ " + items[0].value,
+                            label: () => null
                         }
                     }
                 };

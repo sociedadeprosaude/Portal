@@ -171,7 +171,7 @@
         },
 
         watch: {
-            categorySelect(value) {
+            categorySelect() {
                 switch (this.categorySelect) {
                     case 'exam':
                         this.type = 'EXAM'

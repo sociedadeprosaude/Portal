@@ -254,7 +254,7 @@
             this.clinic = this.$store.getters.selectedUnit
         },
         watch: {
-            date(val) {
+            date() {
                 this.dateFormatted = this.formatDate(this.date)
             },
 

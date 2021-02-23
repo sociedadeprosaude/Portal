@@ -17,95 +17,96 @@
                                   <h4 class="text-left mb-2 ">Total a pagar: {{TotalCostExamsDoctor(data)}}</h4>
                                 </v-flex>
                               </v-layout>
-                            <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary" v-if="doctor.charges.length !== 0">
-
-                                <v-layout row wrap>
+                              <v-flex xs12 v-if="doctor.charges.length !== 0">
+                                <v-card v-for="(doctor,i) in data ? data.Doctor : []" :key="i" outlined class="mb-4 primary" >
+                                  <v-layout row wrap>
                                     <v-flex s10 md3 class="text-left">
-                                        <span class="font-weight-bold white--text ml-2">{{doctor.name.toUpperCase()}}</span>
+                                      <span class="font-weight-bold white--text ml-2">{{doctor.name.toUpperCase()}}</span>
                                     </v-flex>
                                     <v-spacer></v-spacer>
                                     <v-flex xs2 md1>
-                                        <v-menu open-on-hover top offset-y>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                        class="elevation-0 transparent"
-                                                        small
-                                                        dark
-                                                >
-                                                    <v-icon>more_vert</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <v-list>
-                                                <v-list-item
-                                                        v-for="(item, index) in Menu"
-                                                        :key="index"
-                                                        @click="OpenReceipt(item,doctor)"
-                                                >
-                                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                                                </v-list-item>
-                                            </v-list>
-                                        </v-menu>
+                                      <v-menu open-on-hover top offset-y>
+                                        <template v-slot:activator="{ on, attrs }">
+                                          <v-btn
+                                              v-bind="attrs"
+                                              v-on="on"
+                                              class="elevation-0 transparent"
+                                              small
+                                              dark
+                                          >
+                                            <v-icon>more_vert</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <v-list>
+                                          <v-list-item
+                                              v-for="(item, index) in Menu"
+                                              :key="index"
+                                              @click="OpenReceipt(item,doctor)"
+                                          >
+                                            <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                          </v-list-item>
+                                        </v-list>
+                                      </v-menu>
                                     </v-flex>
-                                </v-layout>
-                                <v-flex xs12 sm12>
+                                  </v-layout>
+                                  <v-flex xs12 sm12>
                                     <v-layout row wrap class="justify-center">
-                                        <v-flex xs5 md2>
-                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                      <v-flex xs5 md2>
+                                        <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span class="font-weight-bold white--text">
                                                       Custo : {{CostExamsDoctor(doctor)}}
                                                 </span>
-                                            </v-card>
-                                        </v-flex>
-                                        <v-flex xs7 md2>
-                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                        </v-card>
+                                      </v-flex>
+                                      <v-flex xs7 md2>
+                                        <v-card sm3 class="mx-4 elevation-0 transparent">
                                                 <span  class="font-weight-bold white--text">
                                                             Nº de exames : {{doctor.charges ? doctor.charges.length : 0}}
                                                 </span>
-                                            </v-card>
-                                        </v-flex>
-                                        <v-flex xs12 class="mb-4 hidden-md-and-up">
-                                            <v-spacer></v-spacer>
-                                        </v-flex>
-                                        <v-flex md3>
-                                            <v-card sm3 class="mx-4 elevation-0 transparent">
+                                        </v-card>
+                                      </v-flex>
+                                      <v-flex xs12 class="mb-4 hidden-md-and-up">
+                                        <v-spacer></v-spacer>
+                                      </v-flex>
+                                      <v-flex md3>
+                                        <v-card sm3 class="mx-4 elevation-0 transparent">
                                             <span class="font-weight-bold white--text">
                                                          Último Pagamento: {{lastPayment(doctor)}}
                                             </span>
-                                            </v-card>
-                                        </v-flex>
-                                        <v-flex xs12 class="mb-2 hidden-md-and-up">
-                                            <v-spacer></v-spacer>
-                                        </v-flex>
+                                        </v-card>
+                                      </v-flex>
+                                      <v-flex xs12 class="mb-2 hidden-md-and-up">
+                                        <v-spacer></v-spacer>
+                                      </v-flex>
                                     </v-layout>
-                                </v-flex>
-                                <v-flex xs12 class="mb-4 hidden-md-and-up">
+                                  </v-flex>
+                                  <v-flex xs12 class="mb-4 hidden-md-and-up">
                                     <v-spacer></v-spacer>
-                                </v-flex>
-                                <v-flex xs12 sm12 class="mt-3">
+                                  </v-flex>
+                                  <v-flex xs12 sm12 class="mt-3">
                                     <v-layout row wrap class="justify-space-between">
-                                        <v-flex xs6 class="text-left">
-                                            <v-btn @click="checkReceipts(doctor)" text dark>+ detalhes</v-btn>
-                                        </v-flex>
-                                        <v-flex xs6 class="text-right">
-                                            <v-card class="mx-4 elevation-0 transparent">
-                                                <v-btn :loading="loadingPayment"  @click="payDoctor(doctor)" outlined dark class="elevation-0">
+                                      <v-flex xs6 class="text-left">
+                                        <v-btn @click="checkReceipts(doctor)" text dark>+ detalhes</v-btn>
+                                      </v-flex>
+                                      <v-flex xs6 class="text-right">
+                                        <v-card class="mx-4 elevation-0 transparent">
+                                          <v-btn :loading="loadingPayment"  @click="payDoctor(doctor)" outlined dark class="elevation-0">
                                                     <span class="font-weight-bold white--text">
                                                         Pagar
                                                     </span>
-                                                </v-btn>
-                                            </v-card>
-                                        </v-flex>
-                                        <v-flex xs12 class="mb-2">
-                                            <v-spacer></v-spacer>
-                                        </v-flex>
+                                          </v-btn>
+                                        </v-card>
+                                      </v-flex>
+                                      <v-flex xs12 class="mb-2">
+                                        <v-spacer></v-spacer>
+                                      </v-flex>
                                     </v-layout>
-                                </v-flex>
-                                <v-card v-if="intakesObserv && doctor === doctorSelected">
+                                  </v-flex>
+                                  <v-card v-if="intakesObserv && doctor === doctorSelected">
                                     <DoctorOuttakes @close-dialog="intakesObserv = false" :doctor="doctorSelected" :outtakes="outtakesSelected"></DoctorOuttakes>
+                                  </v-card>
                                 </v-card>
-                            </v-card>
+                              </v-flex>
                               <v-flex xs12 v-if="data">
                                 <v-card class="mx-4 elevation-0 transparent">
                                   <v-btn @click="payAllDoctor(data ? data.Doctor : [])"  outlined class="elevation-0">
@@ -136,8 +137,6 @@
     import ReceiptOuttakesDoctor from "../../components/OuttakesDoctor/ReceiptOuttakesDoctor"
     import {uuid} from "vue-uuid";
     import MutationBuilder from "@/classes/MutationBuilder";
-    import gql from "graphql-tag";
-
 
     export default {
         name: "PaymentMedics",

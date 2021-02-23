@@ -114,7 +114,6 @@
   </v-container>
 </template>
 <script>
-import moment from "moment";
 import TableConsultationClinics from "@/components/Reports/TableConsultationClinics";
 import TableConsultationDoctor from "@/components/Reports/TableConsultationDoctors";
 export default {

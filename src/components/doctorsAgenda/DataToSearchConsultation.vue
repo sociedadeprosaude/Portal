@@ -21,16 +21,6 @@
           <span style="color: #003B8F; font-weight: bold">Calendário</span>
         </v-tooltip>
       </v-flex>
-      <!-- <v-flex xs12 class="mt-3" v-show="showCalendar">
-        <v-date-picker
-            :allowed-dates="allowedDates"
-            class="mx-2"
-            locale="pt-br"
-            v-model="date"
-            no-title
-            color="primary"
-        />
-      </v-flex> -->
       <v-flex class="mt-4" sm12>
         <CardPatient ref="patientCard"/>
       </v-flex>
@@ -57,8 +47,6 @@ export default {
     consultationsListenerUnsubscriber: undefined,
     schedules:[],
     filterExams:false,
-    //selectedExam: undefined,
-    //selectedSpecialty:undefined,
     selectedProduct:undefined,
     selectedDoctor:undefined,
     selectedClinic:undefined
@@ -66,7 +54,6 @@ export default {
 
   async mounted() {
     this.showCalendar = true;
-    //await this.listenConsultations();
     this.showCalendar = false;
   },
 
@@ -79,14 +66,14 @@ export default {
     },
 
     changeData: {
-      handler: function(val) {
+      handler: function() {
         this.$emit('loading',true)
         this.$apollo.queries.loadSchedules.refresh()
       },
       deep: true
     },
 
-    daysToListen(value){
+    daysToListen(){
       this.consultationsByDate(this.schedules)
     },
 
@@ -154,7 +141,7 @@ export default {
         //let keys = Object.keys(schedule.days);
         if (schedule.days && schedule.product && schedule.doctor) {
           let dates = this.datesOfInterval({days: schedule.days});
-          dates.forEach((date, index) => {
+          dates.forEach((date) => {
             let findDay = schedule.days.find(day => Number(day.day) == moment(date).weekday())
             let hourConsultation = findDay.hour;
             if (!this.dateIsInCancledPeriod(schedule,date)) {

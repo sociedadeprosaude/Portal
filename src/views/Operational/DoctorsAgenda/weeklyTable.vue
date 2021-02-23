@@ -41,20 +41,6 @@ export default {
   computed: {
     specialties() {
       let espArray = Object.values(this.$store.getters.specialties);
-      /* espArray = espArray.filter(specialty => {
-                    if (!this.doctor) {
-                    return true;
-                    }
-                    var find = false;
-                    specialty.doctors.forEach(doctor => {
-                    if (doctor.cpf === this.doctor.cpf) {
-                        find = true;
-                        return true;
-                    }
-                    });
-
-                    return find;
-                }); */
       return espArray;
     },
 
@@ -65,7 +51,7 @@ export default {
     doctorsMapping() {
       var weeklyTable = [];
       var currentDate = moment("06:00", "hh:mm");
-      new Array(23).fill().map((acc, index) => {
+      new Array(23).fill().map(() => {
         weeklyTable.push({
           hour: currentDate.format("HH:mm"),
           monday: [],

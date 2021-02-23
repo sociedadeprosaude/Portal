@@ -188,6 +188,7 @@
                 return this.$store.getters.user;
             },
             units() {
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.unit = this.selectedUnit;
                 return [...this.$store.getters.units, {name: this.other}];
             },
@@ -250,7 +251,6 @@
                 if (parseFloat(bill.value) > 0) {
                     bill.value = (parseFloat(bill.value) - (2 * parseFloat(bill.value)))
                 }
-                let charge = ''
                 await this.$apollo.mutate({
                     mutation: require('@/graphql/charge/CreateChargeBill.gql'),
                     variables: {
@@ -263,7 +263,7 @@
                         type: 'bill'
                     }
                 }).then((data) => {
-                    charge = data.data.CreateCharge;
+                  data.data.CreateCharge;
                     this.$apollo.mutate({
                         mutation: require('@/graphql/charge/AddRelationsChargeBillRelations.gql'),
                         variables: {

@@ -104,14 +104,6 @@ export default {
        };
     },
     async updateDay() {
-      this.loading = true;
-      let copySchedule = Object.assign({}, this.schedule);
-      /* copySchedule.cancelations_schedules[this.index] = this.newPeriod;
-      await this.$store.dispatch("updateSchedulePeriods", {
-        idSchedule: this.schedule.id,
-        cancelations_schedules: copySchedule.cancelations_schedules
-      }); */
-      this.loading = false;
       this.dialogRemove = false;
     }
   }

@@ -44,17 +44,19 @@
                         <span class="ml-auto font-weight-bold">Telefone</span>
                       </v-col>
                     </v-row>
-                    <v-row v-if="data" v-for="patient in PatientFilter(data)">
-                      <v-col>
-                        <span class="ml-auto font-weight-bold">{{patient.name}}</span>
-                      </v-col>
-                      <v-col>
-                        <span class="ml-auto font-weight-bold">{{patient.email ? patient.email : 'Sem email'}}</span>
-                      </v-col>
-                      <v-col>
-                        <span class="ml-auto font-weight-bold">{{patient.telephones[0]}}</span>
-                      </v-col>
-                    </v-row>
+                    <v-col v-if="data">
+                      <v-row v-for="(patient,index) in PatientFilter(data)" v-bind:key="index">
+                        <v-col>
+                          <span class="ml-auto font-weight-bold">{{patient.name}}</span>
+                        </v-col>
+                        <v-col>
+                          <span class="ml-auto font-weight-bold">{{patient.email ? patient.email : 'Sem email'}}</span>
+                        </v-col>
+                        <v-col>
+                          <span class="ml-auto font-weight-bold">{{patient.telephones[0]}}</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
                     <v-row v-if="error">{{error}}</v-row>
                   </template>
                 </apollo-query>
@@ -70,14 +72,6 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <!--<v-col cols="12" md="6">
-        <h1>Bairros</h1>
-        <v-card elevation="0">
-          <pie-chart
-              :chart-data="BairrosDataset"
-          ></pie-chart>
-        </v-card>
-      </v-col> -->
     </v-row>
   </v-container>
   <v-container v-else >
@@ -88,13 +82,11 @@
 </template>
 
 <script>
-import PieChart from "@/components/Charts/PieChart";
 import MiniStatistic from "@/components/MiniStatistic";
 import moment from 'moment'
 export default {
   components: {
-    MiniStatistic,
-    PieChart
+    MiniStatistic
   },
   props: [
       "Patient",
@@ -102,7 +94,7 @@ export default {
       "NumPatientsAddress",
       "Bairros",
   ],
-  data: vm => ({
+  data: () => ({
     bairrosLocale: [],
     bairrosPrint: '',
     selectedLocale: '',
@@ -111,20 +103,6 @@ export default {
   mounted() {
     this.Bairro(this.Bairros)
     },
-  computed:{
-    BairrosDataset() {
-      return {
-        labels: Object.keys(this.bairrosLocale),
-        datasets: [
-          {
-            data: Object.keys(this.bairrosPrint).map(
-                key => this.bairrosPrint[key].patients
-            )
-          }
-        ]
-      };
-    },
-  },
   methods:{
     PatientFilter(data){
       if(data.Patient){

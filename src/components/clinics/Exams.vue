@@ -108,30 +108,7 @@
                                 hide-details
                         ></v-currency-field>
                     </v-flex>
-<!--                    <v-flex xs6>
-                        <v-currency-field
-                                prepend-icon="monetization_on"
-                                outlined
-                                clearable
-                                label="Preço de Venda"
-                                prefix="R$"
-                                v-model="sale"
-                                hide-details
-                        ></v-currency-field>
-                    </v-flex>-->
-<!--                    <v-flex xs12>
-                        <v-textarea
-                                outlined
-                                v-model="obs"
-                                label="Observação:"
-                                counter
-                                clearable
-                                maxlength="280"
-                                full-width
-                                single-line
-                                hide-details
-                        ></v-textarea>
-                    </v-flex>-->
+
                 </v-layout>
             </v-container>
         </v-card-text>
@@ -195,7 +172,7 @@
                 },
               });
               const idCostProductClinic = dataCostProductClinic.data.CreateCostProductClinic.id
-              const dataRelations = await this.$apollo.mutate({
+              await this.$apollo.mutate({
                 mutation: require('@/graphql/clinics/AddCostProductClinicWith_clinicAndProduct.gql'),
                 variables: {
                   idClinic: this.clinic.id,
@@ -207,7 +184,6 @@
             this.loading = false
             this.closeDialog();
             this.$emit('reload')
-           // this.$router.push('/')
           },
           closeDialog: function() {
             this.$emit('close-dialog')

@@ -252,6 +252,7 @@ export default{
         return examsPerClinic
       } else if (this.budget.products) {
         for (let exam in this.budget.products) {
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.budget.products[exam].name = this.budget.products[exam].with_product.name
           if (this.budget.products[exam].clinic) {
             if (!examsPerClinic[this.budget.products[exam].clinic.name]) {
@@ -266,7 +267,7 @@ export default{
     }
   },
   methods: {
-    print(ref) {
+    print() {
       window.print()
     },
     formartDate(date) {

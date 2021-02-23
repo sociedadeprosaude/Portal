@@ -31,6 +31,7 @@
 <script>
 import HeaderTable from "../../../components/doctorsAgenda/ManagementSchedules/HeaderTable"
 import BodyTable from "../../../components/doctorsAgenda/ManagementSchedules/BodyTable"
+import moment from 'moment'
 export default {
   components: {
     HeaderTable,
@@ -39,7 +40,6 @@ export default {
   data: () => ({
     expanded: [],
     schedules:[],
-    moment: moment,
     clinic: undefined,
     dialog: false,
     dialogNewPeriod: false,

@@ -45,16 +45,11 @@
 
 <script>
     import LineChart from "@/components/Charts/LineChart";
-    import BarChart from "@/components/Charts/BarChart";
-    import PieChart from "@/components/Charts/PieChart";
     import MiniStatistic from "@/components/MiniStatistic";
-    import moment from 'moment'
     export default {
         components: {
             MiniStatistic,
-            LineChart,
-            PieChart,
-            BarChart
+            LineChart
         },
         props: [
             "scheduled",

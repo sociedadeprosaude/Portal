@@ -78,26 +78,6 @@
                           </v-flex>
                         </v-layout>
                       </v-flex>
-<!--                      <v-flex xs12 class="text-right">-->
-<!--                        <v-fade-transition>-->
-<!--                          <v-btn v-if="isOnline"-->
-<!--                                 rounded-->
-<!--                                 small-->
-<!--                                 color="primary_dark white&#45;&#45;text"-->
-<!--                                 class="mx-0"-->
-<!--                                 :disabled="schedule.vacancy === 0"-->
-<!--                                 @click="scheduleAppointment(schedule)"-->
-<!--                          >Agendar-->
-<!--                          </v-btn>-->
-<!--                          <v-btn v-else-->
-<!--                                 rounded-->
-<!--                                 small-->
-<!--                                 color="grey"-->
-<!--                                 class="mx-0"-->
-<!--                          >Sem conexão-->
-<!--                          </v-btn>-->
-<!--                        </v-fade-transition>-->
-<!--                      </v-flex>-->
                     </v-layout>
                   </v-layout>
                 </v-card>
@@ -155,7 +135,6 @@
 
 import SchedulingForm from "../doctorsAgenda/SchedulingForm"
 import {infiniteScroll} from "vue-infinite-scroll"
-import axios from "axios"
 import ObservationsSheduleAlert from './ObservationsScheduleAlert';
 
 let moment = require("moment/moment");
@@ -200,7 +179,7 @@ export default {
     await this.listenMoreConsultations();
 
     const listElm = document.querySelector('#infinite-list');
-    listElm.addEventListener('scroll', e => {
+    listElm.addEventListener('scroll', () => {
       if (listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
         this.listenMoreConsultations()
       }
@@ -220,13 +199,7 @@ export default {
       this.previousConsultation = this.query.id
       this.status = this.query.status
       this.numberReceipt = this.query.payment_number
-    }/*  else if (this.query && this.$route.params.reschedule) {
-      this.modalidade = this.query.type
-      this.previousConsultation = this.query.previousConsultation
-      this.status = this.query.status
-      this.numberReceipt = this.query.payment_number
-      this.rescheduleConsultation = this.query.id
-    } */ else {
+    } else {
       this.modalidade = "Consulta"
     }
   },
@@ -270,7 +243,6 @@ export default {
       if(vacancy <= 0) return;
       
       this.exam = undefined;
-      // this.fillConsultationForm(consultation);
       this.fillConsultationForm({
         ...consultation,
         date: date.format('YYYY-MM-DD HH:mm'),
@@ -298,7 +270,6 @@ export default {
       this.status = "Aguardando pagamento";
       if(this.selectedForm.consultation.product.type === "SPECIALTY" && this.selectedForm.consultation.product.price == 0){
         this.status = "Pago";
-        //payment_number
       }else{
         this.skip = false;
         this.withExam = value

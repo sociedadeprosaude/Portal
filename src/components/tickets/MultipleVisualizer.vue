@@ -289,6 +289,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import constants from "../../utils/constants";
 export default {
   name: "MultipleVisualizer",
@@ -324,9 +325,7 @@ export default {
       pollInterval: 150, // ms
     },
   },
-  mounted() {
 
-  },
   data() {
     return {
       hour: moment().format("HH:mm"),
@@ -343,27 +342,7 @@ export default {
       new: undefined,
     };
   },
-  watch: {
-    lastTicketCalled() {
-      // let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
-      // sound.play()
-      // if (!this.playingAudio) {
-      //   let sound = new Audio('https://firebasestorage.googleapis.com/v0/b/prosaude-36f66.appspot.com/o/assets%2FCollected%20Coin%20A1.mp3?alt=media&token=57509b64-12aa-4946-9814-42995ac8ab41')
-      //   sound.play()
-      //   this.playingAudio = true
-      //   setTimeout(() => {
-      //     this.playingAudio = false
-      //   }, 1000)
-      // }
-    },
-  },
   computed: {
-    // rooms() {
-    //   return this.$store.getters.rooms;
-    // },
-/*    rooms() {
-      return this.sector ? this.sector.rooms : [];
-    },*/
     doctorName() {
       let names = this.room.doctor.name.split(" ");
       let finalName = "";
@@ -399,29 +378,7 @@ export default {
             "seconds"
         );
       });
-    },
-    lastTicketCalled() {
-      const latest = this.calledTicketsInOrder[0];
-      if (latest) {
-        if (
-            !this.lastRoomCalled ||
-            this.lastRoomCalled.number != latest.number
-        ) {
-          this.animation = "animation";
-          setTimeout(() => {
-            this.animation = "";
-          }, 5000);
-          this.lastRoomCalled = latest;
-          this.playTicketSound();
-        }
-        return latest;
-      }
-      return null;
-    },
-    //Aumentar o splice pra aparecer mais se der numa tela grande
-    lastTicketsCalled() {
-      return this.calledTicketsInOrder.splice(1, 4);
-    },
+    }
   },
   methods: {
     rest(index){

@@ -63,13 +63,14 @@
                 for(let day in this.outtakes){
                     let outtakesDay = this.outtakes[day].outtakes
                     outtakesDay.filter(function (element) {
-                        element.exams.filter(function (element2) {
+                        element.exams.filter(function () {
                             quant +=1
                         })
                     })
                 }
                 return quant
             },
+          // eslint-disable-next-line vue/return-in-computed-property
             outtakesFilter(){
                 let outakes={}
                 let cont =0

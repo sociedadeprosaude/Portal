@@ -16,7 +16,7 @@ import CustomersPerProcedureReport from "@/components/Reports/CustomersPerProced
 import moment from "moment";
 import axios from "axios";
 export default {
-  //   name: "CustomersPerProcedureReport",
+  name: "CustomersPerProcedureReport",
   components: {
     CustomersPerProcedureReport
   },
@@ -29,13 +29,16 @@ export default {
     };
   },
   computed: {
+    // eslint-disable-next-line vue/return-in-computed-property
     ReportCustomersProcedure() {
-      axios
-        .get(
+      // eslint-disable-next-line vue/no-async-in-computed-properties
+      axios.get(
           "https://us-central1-prosaude-36f66.cloudfunctions.net/getConsultationsAndIntakesByDayPeriodAndWeekDays?start_date=2020-04-13%2000:00:00/json/"
         )
         .then(response => {
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.reportProcedure = response.data;
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.ReportTrue = !this.ReportTrue;
           return;
         });

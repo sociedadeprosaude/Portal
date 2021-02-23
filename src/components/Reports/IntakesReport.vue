@@ -54,9 +54,6 @@
                 <v-flex xs1>
                   <v-divider vertical />
                 </v-flex>
-                <!-- <v-flex xs1>{{intake.cost | moneyFilter}}</v-flex> -->
-
-
                 <v-flex xs1>{{report[label].cost | moneyFilter}}</v-flex>
                 <v-flex xs1>
                   <v-divider vertical />
@@ -270,97 +267,6 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-
-                <!-- <v-flex xs12 class="my-1">
-                  <v-layout row wrap>
-                    <v-flex xs12>
-                      <v-divider />
-                    </v-flex>
-                    <v-flex xs1>
-                      <v-divider vertical />
-                    </v-flex>
-                    <v-flex
-                      xs3
-                    >{{report.totalTaxaCredito ? parseFloat(report.totalTaxaCredito):'X' | moneyFilter}}</v-flex>
-                    <v-flex xs1>
-                      <v-divider vertical />
-                    </v-flex>
-                    <v-flex
-                      xs3
-                    >{{report.totalTaxaDebito ? parseFloat(report.totalTaxaDebito) :'X'| moneyFilter}}</v-flex>
-                    <v-flex xs1>
-                      <v-divider vertical />
-                    </v-flex>
-                    <v-flex xs2>
-                      {{ (report.totalBruto && report.totalTaxaDebito && report.totalTaxaCredito) ?
-                      (((report.totalBruto)- parseFloat(report.totalTaxaDebito)) - parseFloat(report.totalTaxaCredito) ):'X'| moneyFilter}}
-                    </v-flex>
-                    <v-flex xs1>
-                      <v-divider vertical />
-                    </v-flex>
-                    <v-flex xs12>
-                      <v-divider />
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-
-                                <v-flex xs12 class="my-1">
-                                  <v-layout row wrap>
-                                    <v-flex xs12>
-                                      <v-divider />
-                                    </v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs3 class="font-weight-bold">Total Bruto</v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs3 class="font-weight-bold">Total Liquido</v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs2 class="font-weight-bold">Saldo Final</v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs12>
-                                      <v-divider />
-                                    </v-flex>
-                                  </v-layout>
-                                </v-flex>
-
-                                <v-flex xs12 class="my-1">
-                                  <v-layout row wrap>
-                                    <v-flex xs12>
-                                      <v-divider />
-                                    </v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs3>{{report.totalBruto ? this.report.totalBruto:'X' | moneyFilter}}</v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs3>
-                                      {{(report.totalBruto && report.totalCusto && report.totalTaxaDebito && report.totalTaxaCredito)? (this.report.totalBruto -
-                                      this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2):'X'}}
-                                    </v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex
-                                      xs2
-                                    >{{(report.totalBruto && report.totalCusto && report.totalTaxaDebito && report.totalTaxaCredito)?
-                                    (this.report.totalBruto - this.report.totalCusto - parseFloat(report.totalTaxaDebito) - parseFloat(report.totalTaxaCredito)).toFixed(2):'X'}}</v-flex>
-                                    <v-flex xs1>
-                                      <v-divider vertical />
-                                    </v-flex>
-                                    <v-flex xs12>
-                                      <v-divider />
-                                    </v-flex>
-                                  </v-layout>
-                                </v-flex> -->
                             </v-layout>
                         </v-flex>
                     </v-layout>
@@ -371,7 +277,6 @@
 </template>
 
 <script>
-import moment from "moment";
 export default {
   props: [
     "report",

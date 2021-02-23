@@ -59,7 +59,6 @@
     import  moment from 'moment'
     import {uuid} from "vue-uuid";
     import MutationBuilder from "@/classes/MutationBuilder";
-    import gql from "graphql-tag";
 
     export default {
         props: ['doctor','outtakes'],
@@ -132,7 +131,7 @@
               }
             })
 
-            let response = await this.$apollo.mutate({
+            await this.$apollo.mutate({
                   mutation: mutationBuilder.generateMutationRequest(),
                 })
             this.loadingPaymentConsultation= false

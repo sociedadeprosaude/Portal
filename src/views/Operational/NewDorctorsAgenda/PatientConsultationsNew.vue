@@ -27,7 +27,7 @@
     import DataPatient from "../../../components/Patient/DataPatient";
     export default {
         components:{DataPatient, CardPatientManagementConsultations, CardInformationManagementConsultations,},
-        data: vm  => ({
+        data: ()  => ({
             QtdConsultations:'',
             QtdReturn:'',
             consultatioSelect:{}
@@ -46,7 +46,8 @@
                     let consultas = [];
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.QtdConsultations = 0;
-                    this.QtdReturn = 0;
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                  this.QtdReturn = 0;
                     for (const key in val.consultations) {
                         console.log(val.consultations[key].type )
                         if (val.consultations[key].type === 'Consulta') {
@@ -77,7 +78,7 @@
         mounted() {
         },
         watch: {
-            date (val) {
+            date () {
                 this.dateFormatted = this.formatDate(this.date)
             },
         },

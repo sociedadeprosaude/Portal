@@ -1,6 +1,3 @@
-import functions from "../../utils/functions";
-import firebase from "firebase";
-
 const state = {
     exams: [],
 };

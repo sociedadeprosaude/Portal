@@ -278,18 +278,24 @@ export default {
     },
     PercentageDiscount(){
       if(this.$store.getters.getDiscountBudget !== 0){
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.moneyDiscount = this.$store.getters.getDiscountBudget
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
         this.$store.commit('setDiscount',0)
       }
       if(this.moneyDiscount.length === 0){
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.moneyDiscount = 0
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.percentageDiscount = 0
       }
       else{
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
       }
       if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito') {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.payment.value[0] = this.subTotal - this.moneyDiscount
       }
     return this.percentageDiscount
@@ -317,10 +323,12 @@ export default {
       let pagando = 0;
       if (tamanho === 1 && this.payment.paymentForm[0] !== '') {
         if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0]==='Crédito'  && parseFloat(this.payment.value[0]) === 0.00){
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.payment.value[0] = parseFloat(this.total)
           pagando = parseFloat(this.total);
         }
         else if(this.payment.paymentForm[1] === undefined && this.payment.paymentForm[0] !=='Crédito'){
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.payment.value[0] = parseFloat(this.total)
           pagando = parseFloat(this.total);
         }
@@ -386,7 +394,6 @@ export default {
         for (let spec in budget.specialties) {
           this.$store.commit('addShoppingCartItem', budget.specialties[spec])
         }
-          budget.user.intakes = intakes
         }
         let budgets = await this.$store.dispatch('getUserBudgets', budget.user);
         if (budgets) {
@@ -562,10 +569,10 @@ export default {
       }
       this.alertMessage.model = false
       await this.saveBudget(this.generateBudget());
-      this.selectedBudget.valuesPayments.forEach(value => {
+      this.selectedBudget.valuesPayments.forEach((value) => {
         value = parseFloat(value)
       })
-      let transactionId = await this.makeTransaction()
+      await this.makeTransaction()
       this.receipt(this.selectedBudget)
     },
     async paymentFunction(){
@@ -586,7 +593,7 @@ export default {
       }
       this.alertMessage.model = false
       await this.saveBudget(this.generateBudget());
-      this.selectedBudget.valuesPayments.forEach(value => {
+      this.selectedBudget.valuesPayments.forEach(() => {
         value = parseFloat(value)
       })
 
@@ -638,7 +645,7 @@ export default {
       }
       console.log('payment : ', payment)
 
-    let responde = await this.$apollo.mutate({
+    await this.$apollo.mutate({
         mutation: require('@/graphql/transaction/Payment.gql'),
         variables:{
           unitId: payment.unitId,
@@ -803,7 +810,7 @@ export default {
           }
         })
       }
-      let response = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
 

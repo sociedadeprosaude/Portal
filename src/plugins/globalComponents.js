@@ -1,11 +1,6 @@
 
-// import Badge from "../components/Badge";
-
-
-//import BaseHeader from "@/components/Argon/BaseHeader";
-
 export default {
-  install(Vue) {
+  install() {
 
     // Vue.component(StatsCard.name, StatsCard);
    

@@ -13,7 +13,6 @@ export default {
     geocoder: undefined,
     map: undefined,
     marker:undefined
-    //address = 'Manaus'
   }),
   mounted() {
     if (!this.address) this.address = "Manaus Brazil";
@@ -23,12 +22,12 @@ export default {
     async initConfig() {
       try {
         this.google = await gmapsInit();
-        this.geocoder = new google.maps.Geocoder();
+        this.geocoder = new this.google.maps.Geocoder();
         let latlng = new this.google.maps.LatLng(-3.1190275, -60.0217314);
         let mapOptions = {
           zoom: 11,
           center: latlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeId: this.google.maps.MapTypeId.ROADMAP
         };
         this.map = new this.google.maps.Map(this.$el, mapOptions);
 
@@ -46,8 +45,6 @@ export default {
     async initMarkers(){
       console.log(this.period_report)
       for(var key in this.geopoints){
-        //this.positionAddress(address)
-        //await this.sleep(5000);
         if(this.geopoints[key].latitude && this.geopoints[key].longitude && this.geopoints[key].count)
           this.markMap({lat:this.geopoints[key].latitude,lng:this.geopoints[key].longitude,count:this.geopoints[key].count,monthly_report:this.geopoints[key].monthly_report})
       }
@@ -82,7 +79,7 @@ export default {
     
       }
 
-      var marker = new this.google.maps.Marker({
+      new this.google.maps.Marker({
         position: new this.google.maps.LatLng(latLng.lat, latLng.lng),
         map: this.map,
         title: title
@@ -113,7 +110,7 @@ export default {
         this.initMarkers()
       }
     },
-    period_report(value){
+    period_report(){
       this.initMarkers()
     }
   }

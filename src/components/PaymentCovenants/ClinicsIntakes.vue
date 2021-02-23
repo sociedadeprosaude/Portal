@@ -29,7 +29,7 @@
               <v-divider class="primary"></v-divider>
             </v-flex>
           </v-layout>
-          <v-layout v-for="outtake in patient.outtakes">
+          <v-layout v-for="(outtake,index) in patient.outtakes" v-bind:key="index">
             <v-flex xs8 md7 class="align-start justify-start">
               <p class="font-weight-black mt-5">
                 {{ outtake.ProductTransaction[0].Product.name }}
@@ -109,6 +109,7 @@ export default {
           dates.push(this.formattedDate(outtake.date.formatted.substring(0,10)))
         }
       })
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.selectedDate= dates[0]
       return dates
     },

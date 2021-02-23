@@ -6,9 +6,6 @@
 
 <script>
     import BillsMobile from "@/views/Financial/BillsMobile";
-
-    import moment from "moment";
-
     export default {
         components: {
             BillsMobile

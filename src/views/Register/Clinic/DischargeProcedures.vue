@@ -28,7 +28,6 @@
     import {mask} from "vue-the-mask";
     import TemplateDischargeProcedures from '../../../components/clinics/DischargeProcedures/TemplateDischargeProcedures'
     import HeaderDischargeProcedures from '../../../components/clinics/DischargeProcedures/HeaderDischargeProcedures'
-    import gql from 'graphql-tag'
     import MutationBuilder from "../../../classes/MutationBuilder"
     import {uuid} from 'vue-uuid'
     let moment = require('moment');
@@ -78,8 +77,6 @@
                     values.files.push(values.file[0])
                     values.file= []
                 }
-                let exams = values.outtak.exams
-                exams[values.index].result = urls
             },
 
             async SendCheckExams(outtakes){

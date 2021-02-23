@@ -108,16 +108,6 @@
                     v-model="createConsultationForm.consultation.product.name"
                     :label="createConsultationForm.consultation.product.type === 'SPECIALTY' ? 'Especialidade' : 'Tipo de exame'">
                 </v-text-field>
-
-               <!--  <v-text-field
-                    v-else
-                    readonly
-                    hide-details
-                    outlined
-                    prepend-icon="school"
-                    v-model="createConsultationForm.consultation.exam_type.name"
-                    label="Tipo de exame">
-                </v-text-field> -->
               </v-flex>
 
               <v-flex xs12 sm6>
@@ -255,7 +245,6 @@
 <script>
 
 import SubmitButton from "../SubmitButton";
-import gql from 'graphql-tag'
 import MutationBuilder from "../../classes/MutationBuilder"
 import {uuid} from 'vue-uuid'
 
@@ -272,9 +261,6 @@ export default {
     findPaymentToExam: true,
     skipPatients:true
   }),
-  mounted(){
-    //console.log(this.createConsultationForm)
-  },
   computed: {
     selectedPatient() {
       return this.$store.getters.selectedPatient;
@@ -405,9 +391,6 @@ export default {
     }
   },
   watch: {
-    createConsultationForm(value) {
-      //this.setExamFromCreatedForm()
-    },
     exam(value) {
       if (value && this.findPaymentToExam) {
         this.$emit('findPaymentNumberToExam', value)

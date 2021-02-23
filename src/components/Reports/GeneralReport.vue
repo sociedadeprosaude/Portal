@@ -336,7 +336,7 @@ export default {
         }, 0)
       }
     },
-    getTotalCostOfProductTransactions(productTransactions, i) {
+    getTotalCostOfProductTransactions(productTransactions) {
       return productTransactions.reduce((acc, transaction) => {
         return acc + transaction.cost
       }, 0)

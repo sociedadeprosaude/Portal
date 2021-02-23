@@ -72,7 +72,7 @@ import moment from "moment";
 import PatientsReportAgeExam from "@/components/Reports/PatientsReportAgeExam";
 export default {
   components: {PatientsReportAgeExam},
-  data: vm => ({
+  data: () => ({
     PatientsFixed: '',
     skipPatients: true,
     dateMenuStart: false,
@@ -164,7 +164,7 @@ export default {
       }
     },
     formattedSelectedFinalDate: {
-      get(val) {
+      get() {
         let now = moment().format('YYYY')
         let date = parseInt(now) - parseInt(moment(this.selectedFinalDate).format("YYYY"))
         return date

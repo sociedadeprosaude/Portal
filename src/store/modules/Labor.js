@@ -1,4 +1,3 @@
-import firebase, {firestore} from "firebase";
 const state = {
     colabortors: [],
     colaboratorDoctors: [],

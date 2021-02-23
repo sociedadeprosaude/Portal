@@ -31,7 +31,6 @@ import TicketsDashboard from "./views/Operational/Tickets/TicketsDashboard";
 import RoomDashboard from "./views/Operational/Tickets/RoomDashboard";
 
 import DoctorsAgendaRoutes from "./routes/DoctorsAgendaRoutes"
-import CashierRoutes from "./routes/CashierRoutes";
 import BillRoutes from './routes/BillRoutes'
 
 import discount from "./views/Notifications/discount"
@@ -41,11 +40,6 @@ import RelatoriosDashboard from "@/views/Reports/ReportsDashboard";
 
 import ErrorAuthentication from "@/views/Auth/ErrorAuthentication";
 
-
-const Clinic = {
-  props: ['id'],
-  template: '<div>Clinic {{ id }}</div>'
-};
 Vue.use(Router);
 let mainRoutes = [
   {
@@ -275,13 +269,13 @@ let mainRoutes = [
   },
 ];
 
-let routes = mainRoutes.concat(DoctorsAgendaRoutes, CashierRoutes, BillRoutes);
+let routes = mainRoutes.concat(DoctorsAgendaRoutes, BillRoutes);
 let router = new Router({
   mode: 'history',
   routes: routes
 });
 
-router.afterEach((to, from, next) => {
+router.afterEach((to, from) => {
   let permissions = [
     {
       id: 0,

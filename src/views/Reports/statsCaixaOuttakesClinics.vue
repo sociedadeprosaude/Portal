@@ -34,11 +34,12 @@
 
 <script>
 import statsCaixaOuttakesClinics from "@/components/Reports/statsCaixaOuttakesClinics";
+import moment from 'moment'
 export default {
   components: {
     statsCaixaOuttakesClinics
   },
-  data: vm => ({
+  data: () => ({
     years: null,
     year: null,
     months: null,
@@ -175,7 +176,7 @@ export default {
         () => 0
       );
 
-      var arrMonths = Object.keys(this.statistics[this.year]).forEach(month => {
+      Object.keys(this.statistics[this.year]).forEach(month => {
         arrTotalToPayMonthly[Number(month) - 1] = this.statistics[this.year][
           month
         ].totalToPay;
@@ -213,8 +214,8 @@ export default {
         tooltips: {
           enabled: true,
           callbacks: {
-            title: (items, data) => "R$ " + items[0].value,
-            label: (items, data) => null
+            title: (items) => "R$ " + items[0].value,
+            label: () => null
           }
         }
       };

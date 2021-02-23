@@ -64,7 +64,7 @@ import moment from "moment";
 import PatientsBudgets from "@/components/Reports/PatientsBudgets";
 export default {
   components: {PatientsBudgets},
-  data: vm => ({
+  data: () => ({
     BudgetFixed: '',
     skipBudgets: false,
     dateMenuStart: false,
@@ -137,6 +137,7 @@ export default {
     },
     formattedSelectedStartDate: {
       get() {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.skipBudgets = false
         return moment(this.selectedStartDate).format("DD/MM/YYYY")
       },
@@ -146,6 +147,7 @@ export default {
     },
     formattedSelectedFinalDate: {
       get() {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.skipBudgets = false
         return moment(this.selectedFinalDate).format("DD/MM/YYYY")
       },

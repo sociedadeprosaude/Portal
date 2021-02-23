@@ -319,10 +319,11 @@
                   }
                 }
               }
+              // eslint-disable-next-line no-unreachable
                 this.type = type;
                 return data.CostProductClinic.slice(0,50)
             },
-            changeSelectType(type) {
+            changeSelectType(data) {
                 this.CostProductClinic = this.CostProductClinicFilter(data)
             },
 

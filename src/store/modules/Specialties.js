@@ -1,7 +1,3 @@
-import functions from "../../utils/functions";
-import firebase, {firestore} from "firebase";
-import moment from 'moment'
-
 const state = {
     selectedSpecialty: null,
 };

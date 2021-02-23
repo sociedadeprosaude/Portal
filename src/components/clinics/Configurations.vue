@@ -411,29 +411,11 @@
                 this.formConsultation = true;
             },
             editConsultation(){
-                let data = {
-                    clinic: this.selectedClinic,
-                    specialtie: this.specialtie,
-                    doctor: this.doctor,
-                    crm: this.crm,
-                    cpf: this.cpf,
-                    uid: this.uid,
-                    cost: this.cost,
-                    price: this.price,
-                    obs: this.obs,
-                    payment: this.payment,
-                };
+
                 this.clear()
             },
             editExam(){
-                let examData = {
-                    clinic: this.selectedClinic,
-                    exam: this.exam.name,
-                    cost:this.exam.cost,
-                    sale:this.exam.price,
-                    rules: this.exam.rules,
-                    obs: this.exam.obs,
-                };
+
                 this.clear()
             },
 

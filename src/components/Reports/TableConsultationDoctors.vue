@@ -55,7 +55,6 @@
 
 
 <script>
-    import moment from "moment";
     export default {
         name: "TableConsultationDoctor",
         props: ["intakesDividedBySpecialties", "search"],

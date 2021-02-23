@@ -17,10 +17,9 @@
 
 <script>
 import statisticsBudget from "@/components/Reports/statsBudgets";
-import moment from "moment";
 export default {
   components: { statisticsBudget },
-  data: vm => ({
+  data: () => ({
     BudgetFixed: '',
     skipTransaction: false,
   }),

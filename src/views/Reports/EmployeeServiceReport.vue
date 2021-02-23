@@ -53,23 +53,14 @@
           </ApolloQuery>
         </v-col>
       </v-row>
-<!--      <v-layout class="align-center justify-center" row wrap>
-        <table-tickets-report v-if="collaborators && selectedUnit" :collaborators="collaborators" :selectedUnit="selectedUnit"></table-tickets-report>
-        <v-row v-else class="align-center justify-center">
-          <v-alert type="warning">
-            <strong>Nenhum Ticket chamado Neste Período</strong>
-          </v-alert>
-        </v-row>
-      </v-layout>-->
     </v-container>
   </v-content>
 </template>
 
 <script>
-import TableTicketsReport from "@/components/Reports/TableTicketsReport";
 import moment from "moment";
 export default {
-  components: {TableTicketsReport},
+  components: {},
   data: () => ({
     collaborators: undefined,
     dateMenuStart: false,

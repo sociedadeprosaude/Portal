@@ -40,7 +40,7 @@ import statsCaixaOuttakesCategory from "../../components/Reports/statsCaixaOutta
 import moment from "moment";
 export default {
   components: { statsCaixaOuttakesCategory },
-  data: vm => ({
+  data: () => ({
     years: null,
     year: null,
     months: null,
@@ -240,7 +240,7 @@ export default {
       //numero de constas pagas
       let sales=0
       console.log('transactions: ', this.Transactions)
-      this.Transactions.filter(e => {
+      this.Transactions.filter(() => {
         sales += 1
       })
       return  sales
@@ -315,7 +315,7 @@ export default {
         () => 0
       );
 
-      var arrMonths = Object.keys(this.statistics[this.year]).forEach(month => {
+     Object.keys(this.statistics[this.year]).forEach(month => {
         arrTotalToPayMonthly[Number(month) - 1] = this.statistics[this.year][
           month
         ].totalToPay;
@@ -356,12 +356,6 @@ export default {
         arrNum[i] = sales
         sales = 0
       }
-      /* var arrMonths = Object.keys(this.statistics[this.year]).forEach(
-        month =>
-          (arrNum[Number(month) - 1] = this.statistics[this.year][
-            month
-          ].numOfSales)
-      ); */
 
       return {
         labels: this.monsthsName,
@@ -385,8 +379,8 @@ export default {
         tooltips: {
           enabled: true,
           callbacks: {
-            title: (items, data) => "R$ " + items[0].value,
-            label: (items, data) => null
+            title: (items) => "R$ " + items[0].value,
+            label: () => null
           }
         }
       };

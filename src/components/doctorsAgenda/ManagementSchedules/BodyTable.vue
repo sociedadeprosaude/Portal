@@ -129,7 +129,6 @@
 </template>
 
 <script>
-var moment = require("moment");
 import CardDaySchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardDaySchedule";
 import CardPeriodCanceledSchedule from "../../../components/doctorsAgenda/ManagementSchedules/CardPeriodCanceledSchedule";
 import ObservationsDialog from './ObservationsDialog';

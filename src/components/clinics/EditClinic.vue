@@ -203,7 +203,6 @@
 
 <script>
     import {mask} from 'vue-the-mask';
-    import axios from 'axios';
     export default {
         name: "EditClinic",
         props: ['clinic'],
@@ -251,37 +250,6 @@
             //ceps: '',
             alertCEP: false,
         }),
-        watch: {
-  /*          ceps(val) {
-                if (val.length === 8) {
-                    axios
-                        .get('https://viacep.com.br/ws/' + val + '/json/')
-                        .then((response) => {
-                            if (response.data.erro) {
-                                this.alertCEP = true
-                            } else {
-                                this.alertCEP = false;
-                                this.street = response.data.logradouro;
-                                this.neighboor = response.data.bairro;
-                                this.city = response.data.localidade;
-                                let array = this.stateOptions;
-                                this.state = array.find(function (element) {
-                                    if (element.includes(response.data.uf)) {
-                                        return element;
-                                    }
-                                    return '';
-                                });
-                            }
-
-                        })
-                } else {
-                    this.street = '';
-                    this.neighboor = '';
-                    this.state = '';
-                    this.city = '';
-                }
-            },*/
-        },
         methods: {
           closeDialog : function () {
             this.$emit('close-dialog');
@@ -335,7 +303,7 @@
                   property: this.clinic.property,
                   opening_hours: agenda,
                 },
-              }).then(dataClinic => {
+              }).then(() => {
                 this.$apollo.mutate({
                   mutation: require('@/graphql/address/UpdateAddress.gql'),
                   variables: {
@@ -357,7 +325,6 @@
               })
             this.loading = false
             this.closeDialog()
-            //this.$router.push('/')
             },
         },
     }

@@ -1,8 +1,8 @@
 <template>
     <v-container>
         <v-layout row wrap>
-            <v-flex xs12 v-for="intake in intakes">
-                <v-flex xs12 v-for="exam in intake.exams">
+            <v-flex xs12 v-for="(intake,index) in intakes" v-bind:key="index">
+                <v-flex xs12 v-for="(exam,index2) in intake.exams" v-bind:key="index2">
                     <v-card class="elevation-2 my-3">
                         <v-layout row wrap>
                             <v-flex xs3 class="align-center justify-center">

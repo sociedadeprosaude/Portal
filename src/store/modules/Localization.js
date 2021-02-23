@@ -8,7 +8,7 @@ const state = {
 const mutations = {};
 
 const actions = {
-    async getAddressByCep({}, cep) {
+    async getAddressByCep(cep) {
 
         try {
             let resp = await axios.get('https://viacep.com.br/ws/' + cep + '/json/')

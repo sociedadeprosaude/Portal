@@ -78,7 +78,7 @@
 
         async mounted() {
             const listElm = document.querySelector('#infinite-list');
-            listElm.addEventListener('scroll', e => {
+            listElm.addEventListener('scroll', () => {
                 if (listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
                     //
                 }

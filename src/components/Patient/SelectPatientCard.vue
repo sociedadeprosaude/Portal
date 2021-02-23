@@ -261,7 +261,6 @@
                                         label="Data de Nascimento">
                                 </v-text-field>
                             </v-flex>
-                            <!--:disabled="selectedPatient !== undefined"-->
                             <v-flex sm4 xs12 class="px-3">
                                 <v-text-field
                                         outlined
@@ -546,18 +545,20 @@
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.name = user.name;
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.cpf = user.cpf;
-                    this.uid = user.uid;
-                    console.log('selecionado:',user)
-                   // this.numAss = user.association_number
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                  this.uid = user.uid;
                 }
                 return this.$store.getters.selectedPatient
             },
             selectedDependent(){
                 let dependent = this.$store.getters.selectedDependent;
                 if(dependent){
-                   this.dependentName = dependent.name
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                  this.dependentName = dependent.name
                 }
                 return dependent
             }
@@ -581,10 +582,10 @@
                     return value.length < 10 || moment(value,'DD/MM/YYYY').isValid();
                 return true
             },
-            showSecondUserCard(user) {
+            showSecondUserCard() {
                 this.patientTag = !this.patientTag
             },
-            showUserCard(user) {
+            showUserCard() {
                 this.patientCard = !this.patientCard
             },
             validateFiedls() {
@@ -664,13 +665,7 @@
                         name: 'cpf',
                         value: patient.cpf
                     }
-                }/* else {
-                    foundPatient = await this.$store.dispatch('getPatient', 'RG' + patient.rg);
-                    identifier = {
-                        name: 'rg',
-                        value: patient.rg
-                    }
-                }*/
+                }
                 if (foundPatient) {
                     let dialog = {
                         header: `Já existe um associado com o ${identifier.name} ${identifier.value}, substituir?`,

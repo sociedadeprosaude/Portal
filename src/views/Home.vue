@@ -350,6 +350,7 @@ export default {
       return this.$store.getters.notification;
     },
 
+    // eslint-disable-next-line vue/return-in-computed-property
     filteredPages() {
       if (this.user) {
         if (this.userPermissions && this.permissions) {

@@ -81,7 +81,7 @@
             <v-col cols="2" class="pa-0" v-if="budget.user[0]">{{budget.user[0].email? budget.user[0].email : 'Sem Email'}}
               <v-btn class="pa-0 " icon rounded  @click="Products(budget)"> <v-icon>arrow_drop_down</v-icon></v-btn>
             </v-col>
-            <v-col cols="2" class="pa-0"v-else>{{'Error'}}
+            <v-col cols="2" class="pa-0" v-else>{{'Error'}}
               <v-btn class="pa-0 " icon rounded  @click="Products(budget)"> <v-icon>arrow_drop_down</v-icon></v-btn>
             </v-col>
             <v-col cols="1" class="pa-0">
@@ -142,7 +142,6 @@
 <script>
 const { Parser } = require('json2csv');
 const fields= ['First Name' , 'Last Name' , 'Mobile Phone' ] ;
-const opts = {  fields  } ;
 import moment from 'moment'
 export default {
   props: [
@@ -150,7 +149,7 @@ export default {
       "dates",
       "PatientsArray"
   ],
-  data: vm => ({
+  data: () => ({
     budgetSelected: '',
     selectedDate: '',
     semanaOptions: [

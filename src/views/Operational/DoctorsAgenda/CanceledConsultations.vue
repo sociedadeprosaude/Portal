@@ -24,7 +24,6 @@
 </template>
 
 <script>
-    let moment = require('moment/moment');
     import HeaderCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/HeaderCanceledConsultations'
     import ExpansionPanelCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/ExpansionPanelCanceledConsultations'
     import DialogCanceledConsultations from '../../../components/doctorsAgenda/CanceledConsultations/DialogCanceledConsultations'

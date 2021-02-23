@@ -6,14 +6,6 @@
       v-if="selected == 0"
     />
 
-    <luiz-fernando-report
-      v-else-if="selected == 1"
-      :report="formattedReport"
-      :loading="loading"
-      :intakes="intakes"
-      :reportAllUnits="formattedReportAllUnits"
-    />
-
     <colaborators-production-report v-if="selected == 2"></colaborators-production-report>
 
     <intakes-report
@@ -89,7 +81,6 @@
 
 <script>
 import GeneralReport from "@/views/Reports/GeneralReport";
-import LuizFernandoReport from "@/views/Reports/LuizFernandoReport";
 import ColaboratorsProductionReport from "@/views/Reports/ColaboratorsProductionReport";
 import IntakesReport from "@/views/Reports/IntakesReport";
 import ProceduresPricesAnalises from "@/views/Reports/ProceduresPricesAnalises";
@@ -106,7 +97,6 @@ import statsCaixaOuttakesCategory from "@/views/Reports/statsCaixaOuttakesCatego
 import statsCaixaOuttakesClinics from "@/views/Reports/statsCaixaOuttakesClinics";
 import Clients from "@/views/Reports/Clients";
 import DrawerRelatorio from "@/components/Drawer/DrawerRelatorio";
-import DateSelector from "@/components/Common/DateSelector";
 import EmployeeServiceReport from "@/views/Reports/EmployeeServiceReport";
 import StatisticsBudgets from "@/views/Reports/StatisticsBudgets";
 import StatisticPatientsGeoPoint from "@/views/Reports/StatisticPatientsGeoPoint";
@@ -114,15 +104,14 @@ import PatientsBudgets from "@/views/Reports/PatientsBudgets";
 import Patients from "@/views/Reports/Patients";
 import ConsultationsByDoctor from "@/views/Reports/ConsultationsByDoctor";
 import PatientReportAgeConsultation from "@/views/Reports/PatientReportAgeConsultation";
+import moment from 'moment'
 
 export default {
   components: {
     DrawerRelatorio,
     PatientReportAgeConsultation,
-    DateSelector,
     ColaboratorsProductionReport,
     GeneralReport,
-    LuizFernandoReport,
     IntakesReport,
     ProceduresPricesAnalises,
     BestSellingExamsReport,
@@ -144,7 +133,7 @@ export default {
     Patients,
     ConsultationsByDoctor
   },
-  data: vm => ({
+  data: () => ({
     selected: 0,
 
     date: moment().format("YYYY-MM-DD 00:00:00"),

@@ -18,20 +18,14 @@
 
 <script>
 import statisticsBudget from "@/components/Reports/statsPatientsGeopoint";
-import moment from "moment";
 import axios from "axios";
 export default {
   components: { statisticsBudget },
-  data: vm => ({
+  data: () => ({
     PatientFixed: '',
     skipPatient: false,
   }),
 
-  mounted() {
-  },
-  methods: {
-
-  },
   computed: {
 
     Patients(){
@@ -40,6 +34,7 @@ export default {
     PatientsAdrress(){
       return this.Patients.filter(e => e.addresses[0])
     },
+    // eslint-disable-next-line vue/no-async-in-computed-properties
     async Bairros() {
       let ObjectBairros = []
       let bairros = []
@@ -97,6 +92,7 @@ export default {
       for (let bairro in bairros) {
         if (bairro !== 'sem cep') {
           if (bairros[bairro].name.length === 8) {
+            // eslint-disable-next-line vue/no-async-in-computed-properties
             let endereço = await axios.get('https://viacep.com.br/ws/' + bairros[bairro].name + '/json/')
             if (!endereço.data.erro) {
               for(let id in bairros[bairro].idAddresses){

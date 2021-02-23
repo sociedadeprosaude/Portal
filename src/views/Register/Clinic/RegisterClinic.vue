@@ -93,7 +93,7 @@
                 try {
                     let resp = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                     if (resp) {
-                        this.$store.dispatch('thereIsUserUID', resp.user.uid).then(async (exist) => {
+                        this.$store.dispatch('thereIsUserUID', resp.user.uid).then(async () => {
                             this.loading = true;
                             await this.$store.dispatch("addClinicUser", {
                                 email: resp.user.email,

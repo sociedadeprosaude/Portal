@@ -95,7 +95,6 @@
 <script>
 const { Parser } = require('json2csv');
 const fields= ['First Name' , 'Last Name' , 'Mobile Phone' ] ;
-const opts = {  fields  } ;
 import moment from 'moment'
 export default {
   props: [
@@ -103,7 +102,7 @@ export default {
       "dates",
       "PatientsArray"
   ],
-  data: vm => ({
+  data: () => ({
     patientSelected: '',
     selectedDate: '',
     semanaOptions: [
@@ -173,7 +172,7 @@ export default {
       let date = moment(this.selectedDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
       if(this.selectedDate !== ''){
         Patients[date] =  this.PatientsForDate[date]
-        return Budgets
+        return Patients[date]
       }
       return this.PatientsForDate
     }

@@ -106,7 +106,7 @@ export default {
     },
     async removeDay() {
       this.loading = true;
-      let copySchedule = Object.assign({}, this.schedule);
+      Object.assign({}, this.schedule);
       console.log(this.dayObj.id)
       console.log(this.schedule.id)
       this.$apollo.mutate({
@@ -116,7 +116,7 @@ export default {
             idDay: this.dayObj.id
           },
           
-      }).then((data) => {
+      }).then(() => {
           this.cancelConsultations()
       }).catch((error) => {
           console.error(error)

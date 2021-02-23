@@ -12,7 +12,7 @@ export default {
   props: ['chartData', 'options'],
   watch: {
     'options': {
-      handler(newOption, oldOption) {
+      handler() {
         this.$data._chart.destroy();
         this.renderChart(this.chartData, {
           plugins: {

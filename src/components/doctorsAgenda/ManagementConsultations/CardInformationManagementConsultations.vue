@@ -112,7 +112,6 @@ import ConsultationDocument from "../commons/ConsultationDocument"
 import ConsultationReceipt from "../commons/ConsultationReceipt"
 import {uuid} from "vue-uuid";
 import MutationBuilder from "@/classes/MutationBuilder";
-import gql from "graphql-tag";
 import GerenateTicketAndChooseType from "../commons/GerenateTicketAndChooseType";
 let moment = require('moment');
 export default {
@@ -203,7 +202,7 @@ export default {
           })
         }
       }
-      let response = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: mutationBuilder.generateMutationRequest(),
       })
       this.cancelLoading = false;
@@ -271,10 +270,10 @@ export default {
         this.documentDialog = true;
       }
     },
-    ConsultationRecept(consultation) {
+    ConsultationRecept() {
       this.receptDialog = true;
     },
-    ConsultationTicket(consultation){
+    ConsultationTicket(){
       this.dialogTicket = true;
     }
   },

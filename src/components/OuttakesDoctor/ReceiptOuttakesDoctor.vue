@@ -105,7 +105,7 @@
           },
         },
         methods: {
-            print(ref) {
+            print() {
                 window.print()
             },
             PriceIntake(intake){

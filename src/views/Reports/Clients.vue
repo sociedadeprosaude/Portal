@@ -51,25 +51,8 @@ export default {
   },
   mounted() {
     this.date = moment().subtract(7,'days').format('YYYY-MM-DD')
-    /* this.initializeData()
-    this.$store.dispatch('loadUsersGeopoints') */
   },
   computed: {
-    /* clientsServed:{
-      set(value){
-        this.attendances = value
-      },
-      get(){
-        return this.attendances
-      }
-    }, */
-    /* newClients() {
-      return this.$store.getters.getNewClients;
-    }, */
-    /* ageClientsServed() {
-      let data = this.$store.getters.getAgeClientsServed;
-      return this.$store.getters.getAgeClientsServed;
-    }, */
     genresClientsServed() {
       let genresObj = this.genres;
       genresObj.male = (genresObj.male/genresObj.total)/100;
@@ -77,17 +60,6 @@ export default {
       genresObj.others = (genresObj.others/genresObj.total)/100;
       return genresObj;
     },
-    /* usersServed(){
-      let complements = this.$store.getters.getUsersServed.map((user)=>[user.addresses[0].street,user.addresses[0].complement].join(" "));
-      return complements.reduce((a,b)=>{
-        if(a.indexOf(b) == -1)
-          a.push(b)
-        return a
-      },[])
-    } */
-    /* geopoints() {
-      return this.$store.getters.getGeopoints;
-    }, */
   },
   watch:{
     date(value){
@@ -98,18 +70,6 @@ export default {
   methods: {
     initializeData(){
       this.overlay = true
-      /* let promise1 = this.$store.dispatch('loadClientsServed',{
-        initialDate:this.date,
-        finalDate:moment().format("YYYY-MM-DD 23:59:00"),
-      })
-      let promise2 = this.$store.dispatch('loadNewClients',{
-        initialDate:this.date,
-        finalDate:moment().format("YYYY-MM-DD 23:59:00"),
-      })
-
-      Promise.all([promise1,promise2]).then(()=>{
-        this.overlay = false
-      }); */
     },
     generateDatasetServed(dataset) {
       return {
@@ -207,7 +167,7 @@ export default {
         tooltips: {
           enabled: true,
           callbacks: {
-            title: (items, data) => "R$ " + items[0],
+            title: (items) => "R$ " + items[0],
             label: (items, data) => data,
           },
         },

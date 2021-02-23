@@ -14,7 +14,7 @@ const mutations = {
 
 const actions = {
 
-    async addNotifications ({commit}, data){
+    async addNotifications (data){
         try {
             for (let item in data){
                 if (!data[item]) {
@@ -53,7 +53,7 @@ const actions = {
         });
     },
 
-    async deleteNotification ({}, notification) {
+    async deleteNotification ( notification) {
         try {
             await firebase.firestore().collection('alerts').doc(notification).delete();
             return

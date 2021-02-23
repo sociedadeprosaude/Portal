@@ -47,7 +47,7 @@
             QuantTot(){
                 let quant =0;
                 this.outtakes.filter(function (element){
-                    element.exams.filter(function (element2) {
+                    element.exams.filter(function () {
                         quant += 1
                     })
                 })

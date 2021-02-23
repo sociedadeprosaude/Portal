@@ -138,7 +138,8 @@
                 return momentDates;
             },
             outtakesPaidMonth() {
-                return this.$store.getters.outtakesPaidMonth.sort((a, b) => {
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+              return this.$store.getters.outtakesPaidMonth.sort((a, b) => {
                     return b.date_to_pay > a.date_to_pay ? 1 : -1;
                 });
             },
@@ -146,6 +147,7 @@
                 return this.outtakesPaidMonth;
             },
             pendingOuttakes() {
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.$store.getters.outtakesPending.sort((a, b) => {
                     return b.date_to_pay < a.date_to_pay ? 1 : -1;
                 });
@@ -155,7 +157,7 @@
             }
         },
         watch: {
-            selectedMonth(val) {
+            selectedMonth() {
                 this.getOuttakesPaidMonth();
             }
         },

@@ -310,38 +310,6 @@
                 </template>
                 <span>Remover Médico</span>
               </v-tooltip>
-<!--              <v-tooltip top v-if="doctorsLoaded">
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    v-on="on"
-                    :disabled="loading"
-                    @click="generateNextTicket(room,false)"
-                    text
-                    fab
-                    x-small
-                    class="primary ml-2 my-2"
-                  >
-                    <v-icon>post_add</v-icon>
-                  </v-btn>
-                </template>
-                <span>Gerar senha</span>
-              </v-tooltip>-->
-<!--              <v-tooltip top v-if="doctorsLoaded">
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    v-on="on"
-                    :disabled="loading"
-                    @click="generateNextTicket(room,true)"
-                    text
-                    fab
-                    x-small
-                    class="primary ml-2 my-2"
-                  >
-                    <v-icon>elderly</v-icon>
-                  </v-btn>
-                </template>
-                <span>Gerar senha preferencial</span>
-              </v-tooltip>-->
               <v-tooltip top v-if="doctorsLoaded">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -564,7 +532,6 @@ export default {
     loading: Boolean,
     success: Boolean,
     multipleViewDialog: Boolean,
-    favoritedRoom: String,
     rooms: Array,
     normal: String,
     priority: String,
@@ -588,7 +555,6 @@ export default {
     upgradeTicketNumber: Function,
     callNextTicket: Function,
     callSectorTicket: Function,
-    favoritedRoom: Object,
     deleteRoom: Function,
     alertActualTicket: Function,
     openSingleView: Function,

@@ -564,7 +564,6 @@
     import PatientTag from "./PatientTag";
     import axios from 'axios';
     import {uuid} from 'vue-uuid'
-
     let moment = require("moment");
     export default {
         directives: {
@@ -632,8 +631,11 @@
             selectedPatient() {
                 let user = this.$store.getters.selectedPatient;
                 if (user) {
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.name = user.name;
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.cpf = user.cpf;
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.numAss = user._id
                 }
                 return user
@@ -641,16 +643,13 @@
             selectedDependent() {
                 let dependent = this.$store.getters.selectedDependent;
                 if (dependent) {
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.dependentName = dependent.name
                 }
                 return dependent
             }
         },
         watch: {
-/*            cpf(val) {
-                if (this.selectedPatient && val !== this.selectedPatient.cpf)
-                    this.cpf = this.selectedPatient.cpf;
-            },*/
             addPatient(val) {
                 if (val) {
                     if (this.selectedPatient) {
@@ -665,10 +664,10 @@
                     return value.length < 10 || moment(value, 'DD/MM/YYYY').isValid();
                 return true
             },
-            showSecondUserCard(user) {
+            showSecondUserCard() {
                 this.patientTag = !this.patientTag
             },
-            showUserCard(user) {
+            showUserCard() {
                 this.patientCard = !this.patientCard
             },
             validateFiedls() {
@@ -727,7 +726,7 @@
                     addresses: this.addresses,
                     dependents: this.dependents,
                 };
-                let finaly= parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
+                parseInt(patient.addresses.length) + parseInt(patient.dependents.length)
               let searchUser = await this.$apollo.mutate({
                 mutation: require ('@/graphql/patients/searchPatientsCpf.gql'),
                 variables:{

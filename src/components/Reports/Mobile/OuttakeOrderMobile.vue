@@ -76,6 +76,8 @@
 <script>
     import {mask} from 'vue-the-mask'
     import moment from "moment";
+    import MutationBuilder from "../../../classes/MutationBuilder"
+    import {uuid} from 'vue-uuid'
 
     import BillsOuttakeOrder from "../../Bills/OuttakeOrder/BillsOuttakeOrder"
 
@@ -157,6 +159,7 @@
                 }
             },
             pendingOuttakes() {
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.$store.getters.outtakesPending.sort((a, b) => {
                     return b.date_to_pay < a.date_to_pay ? 1 : -1;
                 });
@@ -209,7 +212,7 @@
                 let now = moment();
                 return moment(date, "YYYY-MM-DD").diff(now, "days");
             },
-            async payTransaction(charge, query) {
+            async payTransaction(charge) {
                 this.loading = true
                 let transactionId = uuid.v4()
                 let mutationBuilder = new MutationBuilder()

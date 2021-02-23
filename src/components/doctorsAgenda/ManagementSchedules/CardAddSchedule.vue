@@ -9,8 +9,7 @@
         <v-flex v-if="!examTypeCheck" xs12>
 
           <template>
-            <!-- Apollo Query -->
-            <ApolloQuery 
+            <ApolloQuery
                 :query="require('@/graphql/products/LoadProducts.gql')"
                 :variables="{ type:'SPECIALTY', schedulable:false}"
             >
@@ -161,8 +160,6 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
-
 export default {
   name:'CardAddSchedule',
   data: () => ({
@@ -242,7 +239,7 @@ export default {
             idDoctor: scheduleObj.doctor.id
           },
           
-        }).then((data) => {
+        }).then(() => {
           this.clear()
         }).catch((error) => {
           console.error(error)

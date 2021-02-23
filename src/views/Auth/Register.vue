@@ -74,7 +74,6 @@
 
 <script>
     import {mask} from "vue-the-mask";
-    import firebase from "firebase";
 
     export default {
         name: "Register",

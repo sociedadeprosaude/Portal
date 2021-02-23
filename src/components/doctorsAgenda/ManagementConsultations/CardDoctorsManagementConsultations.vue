@@ -41,7 +41,7 @@
                 </v-layout>
               </v-card>
             </v-flex>
-            <v-flex xs12 v-for="(days,index) in consultation.consultations ">
+            <v-flex xs12 v-for="(days,index) in consultation.consultations " v-bind:key="index">
               <v-card>
                 <v-layout row wrap>
             <v-flex xs12 class="mt-4 mb-3"  >
@@ -197,11 +197,10 @@
 
 <script>
 import moment from 'moment/moment'
-import SubmitButton from '../../../components/SubmitButton'
 
 export default {
   name: "CardDoctorsManagementConsultations",
-  components: {SubmitButton},
+  components: {},
 
   props: ['clinic', 'specialty', 'date', 'examType', 'filterByExam'],
   data: () => ({
@@ -237,7 +236,7 @@ export default {
   }),
   watch: {
     changeData: {
-      handler: function (val) {
+      handler: function () {
         this.loadingConsultations = true
         this.product = this.filterByExam ? this.examType : this.specialty
         if (this.product && this.clinic ) {

@@ -50,8 +50,6 @@
 </template>
 
 <script>
-import moment from "moment";
-
 export default {
   name: "TableExamsAndClinics",
   props: ["intakesDividedByExam", "search"],

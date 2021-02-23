@@ -88,7 +88,6 @@
 
 const { Parser } = require('json2csv');
 const fields= ['First Name' , 'Last Name' , 'Mobile Phone' ] ;
-const opts = {  fields  } ;
 import moment from 'moment'
 
 export default {

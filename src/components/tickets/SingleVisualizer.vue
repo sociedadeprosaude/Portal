@@ -1,6 +1,5 @@
 <template>
   <v-card height="100%" class="pa-4" @click="$emit('close')" style="overflow: hidden !important;"  v-if="this.$vuetify.breakpoint.xs">
-    <!--if-->
     <v-container fluid class="white--text">
       <v-row class="pa-0 ma-0 primary">
         <v-col align-self="center">
@@ -329,6 +328,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import constants from "../../utils/constants";
 
 export default {
@@ -430,10 +430,14 @@ export default {
       const latest = this.calledTicketsInOrder[0];
       if (latest) {
         if (!this.lastTicket || this.lastTicket.number != latest.number) {
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.animation = "animation";
+          // eslint-disable-next-line vue/no-async-in-computed-properties
           setTimeout(() => {
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
             this.animation = "";
           }, 5000);
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
           this.lastTicket = latest;
           this.playTicketSound();
         }

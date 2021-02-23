@@ -206,7 +206,9 @@
         },
 
         methods: {
-
+          changingSign(data){
+            return -data
+          },
             outtakesByDate(outtakes) {
                 let res = {};
                 for (let outtake in outtakes) {

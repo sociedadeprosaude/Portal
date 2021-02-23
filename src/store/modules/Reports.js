@@ -8,41 +8,6 @@ const instance = axios.create({
 
 instance.defaults.headers.common['Accept'] = 'application/json'
 
-function outtakeCategoryListDivider(outtake) {
-    if ((typeof (outtake.category)) === "object") {
-        const valueDivided = outtake.value / outtake.category.length;
-        return outtake.category.map((category) => {
-            //Tem que ser {...outtake}
-            var outtakeDivided = { ...outtake };
-            outtakeDivided.value = valueDivided;
-            outtakeDivided.category = category;
-            return outtakeDivided
-        })
-    } else if (outtake.specialties || outtake.exams) {
-        const exams = Array.isArray(outtake.exams) ? outtake.exams.map((exam) => {
-            //Tem que ser {...outtake}
-            var outtakeDivided = { ...outtake };
-            outtakeDivided.value = exam.cost;
-            outtakeDivided.category = exam.name;
-            return outtakeDivided
-        }) : []
-        const specialties = Array.isArray(outtake.specialties) ? outtake.specialties.map((specialty) => {
-            //Tem que ser {...outtake}
-            var outtakeDivided = { ...outtake };
-            outtakeDivided.value = specialty.cost;
-            outtakeDivided.category = specialty.name;
-            return outtakeDivided
-        }) : []
-        return [...exams, ...specialties]
-    }
-
-
-    else {
-        return [outtake]
-    }
-}
-
-
 const state = {
     relatorio: [],
 };

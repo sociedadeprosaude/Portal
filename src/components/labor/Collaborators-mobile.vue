@@ -248,13 +248,6 @@
             }
 
         },
-
-        watch: {
-            dialog(value) {
-
-            }
-        },
-
         methods: {
 
             async userGroups(user) {

@@ -56,9 +56,10 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   props: ["cb", "loadingFather"],
-  data: vm => ({
+  data: () => ({
     date: moment().format("YYYY-MM-DD 00:00:00"),
     date2: moment().format("YYYY-MM-DD 23:59:59"),
     dateFormatted: moment().format("DD/MM/YYYY"),

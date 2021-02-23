@@ -205,6 +205,7 @@
     import SubmitButton from "../SubmitButton";
     import BudgetToPrint from "../cashier/BudgetToPrint";
     import Receipt from "../cashier/Receipt";
+    import moment from 'moment'
     import gql from 'graphql-tag'
     import { uuid } from 'vue-uuid'
 
@@ -259,22 +260,24 @@
         computed: {
           PercentageDiscount(){
             if(this.$store.getters.getDiscountBudget !== 0){
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
               this.moneyDiscount = this.$store.getters.getDiscountBudget
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
               this.percentageDiscount = ((100 * this.moneyDiscount)/this.subTotal)
               this.$store.commit('setDiscount',0)
             }
             if(this.moneyDiscount.length === 0){
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
               this.moneyDiscount = 0
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
               this.percentageDiscount = 0
             }
             else{
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
               this.percentageDiscount= ((100 * this.moneyDiscount) / this.subTotal)
             }
             return this.percentageDiscount.toFixed(2)
           },
-            listPackage() {
-                return Object.values(this.$store.getters.bundles);
-            },
             selectedUnit() {
                 return this.$store.getters.selectedUnit
             },
@@ -348,7 +351,7 @@
                 this.percentageDiscount = ( (product.discount * 100)/(product.total + product.discount))
                 this.moneyDiscount = product.discount
             },
-            removeItem(item, type) {
+            removeItem(item) {
                 this.$store.commit('removeShoppingCartItem', item)
             },
 
@@ -408,7 +411,7 @@
                     variables:{
                         id: this.searchData.id
                     }
-                }).then((data)=> {
+                }).then(()=> {
                     this.BundlesSkip = false
                     this.$apollo.queries.loadBundles.refresh()
                     this.clearCart();

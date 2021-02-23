@@ -87,7 +87,6 @@
 </template>
 
 <script>
-    import moment from "moment";
     import TableExamsAndClinics from "@/components/Reports/TableExamsAndClinics";
 
     export default {
