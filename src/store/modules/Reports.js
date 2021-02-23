@@ -107,7 +107,6 @@ const actions = {
                     if (intakes[intake].specialties[specialtie].name == 'CLINICO GERAL' &&
                         intakes[intake].specialties[specialtie].price != 0) {
                         intakes[intake].specialties[specialtie].price = 0;
-                        firebase.firestore().collection('intakes').doc((intakes[intake].id).toString()).set(intakes[intake])
                     }
                     specialties[intakes[intake].specialties[specialtie].name].quantity++
                     specialties[intakes[intake].specialties[specialtie].name].cost += parseFloat(intakes[intake].specialties[specialtie].cost);
