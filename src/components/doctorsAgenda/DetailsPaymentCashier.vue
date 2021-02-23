@@ -177,7 +177,6 @@
       <budget-to-print @close="CloseBudgetToPrint()" :budget="budgetToPrint"/>
     </v-dialog>
     <v-dialog
-        transition="dialog-bottom-transition"
         fullscreen
         v-model="receiptDialog"
         v-if="selectedIntake"

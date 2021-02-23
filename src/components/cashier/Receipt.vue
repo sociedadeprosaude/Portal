@@ -17,7 +17,7 @@
             </v-btn>
           </v-flex>
           <v-tab-item>
-            <v-card class="item-to-print pa-10" flat id="receipt" ref="receipt">
+            <v-card class="item-to-print pa-10" flat>
               <v-layout class="align-center pa-4" row style="border: 2px solid #2196f3; border-radius: 16px"
                         wrap>
                 <v-flex class="text-left" xs6>
@@ -181,7 +181,7 @@
           </v-tab-item>
           <v-tab-item :key=i v-for="(item, i) in examsPerClinic">
             <attendance-guide :guide=item :id="budget.id" :ref="'guide-' + i"
-                              class="receipt-to-print"/>
+                              />
           </v-tab-item>
         </v-tabs>
       </v-flex>
