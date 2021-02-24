@@ -229,7 +229,11 @@ export default {
             mutation: require('@/graphql/consultations/UpdateConsultationHour.gql'),
             variables:{
               idConsultation:consultation.id,
-              consultation_hour: {formatted: consultation_hour}
+              year: Number(consultation_hour.substring(0,4)),
+              month: Number(consultation_hour.substring(5,7)),
+              day: Number(consultation_hour.substring(8,10)),
+              hour: Number(consultation_hour.split('T')[1].split(':')[0]),
+              minute: Number(consultation_hour.split('T')[1].split(':')[1])
             }
           })
         }
