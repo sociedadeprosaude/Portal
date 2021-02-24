@@ -1,11 +1,6 @@
 <template>
   <v-container v-if="budget" fluid class="fill-height ma-0 pa-0">
     <v-layout row wrap>
-     <!--  <v-flex class="text-right white hidden-print-only mt-2" xs1>
-            <v-btn @click="print('receipt')" class="transparent" text>
-              <v-icon>print</v-icon>
-            </v-btn>
-          </v-flex> -->
       <v-flex sm12 xs12>
 
         <!-- <v-tabs class="receipt-to-print">
@@ -222,6 +217,7 @@
                 <v-flex class="primary" style="height: 2px; margin-top: 124px;" xs6></v-flex>
               </v-layout>
         </v-card>
+
 
         <attendance-guide v-if="showAttendanceGuide" :guide=showAttendanceGuide :id="budget.id" class="receipt-to-print"/>
     
