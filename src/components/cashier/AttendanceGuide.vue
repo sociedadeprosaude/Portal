@@ -2,7 +2,7 @@
   <v-container v-if="guide" fluid class="fill-height ma-0 pa-0">
     <v-layout row wrap>
       <v-flex>
-        <v-card flat class="pa-10" style="page-break-before: always !important; display: block">
+        <v-card flat class="pa-10 item-to-print" style="page-break-before: always !important; display: block">
           <v-layout
             row
             wrap

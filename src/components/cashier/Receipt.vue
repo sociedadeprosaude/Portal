@@ -18,7 +18,7 @@
           <v-tab :key=i v-for="(item, i) in examsPerClinic">{{ i }}</v-tab>
           <v-spacer/>
           <v-flex class="text-right white hidden-print-only mt-2" xs1>
-            <v-btn @click="print('receipt')" class="transparent" text>
+            <v-btn @click="print()" class="transparent" text>
               <v-icon>print</v-icon>
             </v-btn>
           </v-flex>
@@ -78,28 +78,6 @@
                 <v-flex class="text-right" xs6>
                   <img :src="selectedUnit.logo" height="84px">
                 </v-flex>
-               <!-- <v-flex class="text-left" xs6 v-if="this.budget.user ? this.budget.user.addresses : false">
-                  <v-layout column v-if="budget.user.addresses && budget.user.addresses[0]" wrap>
-                    <span
-                        class="primary--text font-weight-bold mt-2">{{ this.budget.user.addresses[0].street }} {{ this.budget.user.addresses[0].number }}</span>
-                    <span class="primary--text font-weight-bold mt-2"
-                          v-if="this.budget.user.addresses[0].complement">{{ this.budget.user.addresses[0].complement }}</span>
-                    <span
-                        class="primary--text font-weight-bold">{{ this.budget.user.addresses[0].city }} - {{ this.budget.user.addresses[0].uf }}</span>
-                    <span class="primary--text font-weight-bold">{{ this.budget.user.addresses[0].cep }}</span>
-                  </v-layout>
-                </v-flex>
-                <v-flex class="text-left" xs6 v-if="this.patient.addresses.length !== 0 && !this.budget.user">
-                  <v-layout column v-if="budget.user.addresses && this.patient.addresses[0]" wrap>
-                    <span
-                        class="primary--text font-weight-bold mt-2">{{ this.patient.addresses[0].street }} {{ this.patient.addresses[0].number }}</span>
-                    <span class="primary--text font-weight-bold mt-2"
-                          v-if="this.patient.addresses[0].complement">{{ this.patient.addresses[0].complement }}</span>
-                    <span
-                        class="primary--text font-weight-bold">{{ this.patient.addresses[0].city }} - {{ this.patient.addresses[0].uf }}</span>
-                    <span class="primary--text font-weight-bold">{{ this.patient.addresses[0].cep }}</span>
-                  </v-layout>
-                </v-flex>  -->
                 <v-flex class="align-start pt-6" xs3>
                   <v-layout class="justify-start align-start" column wrap>
                     <span class="primary--text font-weight-bold">Recibo #</span>
@@ -323,7 +301,7 @@ export default{
     }
   },
   methods: {
-    print(ref) {
+    print() {
       window.print()
     },
     formartDate(date) {
