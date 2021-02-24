@@ -1,8 +1,14 @@
 <template>
   <v-container v-if="budget" fluid class="fill-height ma-0 pa-0">
     <v-layout row wrap>
+     <!--  <v-flex class="text-right white hidden-print-only mt-2" xs1>
+            <v-btn @click="print('receipt')" class="transparent" text>
+              <v-icon>print</v-icon>
+            </v-btn>
+          </v-flex> -->
       <v-flex sm12 xs12>
-        <v-tabs>
+
+        <!-- <v-tabs class="receipt-to-print">
           <v-flex class="text-left white hidden-print-only mt-2" xs1>
             <v-btn @click="$emit('close')" class="transparent" text>
               <v-icon>close</v-icon>
@@ -16,8 +22,46 @@
               <v-icon>print</v-icon>
             </v-btn>
           </v-flex>
-          <v-tab-item>
-            <v-card class="pa-10 receipt-to-print" flat id="receipt" ref="receipt">
+          <v-tab-item class="receipt-to-print">
+            
+          </v-tab-item>
+          <v-tab-item :key=i v-for="(item, i) in examsPerClinic">
+            <attendance-guide :guide=item :id="budget.id" :ref="'guide-' + i"
+                              class="receipt-to-print"/>
+          </v-tab-item>
+        </v-tabs> -->
+        
+        <div class="text-left" style="height: 60px; background-color: #fff">
+          <v-row>
+            <v-col cols="1">
+              <v-btn @click="$emit('close')" class="transparent" text>
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-col>
+
+            <v-col cols="1">
+              <v-btn text @click="showInvoice = true">
+                Recibo
+              </v-btn>
+            </v-col>
+
+            <v-col :key=i v-for="(item, i) in examsPerClinic">
+              <v-btn text @click="showAttendanceGuide=item">
+                {{i}}
+              </v-btn>
+            </v-col>
+
+            <v-spacer></v-spacer>
+            <v-col>
+              <v-btn @click="print('receipt')" class="transparent" text>
+                <v-icon>print</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </div>
+        
+        
+        <v-card v-if="showInvoice" class="pa-10 receipt-to-print" flat id="receipt" ref="receipt">
               <v-layout class="align-center pa-4" row style="border: 2px solid #2196f3; border-radius: 16px"
                         wrap>
                 <v-flex class="text-left" xs6>
@@ -199,13 +243,10 @@
                 </v-flex>
                 <v-flex class="primary" style="height: 2px; margin-top: 124px;" xs6></v-flex>
               </v-layout>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item :key=i v-for="(item, i) in examsPerClinic">
-            <attendance-guide :guide=item :id="budget.id" :ref="'guide-' + i"
-                              class="receipt-to-print"/>
-          </v-tab-item>
-        </v-tabs>
+        </v-card>
+
+        <attendance-guide v-if="showAttendanceGuide" :guide=showAttendanceGuide :id="budget.id" class="receipt-to-print"/>
+    
       </v-flex>
     </v-layout>
   </v-container>
@@ -218,8 +259,24 @@ import moment from 'moment';
 export default{
   name: "Receipt",
   props: ['budget'],
+  data:()=>({
+    showInvoice: true,
+    showAttendanceGuide: undefined
+  }),
   components: {
     AttendanceGuide
+  },
+  watch:{
+    showAttendanceGuide(value){
+      if(value){
+        this.showInvoice = false;
+      }
+    },
+    showInvoice(value){
+      if(value){
+        this.showAttendanceGuide = undefined;
+      }
+    }
   },
   computed: {
     patient() {
@@ -271,7 +328,7 @@ export default{
     },
     formartDate(date) {
       return moment(date).format('DD/MM/YYYY')
-    }
+    },
   }
 }
 </script>
