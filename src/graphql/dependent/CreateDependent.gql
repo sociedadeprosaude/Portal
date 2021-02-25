@@ -1,12 +1,12 @@
 mutation CreateDependent(
     $name: String!,
-    $birth_date: _Neo4jDateInput,
+    $year: Int, $month: Int, $day: Int,
     $dependentDegree: String!,
     $sex: String
     ){
   CreateDependent(
     name: $name,
-    birth_date: $birth_date,
+    birth_date: {year: $year, month: $month, day: $day},
     dependentDegree: $dependentDegree,
     sex: $sex
   )

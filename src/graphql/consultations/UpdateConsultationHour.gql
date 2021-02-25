@@ -1,4 +1,4 @@
-mutation($idConsultation:ID!, $year: int, $month: int, $day: int, $hour: int, $minute: int){
+mutation($idConsultation:ID!, $year: Int, $month: Int, $day: Int, $hour: Int, $minute: Int){
  UpdateConsultation(id:$idConsultation ,consultation_hour:{year: $year, month: $month, day: $day, hour: $hour, minute: $minute}){
               id
             }

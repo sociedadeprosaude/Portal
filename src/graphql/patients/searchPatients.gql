@@ -4,6 +4,7 @@ query($name:String){
     name,
     cpf,
     sex,
+    email,
     telephones,
     association_number,
     birth_date{formatted},

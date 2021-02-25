@@ -716,6 +716,7 @@
                 this.loading = true;
 
                 let patient = {
+                    id: this.selectedPatient.id,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email? this.email : ' ',
@@ -735,7 +736,6 @@
                 }
               })
               searchUser = searchUser.data.Patient[0]
-              console.log('selecetPatient: ', this.selectedPatient)
               if(searchUser && !this.selectedPatient){
                 this.foundAlert= true
                 this.alert = 'Usuário já existente'
@@ -752,12 +752,12 @@
             },
 
             async savePatient(patient){
-                let nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient"
+                let nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient";
                 let variables = {
                         idPatient: this.selectedPatient && this.selectedPatient.id,
                         name: patient.name,
                         email: patient.email,
-                        birth_date: {formatted:patient.birth_date},
+                        ... this.dateComponentsFromIso(patient.birth_date),
                         cpf: patient.cpf,
                         sex: patient.sex,
                         association_number: Number(patient._id),
@@ -787,13 +787,13 @@
                     for(let i in patient.dependents){
                         const dependent = patient.dependents[i]
                         const nameMutation = dependent.id ? "UpdateDependent" : "CreateDependent"
-                        
+
                         const responseDependent = await this.$apollo.mutate({
                             mutation: require(`@/graphql/dependent/${nameMutation}.gql`),
                             variables: {
                                 idDependent: dependent.id,
                                 name: dependent.name,
-                                birth_date: {formatted: moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD")},
+                                ... this.dateComponentsFromIso( moment(dependent.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD")),
                                 cpf: dependent.cpf,
                                 dependentDegree: dependent.dependentDegree,
                                 sex:dependent.sex
@@ -961,7 +961,7 @@
                 this.email = user.email;
                 this.rg = user.rg;
                 this.numAss = user._id;
-                this.birthDate = moment(user.birth_date.formatted).format('DD/MM/YYYY');
+                this.birthDate = moment(user.birth_date.formatted ? user.birth_date.formatted : user.birth_date).format('DD/MM/YYYY');
                 this.sex = user.sex;
                 this.dependents = user.dependents ? user.dependents : [];
                 this.telephones = user.telephones ? user.telephones : [''];
@@ -981,7 +981,6 @@
                 } else {
                     this.dependents = []
                 }
-
             },
             fillFormOldUser(oldUser) {
                 this.name = oldUser.nome;
@@ -1027,6 +1026,16 @@
                 if (e.key === 'Enter') {
                     this.searchPatient()
                 }
+            },
+
+            dateComponentsFromIso(date){
+                const formattedDate = {
+                    year: Number(date.substring(0,4)),
+                    month: Number(date.substring(5,7)),
+                    day: Number(date.substring(8,10))
+                }
+
+                return formattedDate
             }
         },
         async mounted() {
