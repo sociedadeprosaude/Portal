@@ -716,7 +716,7 @@
                 this.loading = true;
 
                 let patient = {
-                    id: this.selectedPatient.id,
+                    id: this.selectedPatient ? this.selectedPatient.id : undefined,
                     name: this.name.toUpperCase(),
                     cpf: this.cpf ? this.cpf.replace(/\./g, '').replace('-', '') : undefined,
                     email: this.email? this.email : ' ',
@@ -754,7 +754,7 @@
             async savePatient(patient){
                 let nameMutation = this.selectedPatient ? "UpdatePatient" : "CreatePatient";
                 let variables = {
-                        idPatient: this.selectedPatient && this.selectedPatient.id,
+                        idPatient: this.selectedPatient && this.selectedPatient.id ,
                         name: patient.name,
                         email: patient.email,
                         ... this.dateComponentsFromIso(patient.birth_date),

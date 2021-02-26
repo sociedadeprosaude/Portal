@@ -1,7 +1,7 @@
 mutation CreatePatient(
     $name: String!,
     $email: String!
-    $birth_date: _Neo4jDateInput,
+    $year: Int, $month: Int, $day: Int,
     $created_at: _Neo4jDateTimeInput,
     $cpf: String!,
     $sex: String,
@@ -11,7 +11,7 @@ mutation CreatePatient(
   CreatePatient(
     name: $name,
     email: $email,
-    birth_date: $birth_date,
+    birth_date: {year: $year, month: $month, day: $day},
     cpf: $cpf,
     sex: $sex,
     association_number: $association_number,
