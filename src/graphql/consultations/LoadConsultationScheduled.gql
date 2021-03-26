@@ -9,7 +9,7 @@ query( $date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput, $special
   }){
        id,
        date{formatted},
-             consultation_hour{formatted},
+       consultation_hour{formatted},
        attended_by {
              name, crm
        },
@@ -22,6 +22,9 @@ query( $date_start:_Neo4jDateTimeInput, $date_end: _Neo4jDateTimeInput, $special
             with_charge{
             id
             }
+       },
+       patient{
+            name,email,telephones
        }
   }
 }

@@ -91,6 +91,7 @@
     <patients v-else-if="selected == 20"></patients>
     <consultations-by-doctor v-else-if="selected == 21"></consultations-by-doctor>
     <patient-report-age-consultation v-else-if="selected == 22"></patient-report-age-consultation>
+    <ReportAbsentPatients v-else-if="selected == 24"/>
   </v-container>
 </template>
 
@@ -120,6 +121,7 @@ import PatientsBudgets from "@/views/Reports/PatientsBudgets";
 import Patients from "@/views/Reports/Patients";
 import ConsultationsByDoctor from "@/views/Reports/ConsultationsByDoctor";
 import PatientReportAgeConsultation from "@/views/Reports/PatientReportAgeConsultation";
+import ReportAbsentPatients from "@/views/Reports/ReportAbsentPatients";
 
 export default {
   components: {
@@ -147,7 +149,8 @@ export default {
     StatisticPatientsGeoPoint,
     PatientsBudgets,
     Patients,
-    ConsultationsByDoctor
+    ConsultationsByDoctor,
+    ReportAbsentPatients
   },
   data: vm => ({
     selected: 0,
@@ -262,6 +265,12 @@ export default {
           break;
         case "PatientReportAgeConsultation":
           this.selected = 22;
+          break;
+        case "PatientReportAgeConsultation":
+          this.selected = 23;
+          break;
+        case "ReportAbsentPatients":
+          this.selected = 24;
           break;
         default:
           this.selected = 0;

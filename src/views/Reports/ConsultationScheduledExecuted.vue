@@ -82,19 +82,47 @@
 
             </v-layout>
 
+            <v-tabs
+                    v-model="tab"
+                    align-with-title
+            >
+                <v-tab key="statistic">
+                    Estatística
+                </v-tab>
+                <v-tab key="consultations">
+                    Pacientes com consultas não realizadas
+                </v-tab>
+            </v-tabs>
         </v-card>
 
         <ApolloQuery :query="require('@/graphql/consultations/LoadConsultationScheduled.gql')"
                      :variables="{  date_start:{formatted:formattedDate(selectedStartDate + 'T00:00:00')}, date_end:{formatted:formattedDate(selectedFinalDate + 'T23:59:59')}, specialty: specialty.name}">
             <template slot-scope="{ result: { data } }">
-                <ConsultationScheduledExecuted v-if="data"
+
+                <v-tabs-items  v-if="data" class="mt-3" v-model="tab">
+                    <v-tab-item
+                        key="statistic"
+                    >
+                        <ConsultationScheduledExecuted
                                                :scheduled="data.Consultation.length"
                                                :consultationsDone="filterConsultationsDone(data).length"
                                                :timeSchedule="timeConsultation(data.Consultation)"
                                                :timeConsultations="timeConsultation(filterConsultationsDone(data))"
                                                :weekConsultation="weekConsultation(filterConsultationsDone(data))"
                                                :weekSchedule="weekConsultation(data.Consultation)"
-                />
+                        />
+                    </v-tab-item>
+
+                     <v-tab-item
+                        key="consultations"
+                    >
+                       <PatientsWithConsultationsNotRealized
+                            :consultations="filterConsultationsNotDone(data)"
+                       />
+                    </v-tab-item>
+                </v-tabs-items>
+
+                
                 <v-progress-linear v-else-if="!data"
                                    class="mt-5"
                                    color="blue"
@@ -112,23 +140,26 @@
 
 <script>
     import ConsultationScheduledExecuted from "@/components/Reports/ConsultationScheduledExecuted";
+    import PatientsWithConsultationsNotRealized from '../../components/Reports/PatientsWithConsultationsNotRealized';
     import moment from "moment";
 
     export default {
         // name: "ConsultationScheduledExecuted",
         components: {
-            ConsultationScheduledExecuted
+            ConsultationScheduledExecuted,
+            PatientsWithConsultationsNotRealized
         },
         props: ["report", "loading"],
         data() {
             return {
-                specialty: "",
+              specialty: "",
               dateStart: moment().subtract(1, 'month').format('DD/MM/YYYY'),
               dateEnd: moment().format('DD/MM/YYYY'),
               dateMenuStart: false,
               dateMenuFinal: false,
               selectedStartDate: moment().format("YYYY-MM-DD"),
               selectedFinalDate: moment().format("YYYY-MM-DD"),
+              tab: undefined,
                 now: moment().format("YYYY-MM-DD HH:mm:ss"),
                 total: 0,
                 reportOptions: [
@@ -284,6 +315,9 @@
 
             filterConsultationsDone (data) {
                 return data.Consultation.filter(e => e.productTransaction !== null && e.productTransaction.with_charge !== null)
+            },
+            filterConsultationsNotDone (data) {
+                return data.Consultation.filter(e => e.patient && !e.consultation_hour || !e.consultation_hour.formatted)
             },
             clearSpecialty(){
                 this.specialty = ""

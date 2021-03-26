@@ -46,14 +46,15 @@
       </v-card-title>
     </v-card>
     <v-card v-if="skipBudgets">
-      <PatientsBudgets
+      <LoadUnpaidBudgets :budgets="BudgetFixed"/>
+      <!-- <PatientsBudgets
           v-if="BudgetFixed"
           :budgets="Budgets"
           :budgetsForDate="BudgetsForDate"
           :dates="dates"
           :PatientsArray="PatientsArray"
       >
-      </PatientsBudgets>
+      </PatientsBudgets> -->
     </v-card>
     <v-progress-circular v-else indeterminate size="64"></v-progress-circular>
   </v-container>
@@ -62,8 +63,9 @@
 <script>
 import moment from "moment";
 import PatientsBudgets from "@/components/Reports/PatientsBudgets";
+import LoadUnpaidBudgets from "@/components/Reports/LoadUnpaidBudgets";
 export default {
-  components: {PatientsBudgets},
+  components: {PatientsBudgets, LoadUnpaidBudgets},
   data: vm => ({
     BudgetFixed: '',
     skipBudgets: false,
@@ -156,7 +158,7 @@ export default {
   },
   apollo: {
     loadTransactions: {
-      query: require("@/graphql/budget/loadBudgetsPatient.gql"),
+      query: require("@/graphql/budget/loadUnpaidBudgets.gql"),
       variables() {
         return {
           date_start: this.selectedStartDate + 'T00:00:00',
@@ -164,7 +166,6 @@ export default {
         }
       },
       update(data) {
-        console.log('data: ', data.Budget)
         this.BudgetFixed= data.Budget
         this.skipBudgets = true
       },

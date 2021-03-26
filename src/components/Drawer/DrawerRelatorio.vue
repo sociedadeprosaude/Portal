@@ -112,6 +112,10 @@ export default {
           txt: "Pacientes por Produto",
           link: "PatientReportAgeConsultation"
         },
+         {
+          txt: "Pacientes ausentes",
+          link: "ReportAbsentPatients"
+        },
       ],
     };
   },

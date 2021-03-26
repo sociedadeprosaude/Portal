@@ -513,9 +513,7 @@ export default {
           mutation: mutationBuilder.generateMutationRequest(),
         })
         response= response.data.mutation0._id
-        this.budgetToPrint._id = response
-
-        console.log('response :', response)
+        this.budgetToPrint._id = responses
       }
       this.loadingImp= false
       this.budgetToPrintDialog = true
@@ -712,32 +710,31 @@ export default {
       this.$store.commit('setSelectedPatient', user)
     },
 
-    verifyUnpaidConsultations(productTransactions) {
+    async verifyUnpaidConsultations(productTransactions) {
       let foundConsultation = false;
       for (const key in productTransactions) {
         const productTransaction = productTransactions[key];
         let unpaidConsultation = this.patient.consultations.find((consultation) => consultation.product && consultation.product.id === productTransaction.id && consultation.status === "Aguardando pagamento")
 
         if (unpaidConsultation) {
-          this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
+          await this.saveRelationProductTransaction(unpaidConsultation.id, productTransaction.prodId)
           foundConsultation = true;
         }
       }
 
       if(foundConsultation){
         this.$apollo.queries.loadPatient.refresh();
-        console.log('Tem que recarregar')
       }
     },
 
-    saveRelationProductTransaction(idConsultation, idProductTransaction) {
-      this.$apollo.mutate({
+    async saveRelationProductTransaction(idConsultation, idProductTransaction) {
+      await this.$apollo.mutate({
         mutation: require('@/graphql/transaction/AddRelationProductTransactionConsultation.gql'),
         variables: {
           idConsultation: idConsultation,
           idProductTransaction: idProductTransaction
         },
-      })
+      });
     },
   },
   apollo: {

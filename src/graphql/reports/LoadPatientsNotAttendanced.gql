@@ -1,0 +1,5 @@
+query{
+  Patient(filter:{attendances:null}){
+    name,email,cpf,telephones, 
+  }
+}

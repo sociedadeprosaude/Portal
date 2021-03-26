@@ -1,0 +1,35 @@
+query($date_start: String, $date_final: String) {
+    Budget(filter:{date_gte: {formatted: $date_start}, date_lte: {formatted: $date_final}, with_transaction:null}){
+     date {
+                       formatted
+                       },
+                       id,
+                      discount,
+                      value,
+                      payments,
+                      parcels,
+                      payment_methods,
+                      patient: with_user{
+                        id, name, email, cpf,telephones
+                      },
+                      unit: with_unit{
+                        id, name
+                      }
+                      products: with_productBundget{
+                         price,
+                         id,
+                         with_product{
+                         id,
+                            name,
+                            type,
+                          },
+                         clinic: with_clinic{
+                            id,
+                            name
+                         }
+                       },
+                      with_transaction{
+                         id
+                      },
+    }
+}
