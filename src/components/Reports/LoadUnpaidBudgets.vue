@@ -27,18 +27,20 @@
         <v-dialog
             v-model="dialog"
             width="600"
-        >
+        >   
             <v-card>
                 <v-card-title class="headline grey lighten-2">
                     Produtos
                 </v-card-title>
 
                 <v-card-text>
-                    <v-row v-for="(product, index) in itemSelected.products" :key="index">
-                        <strong>{{product.with_product[0].name}}</strong>
-                        <v-spacer></v-spacer>
-                        <span>R$ {{product.price}}</span>
-                    </v-row>
+                    <v-container>
+                        <v-row v-for="(product, index) in itemSelected.products" :key="index">
+                            <strong>{{product.with_product[0].name}}</strong>
+                            <v-spacer></v-spacer>
+                            <span>R$ {{product.price}}</span>
+                        </v-row>
+                    </v-container>
                 </v-card-text>
 
                 <v-divider></v-divider>
