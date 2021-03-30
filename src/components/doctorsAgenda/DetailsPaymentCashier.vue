@@ -513,7 +513,7 @@ export default {
           mutation: mutationBuilder.generateMutationRequest(),
         })
         response= response.data.mutation0._id
-        this.budgetToPrint._id = responses
+        this.budgetToPrint._id = response;
       }
       this.loadingImp= false
       this.budgetToPrintDialog = true
